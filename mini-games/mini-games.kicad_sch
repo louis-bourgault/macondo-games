@@ -5032,6 +5032,12 @@
 		(uuid "2f690c42-c588-4f6a-9667-1dcb79704291")
 	)
 	(junction
+		(at 181.61 82.55)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "447966ae-eaff-44ba-8b3d-5e78e8b8b46b")
+	)
+	(junction
 		(at 180.34 34.29)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5066,12 +5072,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "68808837-9c9a-488d-8a27-20c77c52722b")
-	)
-	(junction
-		(at 185.42 82.55)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6fd29731-a049-44f7-ae10-f265d6eebbba")
 	)
 	(junction
 		(at 180.34 41.91)
@@ -5254,6 +5254,16 @@
 			(type default)
 		)
 		(uuid "0618d474-e742-4248-bffd-40bde8d8423c")
+	)
+	(wire
+		(pts
+			(xy 181.61 82.55) (xy 179.07 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "06bee129-6cc8-4af4-b737-8dc91d300bcf")
 	)
 	(wire
 		(pts
@@ -5547,7 +5557,7 @@
 	)
 	(wire
 		(pts
-			(xy 193.04 85.09) (xy 193.04 92.71)
+			(xy 196.85 85.09) (xy 196.85 92.71)
 		)
 		(stroke
 			(width 0)
@@ -5597,7 +5607,7 @@
 	)
 	(wire
 		(pts
-			(xy 185.42 82.55) (xy 185.42 92.71)
+			(xy 181.61 82.55) (xy 181.61 92.71)
 		)
 		(stroke
 			(width 0)
@@ -5624,26 +5634,6 @@
 			(type default)
 		)
 		(uuid "65f03923-0a7c-4a0f-8442-5432e4f62cd3")
-	)
-	(wire
-		(pts
-			(xy 185.42 82.55) (xy 179.07 82.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6b56654c-f257-4e3c-b59e-fa42de935636")
-	)
-	(wire
-		(pts
-			(xy 196.85 85.09) (xy 193.04 85.09)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6d66a689-e41a-48c7-a46e-2618b6b0ae55")
 	)
 	(wire
 		(pts
@@ -6024,16 +6014,6 @@
 			(type default)
 		)
 		(uuid "bcea4de6-7db2-4490-ba52-1bb034b9ee75")
-	)
-	(wire
-		(pts
-			(xy 193.04 82.55) (xy 196.85 82.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bfaca575-2371-45f2-9673-5cdc9bba860a")
 	)
 	(wire
 		(pts
@@ -8024,6 +8004,86 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 193.04 92.71 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "1df5a59d-0cc0-41ed-86e7-ee320771b432")
+		(property "Reference" "R10"
+			(at 193.04 86.36 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1k"
+			(at 193.04 88.9 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 193.04 94.488 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 193.04 92.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 193.04 92.71 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "3ee4ea62-8789-45ac-89c3-a6c6717662f6")
+		)
+		(pin "1"
+			(uuid "6cddf9fc-c72f-45c2-a2cd-9c3b42a1bf12")
+		)
+		(instances
+			(project "mini-games"
+				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
+					(reference "R10")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Switch:SW_SPST")
 		(at 67.31 149.86 0)
 		(unit 1)
@@ -9641,7 +9701,7 @@
 	)
 	(symbol
 		(lib_id "Device:LED")
-		(at 189.23 92.71 180)
+		(at 185.42 92.71 180)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -9652,7 +9712,7 @@
 		(fields_autoplaced yes)
 		(uuid "50c28b4c-0544-456a-93b8-981658fe5363")
 		(property "Reference" "D2"
-			(at 190.8175 85.09 0)
+			(at 187.0075 85.09 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9662,7 +9722,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 190.8175 87.63 0)
+			(at 187.0075 87.63 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -9672,7 +9732,7 @@
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0402_1005Metric"
-			(at 189.23 92.71 0)
+			(at 185.42 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9683,7 +9743,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 189.23 92.71 0)
+			(at 185.42 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9694,7 +9754,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 189.23 92.71 0)
+			(at 185.42 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9705,7 +9765,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 189.23 92.71 0)
+			(at 185.42 92.71 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11423,6 +11483,86 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R")
+		(at 193.04 82.55 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8e946a6e-ca15-477d-a34c-1a2837da97d3")
+		(property "Reference" "R11"
+			(at 193.04 76.2 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1k"
+			(at 193.04 78.74 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 193.04 84.328 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 193.04 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 193.04 82.55 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "04a1899a-2c4b-4946-ba80-bfdb021d963e")
+		)
+		(pin "1"
+			(uuid "993d742a-45e7-4099-8f4c-e7ac4bb0a4e9")
+		)
+		(instances
+			(project "mini-games"
+				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
+					(reference "R11")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:+BATT")
 		(at 58.42 135.89 0)
 		(unit 1)
@@ -11502,7 +11642,7 @@
 	)
 	(symbol
 		(lib_id "Device:LED")
-		(at 189.23 82.55 180)
+		(at 185.42 82.55 180)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -11513,7 +11653,7 @@
 		(fields_autoplaced yes)
 		(uuid "9297f24f-65f0-4018-8d3c-95b5284707f3")
 		(property "Reference" "D1"
-			(at 190.8175 74.93 0)
+			(at 187.0075 74.93 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11523,7 +11663,7 @@
 			)
 		)
 		(property "Value" "LED"
-			(at 190.8175 77.47 0)
+			(at 187.0075 77.47 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11533,7 +11673,7 @@
 			)
 		)
 		(property "Footprint" "LED_SMD:LED_0402_1005Metric"
-			(at 189.23 82.55 0)
+			(at 185.42 82.55 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11544,7 +11684,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 189.23 82.55 0)
+			(at 185.42 82.55 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11555,7 +11695,7 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 189.23 82.55 0)
+			(at 185.42 82.55 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11566,7 +11706,7 @@
 			)
 		)
 		(property "Sim.Pins" "1=K 2=A"
-			(at 189.23 82.55 0)
+			(at 185.42 82.55 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
