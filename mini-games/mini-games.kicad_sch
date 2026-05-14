@@ -10215,7 +10215,7 @@
 				)
 			)
 		)
-		(property "Value" "15pF"
+		(property "Value" "30pF"
 			(at 39.37 124.46 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11424,7 +11424,7 @@
 				)
 			)
 		)
-		(property "Value" "15pF"
+		(property "Value" "30pF"
 			(at 39.37 104.14 90)
 			(show_name no)
 			(do_not_autoplace no)
