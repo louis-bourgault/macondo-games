@@ -14,3 +14,4 @@ D-pad controls (Up, down, left, right), as well as A and B buttons and 2 buttons
 ## Games
 I initially considered making this a gameboy emulator, but decided that that was against the spirit of the project, since I would like to code most of the things on there and don't particularly feel like playing gameboy games without sound. Initially, I will code games like Pong and Snake in Go, and then who knows what I will go to past then.
 The one exception to trying to code all my own games is that, as a rite of passage into hardware engineering, I want to run Doom. 
+For development, another thing that i want to do is to have all the interfaces for inputs, drawing to the screen, etc, abstracted. Then I can use build tags to either build the software using TinyGo for loading onto the device or using normal Go for debugging on my computer, using a window on my screen and keyboard controls.
