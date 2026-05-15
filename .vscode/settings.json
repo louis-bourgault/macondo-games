@@ -1,0 +1,8 @@
+{
+    "go.buildTags": "wasm",
+    "gopls": {
+      "build": {
+        "buildFlags": ["-tags=wasm"]
+      }
+    }
+  }
