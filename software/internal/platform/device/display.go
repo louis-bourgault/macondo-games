@@ -8,11 +8,16 @@ import (
 	"tinygo.org/x/drivers/st7789"
 )
 
+//TODO: i don't know how performant this is. Would it be faster to use a buffer then push it to spi?
+
 const (
+	//SPI0 SCLK - Pin 18
 	PIN_SPI_SCK = machine.SPI0_SCK_PIN
+	//SPI0 TX/MOSI - Pin 19
 	PIN_SPI_SDO = machine.SPI0_SDO_PIN
-	PIN_DC      = machine.PIN(8)
-	PIN_RST     = machine.PIN(9)
+	PIN_DC      = machine.PIN(21)
+	PIN_RST     = machine.PIN(20)
+	CS_SCREEN   = machine.GPIO{machine.PIN(22)}
 )
 
 type HardwareDisplay struct {
@@ -40,11 +45,13 @@ func (d *HardwareDisplay) Pixel(x, y int, c uint16) {
 }
 
 func (d *HardwareDisplay) Present() error {
-	//st7789 updates immediately, so don't need to do anything here
+	//st7789 updates immediately
 	return nil
 }
 
 func NewDisplay() *st7789.Device {
+	CS_SCREEN.Low()
+
 	spi := machine.SPI0
 	spi.Configure(machine.SPIConfig{
 		Frequency: 8000000,
