@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>macondo-games</title>
-</head>
+  <link rel="stylesheet" href="style.css" /></head>
 <body>
+  <div class="main-col">
+  <h1>Ferretboard WASM</h1>
+  <p>This is a WASM version of the games that will be running on my Ferretboard that I make, as a proof of concept and for development purposes. I will be adding more as I continue working on the project.</p>
+  <p>Information: <a href="https://github.com/louis-bourgault/macondo-games">github.com/louis-bourgault/macondo-games</a></p>
   <canvas id="canvas" width="240" height="240"></canvas>
-
+  <p class="game-instructions">Use WASD and arrow keys for d-pad buttons. Use J and K for A and B buttons, respectively. Use Enter for START and Shift for SELECT.</p>
+</div>
   <script src="wasm_exec.js"></script>
   <script>
     const go = new Go();
     WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
       .then(result => go.run(result.instance))
       .catch(console.error);
+    let canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false; 
   </script>
 </body>
 </html>

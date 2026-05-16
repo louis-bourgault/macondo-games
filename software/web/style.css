@@ -1,0 +1,29 @@
+canvas {
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+  
+html {
+    font-family: "PT Serif", serif;
+    background-color: #0d0c04;
+    color: #f4f0dd;
+}
+
+.game-instructions {
+    font-size: 14px;
+    color: #dacc90;
+    font-style: italic;
+}
+
+a {
+    color: #2f7527;
+    text-decoration: none;
+}
+
+.main-col {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}

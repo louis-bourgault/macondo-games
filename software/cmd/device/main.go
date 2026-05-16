@@ -1,5 +1,23 @@
 package main
 
+import (
+	"time"
+
+	"github.com/louis-bourgault/macondo-games/software/internal/game/drawtest"
+	"github.com/louis-bourgault/macondo-games/software/internal/platform/device"
+)
+
 func main() {
-	//entrypoint, blank for now
+	//initiate the platform
+	display := device.NewDisplay()
+	input := device.NewHardwareInput()
+	game := drawtest.New(display)
+
+	ticker := time.NewTicker(time.Second / 60)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		game.Update(input)
+		game.Draw(display)
+	}
 }

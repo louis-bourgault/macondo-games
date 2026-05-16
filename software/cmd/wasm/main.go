@@ -21,5 +21,6 @@ func main() {
 	for range ticker.C {
 		game.Update(input)
 		game.Draw(display)
+		input.Update()
 	}
 }

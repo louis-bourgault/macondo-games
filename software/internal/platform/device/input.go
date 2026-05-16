@@ -39,6 +39,7 @@ func NewHardwareInput() *HardwareInput {
 }
 
 func (i *HardwareInput) WasKeyJustPressed(key string) bool {
+	//pretty basic function tbh
 	return i.keysJustPressed[key]
 }
 

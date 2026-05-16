@@ -19,13 +19,13 @@ type DrawTest struct {
 }
 
 func (d *DrawTest) Update(input platform.InputSystem) {
-	d.timeSince++
+	//d.timeSince++
+	if input.WasKeyJustPressed("RIGHT") {
+		d.xp += 10
+	}
 }
 
 func (d *DrawTest) Draw(screen platform.Screen) {
-	if d.timeSince%60 == 0 {
-		d.xp += 10
-	}
 	screen.Pixel(d.xp, 10, 0xF800) //draw a red pixel at (d.xp, 10)
 	screen.Present()               //present the screen
 }

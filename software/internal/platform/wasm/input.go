@@ -16,6 +16,24 @@ func NewInput() *WasmInput {
 	}
 	js.Global().Call("addEventListener", "keydown", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		key := args[0].Get("key").String()
+		switch key {
+		case "W", "w":
+			key = "UP"
+		case "A", "a":
+			key = "LEFT"
+		case "S", "s":
+			key = "DOWN"
+		case "D", "d":
+			key = "RIGHT"
+		case "Enter":
+			key = "START"
+		case "Shift":
+			key = "SELECT"
+		case "j", "J":
+			key = "A"
+		case "k", "K":
+			key = "B"
+		}
 		if !input.keysPressed[key] {
 			input.keysJustPressed[key] = true
 		}
@@ -24,6 +42,24 @@ func NewInput() *WasmInput {
 	}))
 	js.Global().Call("addEventListener", "keyup", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		key := args[0].Get("key").String()
+		switch key {
+		case "W", "w":
+			key = "UP"
+		case "A", "a":
+			key = "LEFT"
+		case "S", "s":
+			key = "DOWN"
+		case "D", "d":
+			key = "RIGHT"
+		case "Enter":
+			key = "START"
+		case "Shift":
+			key = "SELECT"
+		case "j", "J":
+			key = "A"
+		case "k", "K":
+			key = "B"
+		}
 		if input.keysPressed[key] {
 			input.keysJustReleased[key] = true
 		}
