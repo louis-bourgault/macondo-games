@@ -22,7 +22,7 @@ D3,SS14,D_SOD-123,96.0,-58.0,0.0,top
 D4,SS14,D_SOD-123,76.85,-58.0,180.0,top
 D5,SS14,D_SOD-123,69.5,-50.0,180.0,top
 J1,USB_C_Receptacle_USB2.0_14P,USB_C_Receptacle_HRO_TYPE-C-31-M-12,85.61,-58.99,180.0,top
-J2,Conn_01x08_Socket,PinHeader_1x08_P2.54mm_Vertical,85.65,-20.0,90.0,top
+J2,Conn_01x08_Socket,PinHeader_1x08_P2.54mm_Vertical,85.5,-20.0,90.0,top
 J3,Conn_01x01,TestPoint_Pad_2.0x2.0mm,71.0,-24.5,0.0,top
 J4,Conn_01x01,TestPoint_Pad_2.0x2.0mm,66.5,-24.5,0.0,top
 R1,5.1K,R_0402_1005Metric,93.15,-60.5,-90.0,top
@@ -37,8 +37,8 @@ R7,10K,R_0402_1005Metric,68.0,-31.0,0.0,top
 R8,2.4K,R_0402_1005Metric,66.0,-51.5,0.0,top
 R9,10k,R_0402_1005Metric,71.5,-31.5,180.0,top
 SW1,reset_flash,SW_Push_SPST_NO_Alps_SKRK,67.4,-28.5,0.0,top
-SW10,POWER,SW_DIP_SPSTx01_Slide_Copal_CHS-01B_W7.62mm_P1.27mm,88.5,-49.5,180.0,top
 SW11,reset_run,SW_Push_SPST_NO_Alps_SKRK,73.5,-28.5,0.0,top
+SW12,SW_SPDT,SW_SPDT_Shouhan_MSK12C02,88.5,-50.075,180.0,top
 SW2,DPAD_UP,SW_PUSH_6mm,77.75,-35.0,0.0,top
 SW3,DPAD_LEFT,SW_PUSH_6mm,68.25,-41.75,0.0,top
 SW4,DPAD_RIGHT,SW_PUSH_6mm,87.25,-41.75,0.0,top
