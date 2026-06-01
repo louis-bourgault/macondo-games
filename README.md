@@ -47,6 +47,7 @@ Then, regardless of which you use, you need to actually serve this directory. Fo
 
 ### Building (device)
 You'll need to compile it with TinyGo, as well. I'll add instructions for this once I have the device built.
+This is something along the lines of ```tinygo build -target=pico -o ./out/firmware.uf2 ./cmd/device```
 
 # Image Gallery
 ![Fusion Case](/img/fusion-case.png)

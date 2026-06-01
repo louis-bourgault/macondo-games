@@ -10,14 +10,14 @@ type HardwareInput struct {
 
 // gpois - look at the kicad schematic, change these if you're using a different schematic
 const (
-	PIN_A      = machine.PIN(4)
-	PIN_B      = machine.PIN(5)
-	PIN_SELECT = machine.PIN(6)
-	PIN_START  = machine.PIN(7)
-	DPAD_UP    = machine.PIN(9)
-	DPAD_LEFT  = machine.PIN(10)
-	DPAD_RIGHT = machine.PIN(11)
-	DPAD_DOWN  = machine.PIN(12)
+	PIN_A      = machine.Pin(4)
+	PIN_B      = machine.Pin(5)
+	PIN_SELECT = machine.Pin(6)
+	PIN_START  = machine.Pin(7)
+	DPAD_UP    = machine.Pin(9)
+	DPAD_LEFT  = machine.Pin(10)
+	DPAD_RIGHT = machine.Pin(11)
+	DPAD_DOWN  = machine.Pin(12)
 )
 
 func NewHardwareInput() *HardwareInput {

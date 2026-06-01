@@ -1,9 +1,10 @@
 package device
 
 import (
-	"image/color"
 	"machine"
 	"time"
+
+	"unsafe"
 
 	"tinygo.org/x/drivers/st7789"
 )
@@ -15,41 +16,42 @@ const (
 	PIN_SPI_SCK = machine.SPI0_SCK_PIN
 	//SPI0 TX/MOSI - Pin 19
 	PIN_SPI_SDO = machine.SPI0_SDO_PIN
-	PIN_DC      = machine.PIN(21)
-	PIN_RST     = machine.PIN(20)
-	CS_SCREEN   = machine.GPIO{machine.PIN(22)}
+	PIN_DC      = machine.Pin(21)
+	PIN_RST     = machine.Pin(20)
+	CS_SCREEN   = machine.Pin(22)
 )
 
 type HardwareDisplay struct {
 	dev *st7789.Device
+	spi *machine.SPI
+	dc  machine.Pin
+	//this takes up 115200 bytes, or 115kb of the total 264kb of ram on the device.
+	//it is possible to make it bufferless and write direct to the display, but performance would be a lot worse, and i think 149kb is probably enough for everything else.
+	buf [240 * 240]uint16
 }
 
 func (d *HardwareDisplay) Fill(c uint16) {
-	col := color.RGBA{
-		R: uint8((c >> 11) & 0x1f << 3),
-		G: uint8((c >> 5) & 0x3f << 2),
-		B: uint8((c & 0x1f) << 3),
-		A: 0xff,
+	for i := range d.buf {
+		d.buf[i] = c
 	}
-	d.dev.FillScreen(col)
 }
 
 func (d *HardwareDisplay) Pixel(x, y int, c uint16) {
-	col := color.RGBA{
-		R: uint8((c >> 11) & 0x1f << 3),
-		G: uint8((c >> 5) & 0x3f << 2),
-		B: uint8((c & 0x1f) << 3),
-		A: 0xff,
+	if x < 0 || x >= 240 || y < 0 || y >= 240 {
+		return
 	}
-	d.dev.SetPixel(x, y, col)
+	d.buf[y*240+x] = c
 }
 
 func (d *HardwareDisplay) Present() error {
-	//st7789 updates immediately
+	//now we use a buffer, we actually need a present function
+	d.dc.High()
+	byteData := unsafe.Slice((*byte)(unsafe.Pointer(&d.buf[0])), len(d.buf)*2)
+	d.spi.Tx(byteData, nil)
 	return nil
 }
 
-func NewDisplay() *st7789.Device {
+func NewDisplay() *HardwareDisplay {
 	CS_SCREEN.Low()
 
 	spi := machine.SPI0
@@ -58,15 +60,17 @@ func NewDisplay() *st7789.Device {
 		SCK:       PIN_SPI_SCK,
 		SDO:       PIN_SPI_SDO,
 	})
-	dc := machine.GPIO{PIN_DC}
-	rst := machine.GPIO{PIN_RST}
-	dc.Configure(machine.GPIOConfig{Mode: machine.GPIO_OUTPUT})
-	rst.Configure(machine.GPIOConfig{Mode: machine.GPIO_OUTPUT})
-	dev := st7789.New(spi, dc, rst)
+	PIN_DC.Configure(machine.PinConfig{Mode: machine.PinOutput})
+	PIN_RST.Configure(machine.PinConfig{Mode: machine.PinOutput})
+	dev := st7789.New(spi, PIN_DC, PIN_RST, CS_SCREEN, machine.NoPin)
 	dev.Configure(st7789.Config{
 		Width:  240,
 		Height: 240,
 	})
 	time.Sleep(100 * time.Millisecond)
-	return dev
+	return &HardwareDisplay{
+		dev: &dev,
+		spi: spi,
+		dc:  PIN_DC,
+	}
 }
