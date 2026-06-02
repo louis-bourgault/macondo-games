@@ -4,10 +4,11 @@ package drawtest
 //i know, riveting
 
 import (
+	"github.com/louis-bourgault/macondo-games/software/internal/game"
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
 )
 
-func New(s platform.Screen) *DrawTest {
+func New() *DrawTest {
 	return &DrawTest{
 		timeSince: 0,
 		xp:        120,
@@ -21,7 +22,7 @@ type DrawTest struct {
 	yp        int
 }
 
-func (d *DrawTest) Update(input platform.InputSystem) {
+func (d *DrawTest) Update(dt float64, input platform.InputSystem) game.Game {
 	//d.timeSince++
 	if input.WasKeyJustPressed("RIGHT") {
 		d.xp += 10
@@ -35,6 +36,11 @@ func (d *DrawTest) Update(input platform.InputSystem) {
 	if input.WasKeyJustPressed("DOWN") {
 		d.yp += 10
 	}
+
+	if input.WasKeyJustPressed("SELECT") { //each game can define its own way to exit, but this is probably the simplest one
+		return nil //to exit the game, just pass 'nil'. The main function will notice this and boot up the menu application
+	}
+	return d
 }
 
 func (d *DrawTest) Draw(screen platform.Screen) {

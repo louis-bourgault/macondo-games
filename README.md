@@ -39,9 +39,10 @@ You'll need to compile the binary for wasm using tinygo. I'm on a mac, so keep i
 ```cp $(tinygo env TINYGOROOT)/targets/wasm_exec.js /software/web/```
 
 
-It can be quicker to use the typical go WASM handler for builds, since the tinygo toolchain can take quite a while, even on a decent computer. In this case, the js file is different, so the commands are:
-```cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ./software/web/```
-```GOOS=js GOARCH=wasm go build -o ./software/web/main.wasm ./software/cmd/wasm```
+It can be quicker to use the typical go WASM handler for builds, since the tinygo toolchain can take quite a while, even on a decent computer. In this case, the js file is different, so the command is:
+
+
+Full command: ```cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ./web/ && GOOS=js GOARCH=wasm go build -o ./web/main.wasm ./cmd/wasm && cd ..``` (you must be cded into the software directory for this to work)
 
 Then, regardless of which you use, you need to actually serve this directory. For debugging, I do this through cd'ing into it and then running ```python3 -m http.server```, which works well enough for me.
 

@@ -45,6 +45,7 @@ func (d *HardwareDisplay) Pixel(x, y int, c uint16) {
 
 func (d *HardwareDisplay) Present() error {
 	//now we use a buffer, we actually need a present function
+	//might need a set window thing here
 	d.dc.High()
 	byteData := unsafe.Slice((*byte)(unsafe.Pointer(&d.buf[0])), len(d.buf)*2)
 	d.spi.Tx(byteData, nil)
