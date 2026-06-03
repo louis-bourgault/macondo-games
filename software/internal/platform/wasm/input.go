@@ -1,38 +1,43 @@
 package wasm
 
-import "syscall/js"
+import (
+	"syscall/js"
+
+	"github.com/louis-bourgault/macondo-games/software/internal/platform"
+)
 
 type WasmInput struct {
-	keysPressed      map[string]bool
-	keysJustPressed  map[string]bool
-	keysJustReleased map[string]bool
+	keysPressed      map[platform.Button]bool
+	keysJustPressed  map[platform.Button]bool
+	keysJustReleased map[platform.Button]bool
 }
 
 func NewInput() *WasmInput {
 	input := &WasmInput{
-		keysPressed:      make(map[string]bool),
-		keysJustPressed:  make(map[string]bool),
-		keysJustReleased: make(map[string]bool),
+		keysPressed:      make(map[platform.Button]bool),
+		keysJustPressed:  make(map[platform.Button]bool),
+		keysJustReleased: make(map[platform.Button]bool),
 	}
 	js.Global().Call("addEventListener", "keydown", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		key := args[0].Get("key").String()
-		switch key {
+		keyPressed := args[0].Get("key").String()
+		var key platform.Button
+		switch keyPressed {
 		case "W", "w":
-			key = "UP"
+			key = platform.Up
 		case "A", "a":
-			key = "LEFT"
+			key = platform.Left
 		case "S", "s":
-			key = "DOWN"
+			key = platform.Down
 		case "D", "d":
-			key = "RIGHT"
+			key = platform.Right
 		case "Enter":
-			key = "START"
+			key = platform.Start
 		case "Shift":
-			key = "SELECT"
+			key = platform.Select
 		case "j", "J":
-			key = "A"
+			key = platform.A
 		case "k", "K":
-			key = "B"
+			key = platform.B
 		}
 		if !input.keysPressed[key] {
 			input.keysJustPressed[key] = true
@@ -41,24 +46,25 @@ func NewInput() *WasmInput {
 		return nil
 	}))
 	js.Global().Call("addEventListener", "keyup", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		key := args[0].Get("key").String()
-		switch key {
+		keyPressed := args[0].Get("key").String()
+		var key platform.Button
+		switch keyPressed {
 		case "W", "w":
-			key = "UP"
+			key = platform.Up
 		case "A", "a":
-			key = "LEFT"
+			key = platform.Left
 		case "S", "s":
-			key = "DOWN"
+			key = platform.Down
 		case "D", "d":
-			key = "RIGHT"
+			key = platform.Right
 		case "Enter":
-			key = "START"
+			key = platform.Start
 		case "Shift":
-			key = "SELECT"
+			key = platform.Select
 		case "j", "J":
-			key = "A"
+			key = platform.A
 		case "k", "K":
-			key = "B"
+			key = platform.B
 		}
 		if input.keysPressed[key] {
 			input.keysJustReleased[key] = true
@@ -69,15 +75,15 @@ func NewInput() *WasmInput {
 	return input
 }
 
-func (i *WasmInput) WasKeyJustPressed(key string) bool {
+func (i *WasmInput) WasKeyJustPressed(key platform.Button) bool {
 	return i.keysJustPressed[key]
 }
 
-func (i *WasmInput) WasKeyJustReleased(key string) bool {
+func (i *WasmInput) WasKeyJustReleased(key platform.Button) bool {
 	return i.keysJustReleased[key]
 }
 
-func (i *WasmInput) IsKeyPressed(key string) bool {
+func (i *WasmInput) IsKeyPressed(key platform.Button) bool {
 	return i.keysPressed[key]
 }
 

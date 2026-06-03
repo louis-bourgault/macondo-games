@@ -25,20 +25,20 @@ type DrawTest struct {
 
 func (d *DrawTest) Update(dt float64, input platform.InputSystem) game.Game {
 	//d.timeSince++
-	if input.WasKeyJustPressed("RIGHT") {
+	if input.WasKeyJustPressed(platform.Right) {
 		d.xp += 10
 	}
-	if input.WasKeyJustPressed("LEFT") {
+	if input.WasKeyJustPressed(platform.Left) {
 		d.xp -= 10
 	}
-	if input.WasKeyJustPressed("UP") {
+	if input.WasKeyJustPressed(platform.Up) {
 		d.yp -= 10
 	}
-	if input.WasKeyJustPressed("DOWN") {
+	if input.WasKeyJustPressed(platform.Down) {
 		d.yp += 10
 	}
 
-	if input.WasKeyJustPressed("SELECT") { //each game can define its own way to exit, but this is probably the simplest one
+	if input.WasKeyJustPressed(platform.Select) { //each game can define its own way to exit, but this is probably the simplest one
 		return nil //to exit the game, just pass 'nil'. The main function will notice this and boot up the menu application
 	}
 	return d

@@ -29,17 +29,17 @@ type Menu struct {
 }
 
 func (m *Menu) Update(dt float64, input platform.InputSystem) game.Game {
-	if input.WasKeyJustPressed("DOWN") {
+	if input.WasKeyJustPressed(platform.Down) {
 		if int(m.position) < len(m.gameOptions)-1 {
 			m.position++
 		}
 	}
-	if input.WasKeyJustPressed("UP") {
+	if input.WasKeyJustPressed(platform.Up) {
 		if m.position > 0 {
 			m.position--
 		}
 	}
-	if input.WasKeyJustPressed("A") {
+	if input.WasKeyJustPressed(platform.A) {
 		return m.gameOptions[m.position].launcher()
 	}
 	return m //if nothing is selected, this just returns the game we are currently on, the menu

@@ -9,6 +9,7 @@ import (
 
 func main() {
 	//initiate the platform
+	//perhaps we should seed the randomness here
 	display := device.NewDisplay()
 	input := device.NewHardwareInput()
 	game := drawtest.New(display)

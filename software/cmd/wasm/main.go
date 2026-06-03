@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/louis-bourgault/macondo-games/software/internal/game"
-	"github.com/louis-bourgault/macondo-games/software/internal/game/drawtest"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/menu"
 	"github.com/louis-bourgault/macondo-games/software/internal/platform/wasm"
 )
@@ -16,7 +15,7 @@ func main() {
 	display := wasm.NewDisplay("canvas")
 	input := wasm.NewInput()
 	var currentGame game.Game
-	currentGame = drawtest.New()
+	currentGame = menu.New()
 
 	ticker := time.NewTicker(time.Second / 60)
 	defer ticker.Stop()

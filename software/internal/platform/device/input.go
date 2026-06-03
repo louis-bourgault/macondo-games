@@ -1,11 +1,15 @@
 package device
 
-import "machine"
+import (
+	"machine"
+
+	"github.com/louis-bourgault/macondo-games/software/internal/platform"
+)
 
 type HardwareInput struct {
-	keysPressed      map[string]bool
-	keysJustPressed  map[string]bool
-	keysJustReleased map[string]bool
+	keysPressed      map[platform.Button]bool
+	keysJustPressed  map[platform.Button]bool
+	keysJustReleased map[platform.Button]bool
 }
 
 // gpois - look at the kicad schematic, change these if you're using a different schematic
@@ -21,7 +25,6 @@ const (
 )
 
 func NewHardwareInput() *HardwareInput {
-	//since the other side of the pin is gnd, we need internal pullups.
 	PIN_A.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 	PIN_B.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 	PIN_SELECT.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
@@ -32,34 +35,34 @@ func NewHardwareInput() *HardwareInput {
 	DPAD_DOWN.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 
 	return &HardwareInput{
-		keysPressed:      make(map[string]bool),
-		keysJustPressed:  make(map[string]bool),
-		keysJustReleased: make(map[string]bool),
+		keysPressed:      make(map[platform.Button]bool),
+		keysJustPressed:  make(map[platform.Button]bool),
+		keysJustReleased: make(map[platform.Button]bool),
 	}
 }
 
-func (i *HardwareInput) WasKeyJustPressed(key string) bool {
+func (i *HardwareInput) WasKeyJustPressed(key platform.Button) bool {
 	//pretty basic function tbh
 	return i.keysJustPressed[key]
 }
 
-func (i *HardwareInput) WasKeyJustReleased(key string) bool {
+func (i *HardwareInput) WasKeyJustReleased(key platform.Button) bool {
 	return i.keysJustReleased[key]
 }
 
-func (i *HardwareInput) IsKeyPressed(key string) bool {
+func (i *HardwareInput) IsKeyPressed(key platform.Button) bool {
 	return i.keysPressed[key]
 }
 
 func (i *HardwareInput) Update() {
-	i.updateKey("A", PIN_A)
-	i.updateKey("B", PIN_B)
-	i.updateKey("SELECT", PIN_SELECT)
-	i.updateKey("START", PIN_START)
-	i.updateKey("UP", DPAD_UP)
-	i.updateKey("LEFT", DPAD_LEFT)
-	i.updateKey("RIGHT", DPAD_RIGHT)
-	i.updateKey("DOWN", DPAD_DOWN)
+	i.updateKey(platform.A, PIN_A)
+	i.updateKey(platform.B, PIN_B)
+	i.updateKey(platform.Select, PIN_SELECT)
+	i.updateKey(platform.Start, PIN_START)
+	i.updateKey(platform.Up, DPAD_UP)
+	i.updateKey(platform.Left, DPAD_LEFT)
+	i.updateKey(platform.Right, DPAD_RIGHT)
+	i.updateKey(platform.Down, DPAD_DOWN)
 
 	//clear jp/jr states after each update
 	for key := range i.keysJustPressed {
@@ -70,7 +73,7 @@ func (i *HardwareInput) Update() {
 	}
 }
 
-func (i *HardwareInput) updateKey(key string, pin machine.Pin) {
+func (i *HardwareInput) updateKey(key platform.Button, pin machine.Pin) {
 	pressed := !pin.Get() //active low, bc of pullups
 	if pressed && !i.keysPressed[key] {
 		i.keysJustPressed[key] = true

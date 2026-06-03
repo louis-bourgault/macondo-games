@@ -8,8 +8,22 @@ type Screen interface {
 }
 
 type InputSystem interface {
-	WasKeyJustPressed(key string) bool
-	WasKeyJustReleased(key string) bool
-	IsKeyPressed(key string) bool
+	WasKeyJustPressed(key Button) bool
+	WasKeyJustReleased(key Button) bool
+	IsKeyPressed(key Button) bool
 	Update()
 }
+
+type Button uint8
+
+const (
+	None Button = iota //make sure that none is equal to 0
+	Up
+	Down
+	Left
+	Right
+	A
+	B
+	Start
+	Select
+)
