@@ -8,6 +8,7 @@ This is part of Hack Club Macondo. You can find my project at [macondo.hackclub.
 The project will be made up of a custom pcb, including the chip, 16MB flash, battery management circuits etc. I will also use:
 - 3.7v 1000mAh LiPo battery
 - 1.54" LCD Screen (Already purchased) of pixel dimensions 240x240 and through an SPI interface
+- 6 basic 6x6x5mm push to make switches (i had some lying around so decided not to get jlc to assemble them for me.)
 
 The exterior will be 3d printed. I can print these things myself at school.
 
@@ -15,6 +16,19 @@ The exterior will be 3d printed. I can print these things myself at school.
 D-pad controls (Up, down, left, right), as well as A and B buttons and 2 buttons for other functions, such as going to menus, pausing games, etc
 
 ## Games
+
+Implemented:
+- Snake
+
+Want to implement:
+- flappy bird
+- pong maybe?
+- a cool platformer, potentially procedurally generated if i can be bothered
+- a fighting game perchance
+  - either a street fighter type game or, if i really feel like it, a brawlhalla/super smash bros (could be hard on a dpad)
+- Tetris
+- 2048 (should be rather easy)
+
 I initially considered making this a gameboy emulator, but decided that that was against the spirit of the project, since I would like to code most of the things on there and don't particularly feel like playing gameboy games without sound. Initially, I will code games like Pong and Snake in Go, and then who knows what I will go to past then.
 The one exception to trying to code all my own games is that, as a rite of passage into hardware engineering, I want to run Doom.
 
@@ -29,6 +43,18 @@ The development is well abstracted, so that the game logic isn't actually connec
 - /case - files for the making of the case. This includes f3d and stl files.
 - /img - the images used in this readme
 
+## Hardware Constraints
+This project is shaped by its hardware constraints of the device I designed. The RP2040 runs on a 135MHz dual core CPU, and has 264KB of ram (115 of which are taken up by the display buffer). Therefore, we have to be efficient.
+For flash, the hardware has a 16mb flash chip, which is massive. Realistically, there's no way we're filling that up unless i include a ton of full res background images.
+
+## Software Interfaces
+The system is designed to be as interchangeable as possible. There are interfaces defined in ```/software/internal/platform/platform.go```, which describe the shape of the input and display handlers for both the wasm system and the embedded system. Games are also fully abstracted: there's an interface at ```/software/internal/game/game.go``` which describes the shape of the games. 
+
+Basically, every game defines three functions: a New() function, which is referenced in ```/software/internal/game/menu/menu.go``` which takes no arguments and returns an initialised game, an update function that takes a reference to the input system and delta time and returns a game (if you want to quit the game, you return nil and the manager system will automatically send the user back to the menu, otherwise just return the current game), and a draw function which takes a reference to the screen object being used, which you can draw to.
+
+Each of the screen interfaces provides basic, optimised functions for filling the entire screen, drawing a rectangle, and setting an individual pixel. As well as that, there are a bunch of functions in ```/software/internal/helpers/``` to do with rendering text (i will add more later) that in turn act by just calling the Pixel() function a ton of times.
+
+If you really want to contribute, i wouldn't mind if you made a game using the interfaces, and just chucked it in its own folder in the /internal/game/ directory. As long as you don't change anything other than that directory and the menu entry to instantiate it, i'll probably merge it. Only if you want to, though. And make sure you use the hardware efficiently.
 
 ## Building
 ### Wasm (web)
@@ -44,7 +70,7 @@ It can be quicker to use the typical go WASM handler for builds, since the tinyg
 
 Full command: ```cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ./web/ && GOOS=js GOARCH=wasm go build -o ./web/main.wasm ./cmd/wasm``` (you must be cded into the software directory for this to work)
 
-Then, regardless of which you use, you need to actually serve this directory. For debugging, I do this through cd'ing into it and then running ```python3 -m http.server```, which works well enough for me.
+Then, regardless of which you use, you need to actually serve this directory. For debugging, I do this through cd'ing into it and then running ```python3 -m http.server```, which works well enough for me. This is also the directory that I serve on Vercel.
 
 ### Building (device)
 You'll need to compile it with TinyGo, as well. I'll add instructions for this once I have the device built.
@@ -67,3 +93,4 @@ This is something along the lines of ```tinygo build -target=pico -o ./out/firmw
 Font file used in /software/helpers/text.go: [github.com/dhepper/font8x8](https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h)
 
 # Things that I'd change if i did it again
+- perhaps something like a ground plane on the pcb
