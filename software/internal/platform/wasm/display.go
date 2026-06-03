@@ -22,6 +22,15 @@ func NewDisplay(canvasID string) *WasmDisplay {
 	}
 }
 
+func (d *WasmDisplay) FillRect(x, y, w, h int, c uint16) {
+	for sy := y; sy < y+h; sy++ {
+		row := sy * 240
+		for sx := x; sx < x+w; sx++ {
+			d.buf[row+sx] = c
+		}
+	}
+}
+
 func (d *WasmDisplay) Fill(color uint16) {
 	for i := range d.buf {
 		d.buf[i] = color

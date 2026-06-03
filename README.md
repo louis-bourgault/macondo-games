@@ -42,7 +42,7 @@ You'll need to compile the binary for wasm using tinygo. I'm on a mac, so keep i
 It can be quicker to use the typical go WASM handler for builds, since the tinygo toolchain can take quite a while, even on a decent computer. In this case, the js file is different, so the command is:
 
 
-Full command: ```cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ./web/ && GOOS=js GOARCH=wasm go build -o ./web/main.wasm ./cmd/wasm && cd ..``` (you must be cded into the software directory for this to work)
+Full command: ```cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ./web/ && GOOS=js GOARCH=wasm go build -o ./web/main.wasm ./cmd/wasm``` (you must be cded into the software directory for this to work)
 
 Then, regardless of which you use, you need to actually serve this directory. For debugging, I do this through cd'ing into it and then running ```python3 -m http.server```, which works well enough for me.
 
@@ -62,3 +62,8 @@ This is something along the lines of ```tinygo build -target=pico -o ./out/firmw
 ## The website that hosts the WASM version
 [ferretboard.louisbourgault.com](https://ferretboard.louisbourgault.com)
 ![Web Screenshot](/img/web-version.png)
+
+# Acknowledgements
+Font file used in /software/helpers/text.go: [github.com/dhepper/font8x8](https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h)
+
+# Things that I'd change if i did it again

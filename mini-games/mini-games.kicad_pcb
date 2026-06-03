@@ -4924,7 +4924,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2480"
+		(property "LCSC" "C41431973"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -7360,7 +7360,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2480"
+		(property "LCSC" "C41431973"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
@@ -12692,7 +12692,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C2480"
+		(property "LCSC" "C41431973"
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)

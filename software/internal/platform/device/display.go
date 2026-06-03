@@ -36,6 +36,15 @@ func (d *HardwareDisplay) Fill(c uint16) {
 	}
 }
 
+func (d *HardwareDisplay) FillRect(x, y, w, h int, c uint16) {
+	for sy := y; sy < y+h; sy++ {
+		row := sy * 240
+		for sx := x; sx < x+w; sx++ {
+			d.buf[row+sx] = c
+		}
+	}
+}
+
 func (d *HardwareDisplay) Pixel(x, y int, c uint16) {
 	if x < 0 || x >= 240 || y < 0 || y >= 240 {
 		return

@@ -5,6 +5,7 @@ package drawtest
 
 import (
 	"github.com/louis-bourgault/macondo-games/software/internal/game"
+	"github.com/louis-bourgault/macondo-games/software/internal/helpers"
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
 )
 
@@ -46,5 +47,6 @@ func (d *DrawTest) Update(dt float64, input platform.InputSystem) game.Game {
 func (d *DrawTest) Draw(screen platform.Screen) {
 	screen.Fill(0x003f)
 	screen.Pixel(d.xp, d.yp, 0xF800) //draw a red pixel at (d.xp, d.yp)
-	screen.Present()                 //present the screen
+	helpers.DrawText(screen, 5, 5, "drawtest", 0xF800)
+	screen.Present() //present the screen
 }
