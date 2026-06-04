@@ -28,6 +28,7 @@ Want to implement:
   - either a street fighter type game or, if i really feel like it, a brawlhalla/super smash bros (could be hard on a dpad)
 - Tetris
 - 2048 (should be rather easy)
+- block breaker perhaps
 
 I initially considered making this a gameboy emulator, but decided that that was against the spirit of the project, since I would like to code most of the things on there and don't particularly feel like playing gameboy games without sound. Initially, I will code games like Pong and Snake in Go, and then who knows what I will go to past then.
 The one exception to trying to code all my own games is that, as a rite of passage into hardware engineering, I want to run Doom.
@@ -55,6 +56,22 @@ Basically, every game defines three functions: a New() function, which is refere
 Each of the screen interfaces provides basic, optimised functions for filling the entire screen, drawing a rectangle, and setting an individual pixel. As well as that, there are a bunch of functions in ```/software/internal/helpers/``` to do with rendering text (i will add more later) that in turn act by just calling the Pixel() function a ton of times.
 
 If you really want to contribute, i wouldn't mind if you made a game using the interfaces, and just chucked it in its own folder in the /internal/game/ directory. As long as you don't change anything other than that directory and the menu entry to instantiate it, i'll probably merge it. Only if you want to, though. And make sure you use the hardware efficiently.
+
+### Images
+to include an image in the program, you'll need to process it before you can use it with DrawSprite. First, draw your image in whatever program you use, like krita or ms paint. Then, put your image into /helpers, rename it to image.png, and run the python script. 
+The python script will give you a .bin file that you can put into your code with //go:embed. For example, in the flappy bird game, there's a system.
+
+```go
+//go:embed bird.bin
+var rawBirdData string
+
+var BirdSprite = helpers.Sprite{
+	Data: rawBirdData,
+	W:    12,
+	H:    12,
+}
+```
+This means that the data of the sprite never clogs up our ram, and is streamed straight from the flash ROM to the screen buffer!
 
 ## Building
 ### Wasm (web)

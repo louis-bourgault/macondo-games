@@ -3,6 +3,8 @@ package wasm
 
 import "syscall/js"
 
+const ChromaKey uint16 = 0xF81F
+
 type WasmDisplay struct {
 	buf  [240 * 240]uint16
 	cx   js.Value
@@ -38,6 +40,9 @@ func (d *WasmDisplay) Fill(color uint16) {
 }
 
 func (d *WasmDisplay) Pixel(x, y int, c uint16) {
+	if c == ChromaKey {
+		return
+	}
 	if x < 0 || x >= 240 || y < 0 || y >= 240 {
 		return
 	}

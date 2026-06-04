@@ -9,6 +9,8 @@ import (
 	"tinygo.org/x/drivers/st7789"
 )
 
+const ChromaKey uint16 = 0xF81F
+
 //TODO: i don't know how performant this is. Would it be faster to use a buffer then push it to spi?
 
 const (
@@ -46,6 +48,9 @@ func (d *HardwareDisplay) FillRect(x, y, w, h int, c uint16) {
 }
 
 func (d *HardwareDisplay) Pixel(x, y int, c uint16) {
+	if c == ChromaKey {
+		return
+	}
 	if x < 0 || x >= 240 || y < 0 || y >= 240 {
 		return
 	}

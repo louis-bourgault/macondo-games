@@ -5,7 +5,7 @@ type Screen interface {
 	Pixel(x, y int, c uint16)
 	FillRect(x, y, w, h int, c uint16)
 	Present() error
-}
+} //could change some of these data types from int to uint8 to optimise a few more bytes away, but its pretty insignificant
 
 type InputSystem interface {
 	WasKeyJustPressed(key Button) bool

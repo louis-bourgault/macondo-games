@@ -3,6 +3,7 @@ package menu
 import (
 	"github.com/louis-bourgault/macondo-games/software/internal/game"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/drawtest"
+	"github.com/louis-bourgault/macondo-games/software/internal/game/flappybird"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/snake"
 	"github.com/louis-bourgault/macondo-games/software/internal/helpers"
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
@@ -16,6 +17,7 @@ func New() *Menu {
 		}{
 			{name: "drawtest", launcher: func() game.Game { return drawtest.New() }},
 			{name: "snake", launcher: func() game.Game { return snake.New() }},
+			{name: "flappy bird", launcher: func() game.Game { return flappybird.New() }},
 		}, position: 0,
 	}
 }
