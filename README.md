@@ -19,9 +19,10 @@ D-pad controls (Up, down, left, right), as well as A and B buttons and 2 buttons
 
 Implemented:
 - Snake
+- flappy bird
+- cool maths things
 
 Want to implement:
-- flappy bird
 - pong maybe?
 - a cool platformer, potentially procedurally generated if i can be bothered
 - a fighting game perchance

@@ -4,6 +4,8 @@ import (
 	"github.com/louis-bourgault/macondo-games/software/internal/game"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/drawtest"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/flappybird"
+	"github.com/louis-bourgault/macondo-games/software/internal/game/julia"
+	"github.com/louis-bourgault/macondo-games/software/internal/game/mandelbrot"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/snake"
 	"github.com/louis-bourgault/macondo-games/software/internal/helpers"
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
@@ -18,6 +20,8 @@ func New() *Menu {
 			{name: "drawtest", launcher: func() game.Game { return drawtest.New() }},
 			{name: "snake", launcher: func() game.Game { return snake.New() }},
 			{name: "flappy bird", launcher: func() game.Game { return flappybird.New() }},
+			{name: "mandelbrot", launcher: func() game.Game { return mandelbrot.New() }},
+			{name: "julia", launcher: func() game.Game { return julia.New() }},
 		}, position: 0,
 	}
 }
@@ -26,6 +30,7 @@ type Menu struct {
 	gameOptions []struct {
 		name     string
 		launcher func() game.Game
+		//icon helpers.Image
 	}
 	position int8
 }
@@ -49,7 +54,14 @@ func (m *Menu) Update(dt float64, input platform.InputSystem, log platform.LogSy
 
 func (m *Menu) Draw(screen platform.Screen) {
 	screen.Fill(0xffff)
+	//each one is 50 high and 50 wide, and we show 3 of them
+
+	// helpers.DrawImage(screen, i  icons.SnakeImage, 15, 15)
+
 	for i, option := range m.gameOptions {
+		// if i < int(m.position-1) {
+		// 	continue
+		// }
 		if i == int(m.position) {
 			helpers.DrawText(screen, 2, (i*8 + 2), option.name, 0x001f)
 		} else {
