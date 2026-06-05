@@ -60,12 +60,13 @@ If you really want to contribute, i wouldn't mind if you made a game using the i
 ### Images
 to include an image in the program, you'll need to process it before you can use it with DrawSprite. First, draw your image in whatever program you use, like krita or ms paint. Then, put your image into /helpers, rename it to image.png, and run the python script. 
 The python script will give you a .bin file that you can put into your code with //go:embed. For example, in the flappy bird game, there's a system.
+I also made a website at /software/web/convert that does the same thing, with a nice ui. This is fully vibe coded in like 30 seconds, but works ok for what it needs to. It's just a simple tool, i didn't want to devote any actual coding time to.
 
 ```go
 //go:embed bird.bin
 var rawBirdData string
 
-var BirdSprite = helpers.Sprite{
+var BirdSprite = helpers.Image{
 	Data: rawBirdData,
 	W:    12,
 	H:    12,

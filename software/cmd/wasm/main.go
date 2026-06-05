@@ -16,6 +16,7 @@ func main() {
 	input := wasm.NewInput()
 	var currentGame game.Game
 	currentGame = menu.New()
+	log := wasm.NewLogSystem()
 
 	ticker := time.NewTicker(time.Second / 60)
 	defer ticker.Stop()
@@ -25,7 +26,7 @@ func main() {
 		now := time.Now()
 		dt := now.Sub(lastTime)
 		lastTime = now
-		nextGame := currentGame.Update(dt.Seconds(), input)
+		nextGame := currentGame.Update(dt.Seconds(), input, log)
 		if nextGame == nil {
 			currentGame = menu.New()
 		} else {

@@ -117,7 +117,7 @@ func IsOpposite(a, b platform.Button) bool { //there's probably a more elegant w
 
 }
 
-func (s *Snake) Update(dt float64, input platform.InputSystem) game.Game {
+func (s *Snake) Update(dt float64, input platform.InputSystem, log platform.LogSystem) game.Game {
 	if input.WasKeyJustPressed(platform.Select) { //each game can define its own way to exit, but this is probably the simplest one
 		return nil //to exit the game, just pass 'nil'. The main function will notice this and boot up the menu application
 	}
@@ -199,6 +199,8 @@ func (s *Snake) Draw(screen platform.Screen) {
 		helpers.DrawText(screen, 10, 10, "game over", 0xf800)
 		helpers.DrawText(screen, 10, 30, "your score: "+strconv.Itoa(s.pieces.count-3), 0x001f)
 		helpers.DrawText(screen, 10, 70, "press A to restart", 0xf800)
+		screen.Present()
+		return
 
 	}
 	currentIndex := s.pieces.head

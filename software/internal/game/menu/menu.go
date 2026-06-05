@@ -30,7 +30,7 @@ type Menu struct {
 	position int8
 }
 
-func (m *Menu) Update(dt float64, input platform.InputSystem) game.Game {
+func (m *Menu) Update(dt float64, input platform.InputSystem, log platform.LogSystem) game.Game {
 	if input.WasKeyJustPressed(platform.Down) {
 		if int(m.position) < len(m.gameOptions)-1 {
 			m.position++

@@ -40,8 +40,14 @@ func (d *HardwareDisplay) Fill(c uint16) {
 
 func (d *HardwareDisplay) FillRect(x, y, w, h int, c uint16) {
 	for sy := y; sy < y+h; sy++ {
+		if sy < 0 || sy >= 240 {
+			continue
+		}
 		row := sy * 240
 		for sx := x; sx < x+w; sx++ {
+			if sx < 0 || sx >= 240 {
+				continue
+			}
 			d.buf[row+sx] = c
 		}
 	}

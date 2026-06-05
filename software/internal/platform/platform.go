@@ -14,6 +14,10 @@ type InputSystem interface {
 	Update()
 }
 
+type LogSystem interface {
+	Log(log string)
+}
+
 type Button uint8
 
 const (

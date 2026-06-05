@@ -6,13 +6,13 @@ import (
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
 )
 
-type Sprite struct {
+type Image struct {
 	Data string
 	W    uint8
 	H    uint8
 }
 
-func (s Sprite) GetPixel(row, col uint8) uint16 {
+func (s Image) GetPixel(row, col uint8) uint16 {
 	index := (int(row) * int(s.W)) + int(col)
 	//pointer to the start of the data
 	strPtr := unsafe.StringData(s.Data)
@@ -24,7 +24,7 @@ func (s Sprite) GetPixel(row, col uint8) uint16 {
 	return *(*uint16)(unsafe.Pointer(uintptr(unsafe.Pointer(pixelPtr)) + uintptr(index)*2))
 }
 
-func DrawSprite(screen platform.Screen, sprite Sprite, x, y int8) {
+func DrawImage(screen platform.Screen, sprite Image, x, y int16) {
 	var row uint8
 	var col uint8
 

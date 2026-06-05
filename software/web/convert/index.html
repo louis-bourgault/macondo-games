@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- this is vibe coded, somewhat obviously i think -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNG to RGB565 Converter for TinyGo</title>
+    <style>
+        :root {
+            --bg-color: #121214;
+            --card-bg: #1a1a1e;
+            --accent: #ff00ff;
+            --text: #e1e1e6;
+            --text-dim: #a8a8b3;
+            --border: #29292e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .dropzone {
+            border: 2px dashed var(--border);
+            padding: 40px 20px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .dropzone:hover {
+            border-color: var(--accent);
+        }
+
+        .options {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .option-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        select,
+        input[type="number"] {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 10px;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        select:focus,
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background: var(--accent);
+            color: #000;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            background: var(--border);
+            color: var(--text-dim);
+            cursor: not-allowed;
+        }
+
+        #preview-container {
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        #preview-canvas {
+            background-image: linear-gradient(45deg, #222 25%, transparent 25%),
+                linear-gradient(-45deg, #222 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #222 75%),
+                linear-gradient(-45deg, transparent 75%, #222 75%);
+            background-size: 10px 10px;
+            background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+            border: 2px solid var(--border);
+            image-rendering: pixelated;
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+
+        .info-tag {
+            font-family: monospace;
+            background: var(--border);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        #file-input {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>TinyGo RGB565 Sprite Converter</h1>
+        <p>Convert transparent PNGs into raw binary payloads for zero-RAM <code>//go:embed</code> loops. Transparent
+            pixels automatically map to ChromaKey Magenta (<code>0xF81F</code>).</p>
+
+        <div class="options">
+            <div class="option-group">
+                <label for="endianness">Byte Order (Endianness)</label>
+                <select id="endianness" disabled title="Always little-endian to match helpers/convert.py">
+                    <option value="le">Little-Endian (Fixed to match Python converter)</option>
+                    <option value="be">Big-Endian (Not used)</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label for="threshold">Alpha Transparency Threshold</label>
+                <input type="number" id="threshold" min="0" max="255" value="128">
+            </div>
+        </div>
+
+        <div class="dropzone" id="dropzone">
+            <span id="dropzone-text">Click or drag a transparent PNG file here</span>
+            <input type="file" id="file-input" accept="image/png">
+        </div>
+
+        <div id="preview-container">
+            <div>Asset Preview:</div>
+            <canvas id="preview-canvas"></canvas>
+            <br>
+            <div class="info-tag" id="asset-info">Size: 0x0 | Bytes: 0</div>
+        </div>
+
+        <button class="btn" id="download-btn" disabled style="margin-top: 20px;">Download .bin Asset</button>
+    </div>
+
+    <script>
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('file-input');
+        const downloadBtn = document.getElementById('download-btn');
+        const previewCanvas = document.getElementById('preview-canvas');
+        const previewContainer = document.getElementById('preview-container');
+        const assetInfo = document.getElementById('asset-info');
+        const endiannessSelect = document.getElementById('endianness');
+        const thresholdInput = document.getElementById('threshold');
+        const dropzoneText = document.getElementById('dropzone-text');
+
+        let processedBuffer = null;
+        let currentFileName = "sprite.bin";
+
+        dropzone.addEventListener('click', () => fileInput.click());
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--accent)';
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.style.borderColor = 'var(--border)';
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = 'var(--border)';
+            if (e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Re-process if options tweak while image is loaded
+        endiannessSelect.addEventListener('change', () => { if (currentImage) processImage(currentImage); });
+        thresholdInput.addEventListener('change', () => { if (currentImage) processImage(currentImage); });
+
+        let currentImage = null;
+
+        function handleFile(file) {
+            if (file.type !== 'image/png') {
+                alert('Please upload a clean PNG file.');
+                return;
+            }
+
+            currentFileName = file.name.replace(/\.[^/.]+$/, "") + ".bin";
+            dropzoneText.textContent = `Active File: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const img = new Image();
+                img.onload = function () {
+                    currentImage = img;
+                    processImage(img);
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function processImage(img) {
+            const w = img.width;
+            const h = img.height;
+
+            // Setup internal extraction canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const pixels = imgData.data;
+
+            // Render to visible canvas preview
+            previewCanvas.width = w;
+            previewCanvas.height = h;
+            const pCtx = previewCanvas.getContext('2d');
+            pCtx.drawImage(img, 0, 0);
+            previewContainer.style.display = 'block';
+
+            // 2 bytes per pixel for RGB565
+            const totalBytes = w * h * 2;
+            const buffer = new ArrayBuffer(totalBytes);
+            const view = new DataView(buffer);
+
+            // helpers/convert.py always writes little-endian ('<H') — emulate that behavior here
+            const isLittleEndian = true;
+            const alphaThreshold = parseInt(thresholdInput.value, 10) || 128;
+
+            // 16-bit packed Magenta (R=31, G=0, B=31) -> 0xF81F
+            const chromaKey16 = (31 << 11) | (0 << 5) | 31;
+
+            let byteOffset = 0;
+
+            for (let i = 0; i < pixels.length; i += 4) {
+                const r = pixels[i];
+                const g = pixels[i + 1];
+                const b = pixels[i + 2];
+                const a = pixels[i + 3];
+
+                let rgb565 = 0;
+
+                if (a < alphaThreshold) {
+                    // Transparent mask color
+                    rgb565 = chromaKey16;
+                } else {
+                    // Scale 8-bit channels down to RGB565 ranges
+                    const r5 = (r >> 3) & 0x1F;
+                    const g6 = (g >> 2) & 0x3F;
+                    const b5 = (b >> 3) & 0x1F;
+
+                    rgb565 = (r5 << 11) | (g6 << 5) | b5;
+
+                    // Edge case safety: tweak color if raw asset hit exact chroma value
+
+                    if (rgb565 === chromaKey16) {
+                        rgb565 = (r5 << 11) | (1 << 5) | b5; // Nudge green up by 1 point
+                    }
+                }
+                // Load bits into the binary stream view
+                view.setUint16(byteOffset, rgb565, isLittleEndian);
+                byteOffset += 2;
+            }
+            processedBuffer = buffer;
+            assetInfo.textContent = `Size: ${w}x${h} | Bytes: ${totalBytes}`;
+            downloadBtn.disabled = false;
+        }
+        downloadBtn.addEventListener('click', () => {
+            if (!processedBuffer) return;
+            const blob = new Blob([processedBuffer], { type: "application/octet-stream" });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = currentFileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+
+</body>

@@ -23,7 +23,7 @@ type DrawTest struct {
 	yp        int
 }
 
-func (d *DrawTest) Update(dt float64, input platform.InputSystem) game.Game {
+func (d *DrawTest) Update(dt float64, input platform.InputSystem, log platform.LogSystem) game.Game {
 	//d.timeSince++
 	if input.WasKeyJustPressed(platform.Right) {
 		d.xp += 10
