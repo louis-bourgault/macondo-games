@@ -128,10 +128,10 @@ func (d *ChessGame) Update(dt float64, input platform.InputSystem, log platform.
 }
 
 func (d *ChessGame) Draw(screen platform.Screen) {
-	screen.Fill(0x3186) // dark grey border
+	screen.Fill(0x0000) //black background
 
-	lightSquare := uint16(0xF6D9) // warm cream
-	darkSquare := uint16(0x8A69)  // brown
+	lightSquare := uint16(0xb4b1)
+	darkSquare := uint16(0x8A69)
 
 	for y := 0; y < 8; y++ {
 		for x := 0; x < 8; x++ {

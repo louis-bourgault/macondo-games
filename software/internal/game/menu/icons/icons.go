@@ -14,3 +14,39 @@ var SnakeImage = helpers.Image{
 	W:    50,
 	H:    50,
 }
+
+//go:embed flappybird.bin
+var FlappyBirdIcon string
+
+var FlappyBirdImage = helpers.Image{
+	Data: FlappyBirdIcon,
+	W:    50,
+	H:    50,
+}
+
+//go:embed mandelbrot.bin
+var MandelbrotIcon string
+
+var MandelbrotImage = helpers.Image{
+	Data: MandelbrotIcon,
+	W:    50,
+	H:    50,
+}
+
+//go:embed julia.bin
+var JuliaIcon string
+
+var JuliaImage = helpers.Image{
+	Data: JuliaIcon,
+	W:    50,
+	H:    50,
+}
+
+//go:embed chess.bin
+var ChessIcon string
+
+var ChessImage = helpers.Image{
+	Data: ChessIcon,
+	W:    50,
+	H:    50,
+}

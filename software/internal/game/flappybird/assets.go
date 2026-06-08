@@ -6,7 +6,7 @@ import (
 	"github.com/louis-bourgault/macondo-games/software/internal/helpers"
 )
 
-//go:embed bird.bin
+//go:embed flappy-bird.bin
 var rawBirdData string
 
 var BirdSprite = helpers.Image{
@@ -15,7 +15,7 @@ var BirdSprite = helpers.Image{
 	H:    12,
 }
 
-//go:embed flappybackground.bin
+//go:embed flappy-bg.bin
 var backgroundData string
 
 var backgroundImage = helpers.Image{
