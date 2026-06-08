@@ -20,11 +20,11 @@ func New() *Menu {
 			icon     helpers.Image
 		}{
 			// {name: "drawtest", launcher: func() game.Game { return drawtest.New() }},
-			{name: "snake", launcher: func() game.Game { return snake.New() }, icon: icons.SnakeImage},
-			{name: "flappy bird", launcher: func() game.Game { return flappybird.New() }, icon: icons.FlappyBirdImage},
-			{name: "mandelbrot", launcher: func() game.Game { return mandelbrot.New() }, icon: icons.MandelbrotImage},
-			{name: "julia", launcher: func() game.Game { return julia.New() }, icon: icons.JuliaImage},
-			{name: "chess", launcher: func() game.Game { return chess.New() }, icon: icons.ChessImage},
+			{name: "Snake", launcher: func() game.Game { return snake.New() }, icon: icons.SnakeImage},
+			{name: "Flappy Bird", launcher: func() game.Game { return flappybird.New() }, icon: icons.FlappyBirdImage},
+			{name: "Mandelbrot Set", launcher: func() game.Game { return mandelbrot.New() }, icon: icons.MandelbrotImage},
+			{name: "Julia Set", launcher: func() game.Game { return julia.New() }, icon: icons.JuliaImage},
+			{name: "Chess", launcher: func() game.Game { return chess.New() }, icon: icons.ChessImage},
 		}, position: 0,
 	}
 }

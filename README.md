@@ -91,6 +91,8 @@ Full command: ```cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ./web/ && GOOS=js G
 
 Then, regardless of which you use, you need to actually serve this directory. For debugging, I do this through cd'ing into it and then running ```python3 -m http.server```, which works well enough for me. This is also the directory that I serve on Vercel.
 
+or if you're building for the new astro frontend, you can run ```cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ../docs/public/ && GOOS=js GOARCH=wasm go build -o ../docs/public/main.wasm ./cmd/wasm```
+
 ### Building (device)
 You'll need to compile it with TinyGo, as well. I'll add instructions for this once I have the device built.
 This is something along the lines of ```tinygo build -target=pico -o ./out/firmware.uf2 ./cmd/device```

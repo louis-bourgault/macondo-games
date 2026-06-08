@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Ferretboard</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+		
+	</head>
+	<body>
+		<header>
+			<a href="/">home</a>
+			<a href="/docs">docs</a>
+			<a href="https://github.com/louis-bourgault/macondo-games" target="_blank">github</a>
+		</header>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	html {
+		height: 100%;
+	}
+
+	body {
+		margin: 0;
+		width: 50%;
+		min-width: 300px;
+		margin-left: auto;
+		margin-right: auto;
+		height: 100%;
+		background-color: var(--background);
+		font-family: "PT Serif", serif;
+		color: var(--text);
+
+	}
+	body h1 {
+		font-size: 3rem;
+		color: var(--primary);
+	}
+	body h2 {
+		font-size: 2rem;
+		color: var(--accent);
+	}
+	header {
+		width: 100%;
+		height:4rem;
+		border-bottom: 1px solid var(--secondary);
+		justify-content: center;
+		align-items: center;
+		display: flex;
+	}
+	header a {
+		font-size: 1rem;
+		color: var(--text);
+		padding: 0.5rem;
+	}
+	a {
+		color: var(--primary);
+		text-decoration: none;
+	}
+	html {
+		--text: #f4f0dd;
+		--background: #0d0c04;
+		--primary: #2f7527;
+		--accent: #dacc90;
+	}
+
+	
+	
+</style>

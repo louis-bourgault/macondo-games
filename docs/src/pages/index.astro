@@ -1,0 +1,39 @@
+---
+import Welcome from "../components/Welcome.astro";
+import Layout from "../layouts/Layout.astro";
+
+// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
+// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+---
+
+<Layout>
+  <h1>Ferretboard</h1>
+  <p>
+    Ferretboard is a small games console running on a custom PCB with a rp2040
+    chip and 240x240 screen.
+  </p>
+  <p>
+    Created for <a href="https://macondo.hackclub.com">Hack Club Macondo</a> by <a
+      href="https://new.louisbourgault.com">Louis Bourgault du Coudray</a>
+  </p>
+  <p>Documentation work in progress</p>
+  <h2>Wasm Simulator</h2>
+  <canvas id="canvas" width="240" height="240"></canvas>
+  <script src="/wasm_exec.js" is:inline></script>
+  <script>
+    const go = new Go();
+    WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
+      .then((result) => go.run(result.instance))
+      .catch(console.error);
+    let canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
+  </script>
+  <p class="game-instructions">Use WASD and arrow keys for d-pad buttons. Use J and K for A and B buttons, respectively. Use Enter for START and Shift for SELECT.</p>
+</Layout>
+
+<style>
+  .game-instructions {
+    color: var(--accent);
+  }
+</style>
