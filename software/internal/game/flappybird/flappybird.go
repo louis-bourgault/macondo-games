@@ -36,7 +36,7 @@ type FlappyBirdGame struct {
 	score        int
 }
 
-const accel = 60
+const accel = 100
 const clickboost = 80
 
 func (d *FlappyBirdGame) Update(dt float64, input platform.InputSystem, log platform.LogSystem) game.Game {

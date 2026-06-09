@@ -11,8 +11,6 @@ import (
 
 const ChromaKey uint16 = 0xF81F
 
-//TODO: i don't know how performant this is. Would it be faster to use a buffer then push it to spi?
-
 const (
 	//SPI0 SCLK - Pin 18
 	PIN_SPI_SCK = machine.SPI0_SCK_PIN

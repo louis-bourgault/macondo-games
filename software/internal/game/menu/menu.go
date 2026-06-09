@@ -2,6 +2,7 @@ package menu
 
 import (
 	"github.com/louis-bourgault/macondo-games/software/internal/game"
+	"github.com/louis-bourgault/macondo-games/software/internal/game/blackjack"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/chess"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/flappybird"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/julia"
@@ -25,6 +26,7 @@ func New() *Menu {
 			{name: "Mandelbrot Set", launcher: func() game.Game { return mandelbrot.New() }, icon: icons.MandelbrotImage},
 			{name: "Julia Set", launcher: func() game.Game { return julia.New() }, icon: icons.JuliaImage},
 			{name: "Chess", launcher: func() game.Game { return chess.New() }, icon: icons.ChessImage},
+			{name: "Blackjack", launcher: func() game.Game { return blackjack.New() }, icon: icons.BlackjackImage},
 		}, position: 0,
 	}
 }
