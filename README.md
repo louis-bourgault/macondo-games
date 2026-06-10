@@ -30,6 +30,7 @@ Want to implement:
 - Tetris
 - 2048 (should be rather easy)
 - block breaker perhaps
+- someting 3d
 
 I initially considered making this a gameboy emulator, but decided that that was against the spirit of the project, since I would like to code most of the things on there and don't particularly feel like playing gameboy games without sound. Initially, I will code games like Pong and Snake in Go, and then who knows what I will go to past then.
 The one exception to trying to code all my own games is that, as a rite of passage into hardware engineering, I want to run Doom.

@@ -51,7 +51,7 @@ func (d *BlackjackGame) drawFromDeck() int {
 			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
 		}
 	}
-	intindex := helpers.RandomInt(0, len(d.deck))
+	intindex := helpers.RandomInt(0, len(d.deck)-1)
 	card := d.deck[intindex]
 
 	d.deck = append(d.deck[:intindex], d.deck[intindex+1:]...)
