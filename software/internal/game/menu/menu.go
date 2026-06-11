@@ -9,6 +9,7 @@ import (
 	"github.com/louis-bourgault/macondo-games/software/internal/game/mandelbrot"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/menu/icons"
 	"github.com/louis-bourgault/macondo-games/software/internal/game/snake"
+	"github.com/louis-bourgault/macondo-games/software/internal/game/tetris"
 	"github.com/louis-bourgault/macondo-games/software/internal/helpers"
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
 )
@@ -27,6 +28,7 @@ func New() *Menu {
 			{name: "Julia Set", launcher: func() game.Game { return julia.New() }, icon: icons.JuliaImage},
 			{name: "Chess", launcher: func() game.Game { return chess.New() }, icon: icons.ChessImage},
 			{name: "Blackjack", launcher: func() game.Game { return blackjack.New() }, icon: icons.BlackjackImage},
+			{name: "Tetris", launcher: func() game.Game { return tetris.New() }, icon: icons.TetrisImage}, //TODO: make icons!
 		}, position: 0,
 	}
 }

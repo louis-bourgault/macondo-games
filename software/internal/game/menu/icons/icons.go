@@ -51,11 +51,20 @@ var ChessImage = helpers.Image{
 	H:    50,
 }
 
-//go:embed chess.bin
+//go:embed blackjack.bin
 var BlackjackIcon string //we use the chess icon for now, TODO: fix
 
 var BlackjackImage = helpers.Image{
 	Data: BlackjackIcon,
+	W:    50,
+	H:    50,
+}
+
+//go:embed tetris.bin
+var TetrisIcon string //we use the chess icon for now, TODO: fix
+
+var TetrisImage = helpers.Image{
+	Data: TetrisIcon,
 	W:    50,
 	H:    50,
 }
