@@ -4,3 +4,7 @@
 /mini-games/PRODUCTION/
 *.DS_Store
 /mini-games/.history/*
+*.bak
+*-bak
+_autosave-*
+*.kicad_prl
