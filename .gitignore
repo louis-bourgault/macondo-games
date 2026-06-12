@@ -3,4 +3,4 @@
 !.env.example
 /mini-games/PRODUCTION/
 *.DS_Store
-.history
+/mini-games/.history/*
