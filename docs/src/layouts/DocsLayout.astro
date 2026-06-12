@@ -1,0 +1,98 @@
+---
+const { frontmatter } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{frontmatter.title}</title>
+  </head>
+  <body>
+    <header>
+        <a href="/">home</a>
+        <a href="/docs">docs</a>
+        <a href="https://github.com/louis-bourgault/macondo-games" target="_blank">github</a>
+    </header>
+    <h1>{frontmatter.title}</h1>
+    <main>
+        <slot/>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+	html {
+		height: 100%;
+	}
+    
+    code {
+        padding: 0
+        overflow-x: auto;
+    }
+
+    pre {
+        padding: 1.25rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        overflow-x: auto;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+	body {
+		margin: 0;
+		width: 50%;
+		min-width: 300px;
+		margin-left: auto;
+		margin-right: auto;
+		height: 100%;
+		background-color: var(--background);
+		font-family: "PT Serif", serif;
+		color: var(--text);
+
+	}
+	body h1 {
+		font-size: 3rem;
+		color: var(--primary);
+	}
+	body h2 {
+		font-size: 2rem;
+		color: var(--accent);
+	}
+	header {
+		width: 100%;
+		height:4rem;
+		border-bottom: 1px solid var(--secondary);
+		justify-content: center;
+		align-items: center;
+		display: flex;
+	}
+	header a {
+		font-size: 1rem;
+		color: var(--text);
+		padding: 0.5rem;
+	}
+	a {
+		color: var(--primary);
+		text-decoration: none;
+	}
+	html {
+		--text: #f4f0dd;
+		--background: #0d0c04;
+		--primary: #2f7527;
+		--accent: #dacc90;
+	}
+
+	table {
+  		border-collapse: collapse; 
+  		width: 100%;
+	}
+
+	th, td {
+  		order: 1px solid var(--accent); 
+  		padding: 12px;
+  		text-align: left;
+	}
+</style>
+
