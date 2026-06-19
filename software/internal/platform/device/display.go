@@ -1,5 +1,6 @@
 package device
 
+//go complains, but works with tinygo.
 import (
 	"machine"
 	"time"
@@ -62,31 +63,55 @@ func (d *HardwareDisplay) Pixel(x, y int, c uint16) {
 }
 
 func (d *HardwareDisplay) Present() error {
-	//now we use a buffer, we actually need a present function
-	//might need a set window thing here
+	//set the window to the full display area with 0x21 (collum address set)
+	d.dc.Low()
+	d.spi.Tx([]byte{0x2A}, nil)
 	d.dc.High()
+	d.spi.Tx([]byte{0x00, 0x00, 0x00, 0xEF}, nil) //0-239
+
+	//send command 0x2B (row adress set)
+	d.dc.Low()
+	d.spi.Tx([]byte{0x2B}, nil)
+	d.dc.High()
+	d.spi.Tx([]byte{0x00, 0x00, 0x00, 0xEF}, nil) //row0-239
+
+	//send command 0x2C (write memory)
+	d.dc.Low()
+	d.spi.Tx([]byte{0x2C}, nil)
+	d.dc.High()
+
 	byteData := unsafe.Slice((*byte)(unsafe.Pointer(&d.buf[0])), len(d.buf)*2)
 	d.spi.Tx(byteData, nil)
 	return nil
 }
 
 func NewDisplay() *HardwareDisplay {
-	CS_SCREEN.Low()
+	PIN_DC.Configure(machine.PinConfig{Mode: machine.PinOutput})
+	PIN_RST.Configure(machine.PinConfig{Mode: machine.PinOutput})
+	CS_SCREEN.Configure(machine.PinConfig{Mode: machine.PinOutput})
+	CS_SCREEN.High()
 
 	spi := machine.SPI0
 	spi.Configure(machine.SPIConfig{
-		Frequency: 8000000,
+		Frequency: 125000000,
 		SCK:       PIN_SPI_SCK,
 		SDO:       PIN_SPI_SDO,
+		SDI:       machine.NoPin,
+		Mode:      0,
 	})
-	PIN_DC.Configure(machine.PinConfig{Mode: machine.PinOutput})
-	PIN_RST.Configure(machine.PinConfig{Mode: machine.PinOutput})
+
+	PIN_RST.High()
+	time.Sleep(10 * time.Millisecond)
+	PIN_RST.Low()
+	time.Sleep(10 * time.Millisecond)
+	PIN_RST.High()
+	time.Sleep(120 * time.Millisecond)
+
 	dev := st7789.New(spi, PIN_DC, PIN_RST, CS_SCREEN, machine.NoPin)
 	dev.Configure(st7789.Config{
 		Width:  240,
 		Height: 240,
 	})
-	time.Sleep(100 * time.Millisecond)
 	return &HardwareDisplay{
 		dev: &dev,
 		spi: spi,
