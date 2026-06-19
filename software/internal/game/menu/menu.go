@@ -54,6 +54,7 @@ func (m *Menu) Update(dt float64, input platform.InputSystem, log platform.LogSy
 		}
 	}
 	if input.WasKeyJustPressed(platform.A) {
+
 		return m.gameOptions[m.position].launcher()
 	}
 	return m //if nothing is selected, this just returns the game we are currently on, the menu

@@ -7,7 +7,7 @@ import (
 )
 
 type HardwareInput struct {
-	keysPressed      map[platform.Button]bool
+	KeysPressed      map[platform.Button]bool
 	keysJustPressed  map[platform.Button]bool
 	keysJustReleased map[platform.Button]bool
 }
@@ -35,7 +35,7 @@ func NewHardwareInput() *HardwareInput {
 	DPAD_DOWN.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 
 	return &HardwareInput{
-		keysPressed:      make(map[platform.Button]bool),
+		KeysPressed:      make(map[platform.Button]bool),
 		keysJustPressed:  make(map[platform.Button]bool),
 		keysJustReleased: make(map[platform.Button]bool),
 	}
@@ -51,7 +51,7 @@ func (i *HardwareInput) WasKeyJustReleased(key platform.Button) bool {
 }
 
 func (i *HardwareInput) IsKeyPressed(key platform.Button) bool {
-	return i.keysPressed[key]
+	return i.KeysPressed[key]
 }
 
 func (i *HardwareInput) Update() {
@@ -75,10 +75,10 @@ func (i *HardwareInput) Update() {
 
 func (i *HardwareInput) updateKey(key platform.Button, pin machine.Pin) {
 	pressed := !pin.Get() //active low, bc of pullups
-	if pressed && !i.keysPressed[key] {
+	if pressed && !i.KeysPressed[key] {
 		i.keysJustPressed[key] = true
-	} else if !pressed && i.keysPressed[key] {
+	} else if !pressed && i.KeysPressed[key] {
 		i.keysJustReleased[key] = true
 	}
-	i.keysPressed[key] = pressed
+	i.KeysPressed[key] = pressed
 }
