@@ -57,7 +57,7 @@ func (d *ChessGame) unmakeMove(move [4]int8) {
 }
 
 func (d *ChessGame) Update(dt float64, input platform.InputSystem, log platform.LogSystem) game.Game {
-	if input.WasKeyJustPressed(platform.Select) {
+	if input.WasKeyJustPressed(platform.Exit) {
 		return nil
 	}
 	if input.WasKeyJustPressed(platform.Down) {

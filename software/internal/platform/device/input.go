@@ -16,8 +16,8 @@ type HardwareInput struct {
 const (
 	PIN_A      = machine.Pin(4)
 	PIN_B      = machine.Pin(5)
-	PIN_SELECT = machine.Pin(6)
-	PIN_START  = machine.Pin(7)
+	PIN_START  = machine.Pin(6) //this one is being weird, i think jlc might have messed up.
+	PIN_EXIT   = machine.Pin(7) //START and SELECT have been swapped. The wiring on the one connected to pin 6 is messed up, and its more important to have EXIT working.
 	DPAD_UP    = machine.Pin(9)
 	DPAD_LEFT  = machine.Pin(10)
 	DPAD_RIGHT = machine.Pin(11)
@@ -27,7 +27,7 @@ const (
 func NewHardwareInput() *HardwareInput {
 	PIN_A.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 	PIN_B.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
-	PIN_SELECT.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
+	PIN_EXIT.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 	PIN_START.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 	DPAD_UP.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 	DPAD_LEFT.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
@@ -55,22 +55,22 @@ func (i *HardwareInput) IsKeyPressed(key platform.Button) bool {
 }
 
 func (i *HardwareInput) Update() {
-	i.updateKey(platform.A, PIN_A)
-	i.updateKey(platform.B, PIN_B)
-	i.updateKey(platform.Select, PIN_SELECT)
-	i.updateKey(platform.Start, PIN_START)
-	i.updateKey(platform.Up, DPAD_UP)
-	i.updateKey(platform.Left, DPAD_LEFT)
-	i.updateKey(platform.Right, DPAD_RIGHT)
-	i.updateKey(platform.Down, DPAD_DOWN)
-
-	//clear jp/jr states after each update
+	//clear before updating, not after.
 	for key := range i.keysJustPressed {
 		delete(i.keysJustPressed, key)
 	}
 	for key := range i.keysJustReleased {
 		delete(i.keysJustReleased, key)
 	}
+	i.updateKey(platform.A, PIN_A)
+	i.updateKey(platform.B, PIN_B)
+	i.updateKey(platform.Exit, PIN_EXIT)
+	i.updateKey(platform.Start, PIN_START)
+	i.updateKey(platform.Up, DPAD_UP)
+	i.updateKey(platform.Left, DPAD_LEFT)
+	i.updateKey(platform.Right, DPAD_RIGHT)
+	i.updateKey(platform.Down, DPAD_DOWN)
+
 }
 
 func (i *HardwareInput) updateKey(key platform.Button, pin machine.Pin) {

@@ -38,7 +38,7 @@ func (d *DrawTest) Update(dt float64, input platform.InputSystem, log platform.L
 		d.yp += 10
 	}
 
-	if input.WasKeyJustPressed(platform.Select) { //each game can define its own way to exit, but this is probably the simplest one
+	if input.WasKeyJustPressed(platform.Exit) { //each game can define its own way to exit, but this is probably the simplest one
 		return nil //to exit the game, just pass 'nil'. The main function will notice this and boot up the menu application
 	}
 	return d

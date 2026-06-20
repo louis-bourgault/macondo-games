@@ -14,18 +14,19 @@ const ChromaKey uint16 = 0xF81F
 
 const (
 	//SPI0 SCLK - Pin 18
-	PIN_SPI_SCK = machine.SPI0_SCK_PIN
+	PIN_SPI_SCK = machine.Pin(18)
 	//SPI0 TX/MOSI - Pin 19
-	PIN_SPI_SDO = machine.SPI0_SDO_PIN
+	PIN_SPI_SDO = machine.Pin(19)
 	PIN_DC      = machine.Pin(21)
 	PIN_RST     = machine.Pin(20)
-	CS_SCREEN   = machine.Pin(22)
+	CS_SCREEN   = machine.Pin(17)
 )
 
 type HardwareDisplay struct {
 	dev *st7789.Device
 	spi *machine.SPI
 	dc  machine.Pin
+	cs  machine.Pin
 	//this takes up 115200 bytes, or 115kb of the total 264kb of ram on the device.
 	//it is possible to make it bufferless and write direct to the display, but performance would be a lot worse, and i think 149kb is probably enough for everything else.
 	buf [240 * 240]uint16
@@ -39,15 +40,17 @@ func (d *HardwareDisplay) Fill(c uint16) {
 
 func (d *HardwareDisplay) FillRect(x, y, w, h int, c uint16) {
 	for sy := y; sy < y+h; sy++ {
-		if sy < 0 || sy >= 240 {
+		dy := 239 - sy
+		if dy < 0 || dy >= 240 {
 			continue
 		}
-		row := sy * 240
+		row := dy * 240
 		for sx := x; sx < x+w; sx++ {
-			if sx < 0 || sx >= 240 {
+			dx := 239 - sx
+			if dx < 0 || dx >= 240 {
 				continue
 			}
-			d.buf[row+sx] = c
+			d.buf[row+dx] = c
 		}
 	}
 }
@@ -59,29 +62,44 @@ func (d *HardwareDisplay) Pixel(x, y int, c uint16) {
 	if x < 0 || x >= 240 || y < 0 || y >= 240 {
 		return
 	}
-	d.buf[y*240+x] = c
+	d.buf[(239-y)*240+(239-x)] = c
 }
 
 func (d *HardwareDisplay) Present() error {
-	//set the window to the full display area with 0x21 (collum address set)
+
+	d.cs.Low()
+
+	//set the window to the full display area with 0x2A (column address set)
 	d.dc.Low()
 	d.spi.Tx([]byte{0x2A}, nil)
 	d.dc.High()
 	d.spi.Tx([]byte{0x00, 0x00, 0x00, 0xEF}, nil) //0-239
 
-	//send command 0x2B (row adress set)
+	//send command 0x2B(row address set)
 	d.dc.Low()
 	d.spi.Tx([]byte{0x2B}, nil)
 	d.dc.High()
 	d.spi.Tx([]byte{0x00, 0x00, 0x00, 0xEF}, nil) //row0-239
 
-	//send command 0x2C (write memory)
+	//send command 0x2C(write memory)
 	d.dc.Low()
 	d.spi.Tx([]byte{0x2C}, nil)
 	d.dc.High()
 
+	//make bigendian for st7789 chip
+	for i := range d.buf {
+		d.buf[i] = (d.buf[i] << 8) | (d.buf[i] >> 8)
+	}
+
 	byteData := unsafe.Slice((*byte)(unsafe.Pointer(&d.buf[0])), len(d.buf)*2)
 	d.spi.Tx(byteData, nil)
+
+	//swap back to littleendian just in case. mihgt remove later
+	for i := range d.buf {
+		d.buf[i] = (d.buf[i] << 8) | (d.buf[i] >> 8)
+	}
+
+	d.cs.High()
 	return nil
 }
 
@@ -93,10 +111,10 @@ func NewDisplay() *HardwareDisplay {
 
 	spi := machine.SPI0
 	spi.Configure(machine.SPIConfig{
-		Frequency: 125000000,
+		Frequency: 20_000_000,
 		SCK:       PIN_SPI_SCK,
 		SDO:       PIN_SPI_SDO,
-		SDI:       machine.NoPin,
+		SDI:       machine.Pin(16), //not used, but there's internal st7789 driver validation that this is a valid pin.
 		Mode:      0,
 	})
 
@@ -107,14 +125,17 @@ func NewDisplay() *HardwareDisplay {
 	PIN_RST.High()
 	time.Sleep(120 * time.Millisecond)
 
-	dev := st7789.New(spi, PIN_DC, PIN_RST, CS_SCREEN, machine.NoPin)
+	dev := st7789.New(spi, PIN_RST, PIN_DC, CS_SCREEN, machine.NoPin)
 	dev.Configure(st7789.Config{
 		Width:  240,
 		Height: 240,
 	})
+
+	println("Display initialized")
 	return &HardwareDisplay{
 		dev: &dev,
 		spi: spi,
 		dc:  PIN_DC,
+		cs:  CS_SCREEN,
 	}
 }

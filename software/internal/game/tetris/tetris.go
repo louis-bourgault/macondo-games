@@ -79,7 +79,7 @@ func New() *TetrisGame {
 }
 
 func (d *TetrisGame) Update(dt float64, input platform.InputSystem, log platform.LogSystem) game.Game {
-	if input.WasKeyJustPressed(platform.Select) {
+	if input.WasKeyJustPressed(platform.Exit) {
 		return nil
 	}
 	if d.gameOver {

@@ -43,11 +43,19 @@ type Menu struct {
 }
 
 func (m *Menu) Update(dt float64, input platform.InputSystem, log platform.LogSystem) game.Game {
+	kcpdn := input.IsKeyPressed(platform.Down)
+	println("Down pressed?", kcpdn)
+	kcpup := input.IsKeyPressed(platform.Up)
+	println("Up pressed?", kcpup)
+	kpdn := input.WasKeyJustPressed(platform.Down)
+	println("Down just pressed?", kpdn)
 	if input.WasKeyJustPressed(platform.Down) {
 		if int(m.position) < len(m.gameOptions)-1 {
 			m.position++
 		}
 	}
+	kpup := input.WasKeyJustPressed(platform.Up)
+	println("Up just pressed?", kpup)
 	if input.WasKeyJustPressed(platform.Up) {
 		if m.position > 0 {
 			m.position--

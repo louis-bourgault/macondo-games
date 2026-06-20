@@ -33,7 +33,7 @@ func NewInput() *WasmInput {
 		case "Enter":
 			key = platform.Start
 		case "Shift":
-			key = platform.Select
+			key = platform.Exit
 		case "j", "J":
 			key = platform.A
 		case "k", "K":
@@ -60,7 +60,7 @@ func NewInput() *WasmInput {
 		case "Enter":
 			key = platform.Start
 		case "Shift":
-			key = platform.Select
+			key = platform.Exit
 		case "j", "J":
 			key = platform.A
 		case "k", "K":

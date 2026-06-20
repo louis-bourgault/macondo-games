@@ -1,7 +1,7 @@
 package device
 
 func Log(s string) {
-	//do nothing
+	println(s)
 }
 
 type WasmLogSystem struct {

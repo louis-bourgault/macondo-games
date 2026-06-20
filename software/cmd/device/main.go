@@ -12,7 +12,10 @@ import (
 func main() {
 	//initiate the platform
 	//perhaps we should seed the randomness here
+	// time.Sleep(2 * time.Seond)
+	// println("Starting game...")
 	display := device.NewDisplay()
+	println("Display initialized")
 	input := device.NewHardwareInput()
 	var currentGame game.Game
 	currentGame = menu.New()
@@ -27,9 +30,11 @@ func main() {
 	randTick = 0
 
 	for range ticker.C {
+		println("Tick")
 		now := time.Now()
 		dt := now.Sub(lastTime)
 		lastTime = now
+		input.Update()
 		nextGame := currentGame.Update(dt.Seconds(), input, log)
 		if nextGame == nil {
 			currentGame = menu.New()
@@ -37,7 +42,6 @@ func main() {
 			currentGame = nextGame
 		}
 		currentGame.Draw(display)
-		input.Update()
 		if !randSeed {
 			randTick++
 			if len(input.KeysPressed) > 0 {

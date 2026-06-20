@@ -29,5 +29,5 @@ const (
 	A
 	B
 	Start
-	Select
+	Exit
 )
