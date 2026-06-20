@@ -1,6 +1,8 @@
 package tetris
 
 import (
+	"strconv"
+
 	"github.com/louis-bourgault/macondo-games/software/internal/game"
 	"github.com/louis-bourgault/macondo-games/software/internal/helpers"
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
@@ -66,10 +68,12 @@ type TetrisGame struct {
 	currentTetromino     tetronimo
 	gameOver             bool
 	timeSince            float64
+	score                int
 }
 
 func New() *TetrisGame {
 	return &TetrisGame{
+		score:                0,
 		blocks:               [300]uint16{},
 		currentTopLeftX:      5,
 		currentTopLeftY:      25,
@@ -107,7 +111,11 @@ func (d *TetrisGame) Update(dt float64, input platform.InputSystem, log platform
 		d.rotate()
 	}
 	d.timeSince += dt
-	if d.timeSince > 0.5 {
+	timeWaited := 0.5 - (float64(d.score) * 0.01)
+	if timeWaited < 0.1 {
+		timeWaited = 0.1
+	}
+	if d.timeSince > timeWaited {
 		d.moveDown()
 		d.timeSince = 0
 	}
@@ -256,6 +264,7 @@ func (d *TetrisGame) clearLines() {
 				d.blocks[29*10+x] = 0
 			}
 			y--
+			d.score += 1
 		}
 	}
 }
@@ -285,15 +294,16 @@ func (d *TetrisGame) getNewTetromino() {
 
 func (d *TetrisGame) Draw(screen platform.Screen) {
 	screen.Fill(0x0000)
-	screen.FillRect(60, 0, 120, 240, 0xd6ba)
 
 	if d.gameOver {
 		helpers.DrawText(screen, 10, 10, "game over", 0xf800)
 		helpers.DrawText(screen, 10, 50, "press A to restart", 0xf800)
+		helpers.DrawText(screen, 10, 90, "score: "+strconv.Itoa(d.score), 0x001f)
 		screen.Present()
 		return
 	}
 
+	screen.FillRect(60, 0, 120, 240, 0x7bef) //mid-grey
 	for y := 10; y < 30; y++ {
 		for x := 0; x < 10; x++ {
 			color := d.blocks[y*10+x]

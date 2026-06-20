@@ -118,7 +118,7 @@ func (d *ChessGame) Update(dt float64, input platform.InputSystem, log platform.
 		var dCopy ChessGame
 		dCopy.board = d.board
 		dCopy.playerTurn = d.playerTurn
-		bestMove, _ := chooseBestMove(&dCopy, 3)
+		bestMove, _ := chooseBestMove(&dCopy, 2) //3 is lagging so bad, the engine won't be very good but better than nothing
 		log.Log("best move: " + fmt.Sprintf("%+v", bestMove))
 		d.makeMove(bestMove)
 		log.Log("New board state: " + fmt.Sprintf("%+v", d.board))

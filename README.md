@@ -3,6 +3,7 @@
 
 > [!IMPORTANT]
 > The primary documentation for this project can be found at [ferretboard.louisbourgault.com/docs](https://ferretboard.louisbourgault.com/docs). Please read from that source for project information
+> This README remains the authoritative source on commands to build the firmware for the device.
 
 ### a small games console with rp2040
 I would like to make a simple games console, based around an RP2040 chip on a custom PCB, and including a 240x240 LCD screen. I am designing this roughly to fit in the footprint of an iPod nano shape and size. The overall dimensions are around 50x100x10mm
