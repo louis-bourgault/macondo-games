@@ -28,7 +28,7 @@ For the WASM version, these are mapped to:
 | A      | J |
 | B | K |
 | Start | Enter | 
-| Select | Shift |
+| Exit | Shift |
 
 ## Constraints
 The RP2040 has its hardware constraints, although most games will fit very comfortably within them. It runs on a 135MHz dual core cpu, with 265KB of SRAM. A considerable amount of this ram is used for the display buffer (115kb, since we use full 16 bit colour), leaving 150 remaining.

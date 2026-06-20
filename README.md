@@ -105,3 +105,4 @@ Font file used in /software/helpers/text.go: [github.com/dhepper/font8x8](https:
 
 # Things that I'd change if i did it again
 - perhaps something like a ground plane on the pcb
+- remove resistor that stops the reset button from working

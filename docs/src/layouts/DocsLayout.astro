@@ -18,12 +18,24 @@ const { frontmatter } = Astro.props;
     <main>
         <slot/>
     </main>
+	<footer>
+		<p>Created by <a href="https://new.louisbourgault.com">Louis Bourgault du Coudray</a> for <a href="https://macondo.hackclub.com/">Hack Club Macondo</a></p>
+		</footer>
   </body>
 </html>
 
 <style is:global>
 	html {
 		height: 100%;
+	}
+
+	footer {
+		width: 100%;
+		height:4rem;
+		border-top: 1px solid var(--secondary);
+		justify-content: center;
+		align-items: center;
+		display: flex;
 	}
     
     code {
