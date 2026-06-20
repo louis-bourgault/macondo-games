@@ -100,6 +100,9 @@ This is something along the lines of ```tinygo build -target=pico -o ./out/firmw
 [ferretboard.louisbourgault.com](https://ferretboard.louisbourgault.com)
 ![Web Screenshot](/img/web-version.png)
 
+## Finished Device
+![Finished device](/img/finished-device.jpg)
+
 # Acknowledgements
 Font file used in /software/helpers/text.go: [github.com/dhepper/font8x8](https://github.com/dhepper/font8x8/blob/master/font8x8_basic.h)
 
