@@ -110,3 +110,12 @@ Font file used in /software/helpers/text.go: [github.com/dhepper/font8x8](https:
 # Things that I'd change if i did it again
 - perhaps something like a ground plane on the pcb
 - remove resistor that stops the reset button from working
+- make it possible to charge the device while it is off
+- make the on/off switch in an easier to reach location
+
+
+## Licensing
+
+This project is dual-licensed:
+* **Hardware:** The schematic, PCB layout, and documentation files are licensed under the [CERN Open Hardware Licence v2 - Permissive (CERN-OHL-P)](./mini-games/LICENSE.txt).
+* **Firmware/Software:** All source code is licensed under the [MIT License](./LICENSE).
