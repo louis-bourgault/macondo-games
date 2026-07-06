@@ -7,7 +7,7 @@
 > This README remains the authoritative source on commands to build the firmware for the device.
 
 ### a small games console with rp2040
-I would like to make a simple games console, based around an RP2040 chip on a custom PCB, and including a 240x240 LCD screen. I am designing this roughly to fit in the footprint of an iPod nano shape and size. The overall dimensions are around 50x100x10mm
+I would like to make a simple games console, based around an RP2040 chip on a custom PCB, and including a 240x240 LCD screen. I am designing this roughly to fit in the footprint of an iPod nano shape and size. The overall dimensions are around 50x100x15mm
 This is part of Hack Club Macondo. You can find my project at [macondo.hackclub.com/projects/1137](https://macondo.hackclub.com/projects/1137)
 
 ## Components
@@ -134,5 +134,5 @@ Font file used in /software/helpers/text.go: [github.com/dhepper/font8x8](https:
 ## Licensing
 
 This project is dual-licensed:
-* **Hardware:** The schematic, PCB layout, and documentation files are licensed under the [CERN Open Hardware Licence v2 - Permissive (CERN-OHL-P)](./mini-games/LICENSE.txt).
-* **Firmware/Software:** All source code is licensed under the [MIT License](./LICENSE).
+* **Hardware:** The schematic, PCB layout, and documentation files are licensed under the [CERN Open Hardware Licence v2 - Strongly Reciprocal (CERN-OHL-S-2.0)](./mini-games/LICENSE.txt). If you modify and distribute this hardware, you must share your changes to it. 
+* **Firmware/Software:** All source code is licensed under the [GNU AGPLv3](./LICENSE.txt). You can't copy and distribute a changed version of this without making your modifications public, including distribution by serving a part of this code over a network. [Even if you're Bambu Labs.](https://consumerrights.wiki/w/Bambu_Lab_cease_and_desist_against_OrcaSlicer_fork_developer)
