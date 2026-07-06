@@ -2,7 +2,8 @@
 # ferretboard!!!
 
 > [!IMPORTANT]
-> The primary documentation for this project can be found at [ferretboard.louisbourgault.com/docs](https://ferretboard.louisbourgault.com/docs). Please read from that source for project information
+> The primary documentation for the software system of this project can be found at [ferretboard.louisbourgault.com/docs](https://ferretboard.louisbourgault.com/docs). Please read from that source for better organised information on software interfaces, etc.
+> 
 > This README remains the authoritative source on commands to build the firmware for the device.
 
 ### a small games console with rp2040
@@ -14,8 +15,8 @@ The project will be made up of a custom pcb, including the chip, 16MB flash, bat
 - 3.7v 1000mAh LiPo battery
 - 1.54" LCD Screen (Already purchased) of pixel dimensions 240x240 and through an SPI interface. Must use the ST7789 driver chip to work without code changes.
 - 6 basic 6x6x5mm push to make switches (i had some lying around so decided not to get jlc to assemble them for me.)
+- 3d printed case, the stl file for which is in ```/case/case.stl``` in this repository
 
-The exterior will be 3d printed. I can print these things myself at school.
 
 ## Controls
 D-pad controls (Up, down, left, right), as well as A and B buttons and 2 buttons for other functions, such as going to menus, pausing games, etc
@@ -27,7 +28,7 @@ Next, you'll need to solder the buttons to the PCB that you've got printed and a
 ![Where to solder things](/img/instructions.jpg)
 Key: Battery as indicated, positive to J4, negative to J3. Make sure these lines do not touch.
 Switches: solder legs to tht holes for SW2-SW7, as highlighted in yellow.
-Next, get your screen and solder it to the screen connector at the top of the PCB. The leftmost pin, from the front of the board, is the BL pin, and from there moving to the right we have BL, CS, DC, RST, SDA, SCL, VCC and GND. This seems like a pretty common order of pins for generic cheap aliexpress screens, so its quite easy to get a screen of this pinout.
+Next, get your screen and solder it to the screen connector at the top of the PCB. The leftmost pin, from the front of the board, is the BL pin, with GND on the far right. This means that I had to mount the specific display I bought from aliexpress upside down, and flip all the coordinates in software.
 ![Connecting the screen](/img/screensolder.jpg)
 Once you've done that, the device is pretty much ready to go. Slot the whole contraption into the 3d printed case - the case is designed so that the battery goes behind the screen and then the wires for the battery come down and snake through the little notch to the left of the battery compartment. There are four posts on the lower section of the case, which you can use to hold the PCB in place through the circular holes on each corner of the PCB. 
 If you leave it like that, it will work, but depending on the sizes of all your components, everything will probably rattle and tilt and slide around a ton. I solved this problem by liberally applying small bits of furniture skates, double sided tape, and foam to hold everything in place. This is something that I can probably improve on in version two of the system.
@@ -98,8 +99,11 @@ Then, regardless of which you use, you need to actually serve this directory. Fo
 or if you're building for the new astro frontend, you can run ```cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" ../docs/public/ && GOOS=js GOARCH=wasm go build -o ../docs/public/main.wasm ./cmd/wasm```
 
 ### Building (device)
-You'll need to compile it with TinyGo, as well. I'll add instructions for this once I have the device built.
-This is something along the lines of ```tinygo build -target=pico -o ./out/firmware.uf2 ./cmd/device```
+To compile for the actual device, you'll need tinygo installed on your computer. Then, cd into the ```/software``` folder and run this command:
+
+```tinygo build -target=pico -o ./out/firmware.uf2 ./cmd/device```
+
+This will create a .uf2 build artifact in the ```/software/out``` directory. Alternatively, I have chosen not to include this in my .gitignore, so you can find a prebuilt file in this repository at that location, although i make no guarantees about it being up to date.
 
 # Image Gallery
 ![Fusion Case](/img/fusion-case.png)
