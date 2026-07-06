@@ -12,13 +12,26 @@ This is part of Hack Club Macondo. You can find my project at [macondo.hackclub.
 ## Components
 The project will be made up of a custom pcb, including the chip, 16MB flash, battery management circuits etc. I will also use:
 - 3.7v 1000mAh LiPo battery
-- 1.54" LCD Screen (Already purchased) of pixel dimensions 240x240 and through an SPI interface
+- 1.54" LCD Screen (Already purchased) of pixel dimensions 240x240 and through an SPI interface. Must use the ST7789 driver chip to work without code changes.
 - 6 basic 6x6x5mm push to make switches (i had some lying around so decided not to get jlc to assemble them for me.)
 
 The exterior will be 3d printed. I can print these things myself at school.
 
 ## Controls
 D-pad controls (Up, down, left, right), as well as A and B buttons and 2 buttons for other functions, such as going to menus, pausing games, etc
+
+## Assembly instructions
+To assemble the device, start by 3d printing the shell, which can be found at ```/case/case.stl``` in this repository. I would reccomend doing this with some kind of high precision setting on your printer - my first print used the Draft quality with layer height of 0.2mm, but my second used 0.08mm and it looked a lot better. I just printed this on my school's Bambu Lab P1S printer. Here's how it looks, printed in white on this 0.08mm setting.
+![The case, printed in white](/img/whitecase.jpg)
+Next, you'll need to solder the buttons to the PCB that you've got printed and assembled. Get 6 generic push button push to make switches, and solder them into the holes on the pcb. Get the battery (no smaller than 500mAh), strip the JST connector off it if it has one, and solder the positive and negative lines to the copper pads of the board as indicated below:
+![Where to solder things](/img/instructions.jpg)
+Key: Battery as indicated, positive to J4, negative to J3. Make sure these lines do not touch.
+Switches: solder legs to tht holes for SW2-SW7, as highlighted in yellow.
+Next, get your screen and solder it to the screen connector at the top of the PCB. The leftmost pin, from the front of the board, is the BL pin, and from there moving to the right we have BL, CS, DC, RST, SDA, SCL, VCC and GND. This seems like a pretty common order of pins for generic cheap aliexpress screens, so its quite easy to get a screen of this pinout.
+![Connecting the screen](/img/screensolder.jpg)
+Once you've done that, the device is pretty much ready to go. Slot the whole contraption into the 3d printed case - the case is designed so that the battery goes behind the screen and then the wires for the battery come down and snake through the little notch to the left of the battery compartment. There are four posts on the lower section of the case, which you can use to hold the PCB in place through the circular holes on each corner of the PCB. 
+If you leave it like that, it will work, but depending on the sizes of all your components, everything will probably rattle and tilt and slide around a ton. I solved this problem by liberally applying small bits of furniture skates, double sided tape, and foam to hold everything in place. This is something that I can probably improve on in version two of the system.
+From there, all you'll need to do is to load the code onto the thing. Plug it in via USB C to your computer, and drag the compiled UF2 file from the compilation instructions below onto the drive that shows up on your file explorer. It'll reboot into the menu, and you're ready to go.
 
 ## Games
 
