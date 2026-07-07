@@ -98,5 +98,5 @@
 
 <div class='command h-20 w-full flex flex-col'>
 	<input bind:value={command} class='w-full h-10 p-2 border-2 border-amber-950' placeholder='send to terminal' />
-	<button class='bg-amber-950 text-white p-2' onclick={() => sendText(command)}>Send</button>
+	<button class='bg-amber-950 text-white p-2' onclick={() => sendText(command + '\r')}>Send</button>
 </div>
