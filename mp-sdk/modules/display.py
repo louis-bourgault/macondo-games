@@ -1,5 +1,5 @@
 import machine
-import framebuf2 as framebuf
+import modules.framebuf2 as framebuf
 import time
 from machine import Pin
 

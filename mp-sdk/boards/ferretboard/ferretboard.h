@@ -1,0 +1,20 @@
+#ifndef _BOARDS_FERRETBOARD_H
+#define _BOARDS_FERRETBOARD_H
+
+pico_board_cmake_set(PICO_PLATFORM, rp2040)
+
+#include "boards/pico.h"
+
+#undef PICO_BOOT_STAGE2_CHOOSE_W25Q080
+#define PICO_BOOT_STAGE2_CHOOSE_W25Q080 0
+
+pico_board_cmake_set_default(PICO_FLASH_SIZE_BYTES, (16 * 1024 * 1024))
+#ifndef PICO_FLASH_SIZE_BYTES
+#define PICO_FLASH_SIZE_BYTES (16 * 1024 * 1024)
+#endif
+
+#ifndef PICO_XOSC_STARTUP_DELAY_MULTIPLIER
+#define PICO_XOSC_STARTUP_DELAY_MULTIPLIER 64
+#endif
+
+#endif

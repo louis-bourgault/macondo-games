@@ -3,8 +3,8 @@ import time
 import os
 print("files included in this run: ", os.listdir())
 
-from display import Display
-from input import Input
+from modules.display import Display
+from modules.input import Input
 
 print("initialising display")
 display = Display()
