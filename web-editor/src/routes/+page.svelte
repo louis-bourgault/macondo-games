@@ -5,6 +5,16 @@
 	import * as Resizable from '$lib/components/ui/resizable';
 	import { Input } from '$lib/components/ui/input/index';
 
+	let outputelement: HTMLPreElement | null = $state(null);
+
+	$effect(() => {
+		const output = connection?.output;
+		if (outputelement && connection && connection.connected) {
+			void output;
+			outputelement.scrollTop = outputelement.scrollHeight;
+		}
+	})
+
 	let terminalInput = $state('');
 	function sendTerminalInput() {
 		if (connection && connection.connected) {
@@ -15,9 +25,31 @@
 		}
 	}
 
+	function saveToDevice() {
+		//sends in a way that its stored and persistent on the device.
+		if (connection && connection.connected) {
+			connection.controlC(); //stop running script
+			connection.sendText(`with open('main.py', 'w') as f:\n    f.write("""${editorContent}""")\r`);
+			connection.controlD(); //soft reboot, auto runs main.py
+		} else {
+			alert('connect before sending.');
+		}
+	}
+
+	function getSavedScript() {
+		const savedScript = localStorage.getItem('editorContent');
+		if (savedScript) {
+			editorContent = savedScript;
+		}
+	}
+
 	function handleSubmit(event: Event) {
 		event.preventDefault();
 		sendTerminalInput();
+	}
+
+	function save() {
+		localStorage.setItem('editorContent', editorContent);
 	}
 
 	let editorContent = $state(`from modules.display import Display
@@ -31,6 +63,7 @@ display.update()
 	onMount(() => {
 		connection = getWebSerialConnection();
 		void connection.init();
+		getSavedScript();
 	});
 
 	function uploadScript() {
@@ -54,6 +87,8 @@ display.update()
 				<Button variant="secondary" onclick={connection.controlD}>Send control d</Button>
 				<Button variant="secondary" onclick={connection.disconnect}>Disconnect</Button>
 				<Button onclick={uploadScript}>Run Script</Button>
+				<Button onclick={saveToDevice}>Save to device</Button>
+				<Button variant="secondary" onclick={save}>Save script</Button>
 			{/if}
 		</div>
 		<br class="h-1" />
@@ -67,12 +102,22 @@ display.update()
 			</Resizable.Pane>
 			<Resizable.Handle />
 			<Resizable.Pane defaultSize={30} minSize={10}>
-				<div class="flex flex-col h-full w-full">
-					<pre class="overflow-scroll">{connection.output}</pre>
-						<form onsubmit={handleSubmit} class='w-full flex-row flex justify-between'>
-							<Input class="w-full" bind:value={terminalInput} placeholder="terminal input" />
-							<Button type="submit">Send</Button>
-						</form>
+				<div class="flex flex-col h-full w-full min-h-0">
+					{#if connection.connected}
+						<pre class="flex-1 min-h-0 overflow-y-auto whitespace-pre-wrap" bind:this={outputelement}>{connection.output}</pre>
+					{:else}
+						<p class="flex-1 min-h-0 overflow-y-auto">Connect to the device to see output and send terminal commands.</p>
+
+					{/if}
+					<form onsubmit={handleSubmit} class="w-full flex-row flex justify-between">
+						<Input
+							class="w-full"
+							bind:value={terminalInput}
+							disabled={!connection.connected}
+							placeholder="terminal input"
+						/>
+						<Button type="submit" disabled={!connection.connected}>Send</Button>
+					</form>
 				</div>
 			</Resizable.Pane>
 		</Resizable.PaneGroup>

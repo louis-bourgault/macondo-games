@@ -10,9 +10,13 @@ print("initialising display")
 display = Display()
 input = Input()
 
-input.update()
-display.update()
-display.fill(0x0000) 
+while True:
+    input.update()
+    if input.is_pressed("UP"):
+        display.fill(0x0000)
+    else:
+        display.fill(0xFFFF)
+    time.sleep(0.1)
 
 
 
