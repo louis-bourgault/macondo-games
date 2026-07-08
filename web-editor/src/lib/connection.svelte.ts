@@ -1,12 +1,17 @@
 export class WebSerialConnection {
-    public port: any;
+	public port: any;
 	public reader: any;
 	public writer: any;
 	public keepreading = false;
 	public readableStreamClosed: any;
+	public writableStreamClosed: any;
 	public connected = $state(false);
-    public output = $state('');
+	public output = $state('');
 	private attached = false;
+
+	private delay(ms: number) {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
 
 	private async attachPort(port: any) {
 		if (this.attached && this.port === port) {
@@ -16,8 +21,7 @@ export class WebSerialConnection {
 
 		this.port = port;
 		if (this.port.readable?.locked || this.port.writable?.locked) {
-			this.connected = true;
-			this.attached = true;
+			this.log('\n--- Port already in use ---\n');
 			return;
 		}
 		const textDecoder = new TextDecoderStream();
@@ -25,7 +29,7 @@ export class WebSerialConnection {
 		this.reader = textDecoder.readable.getReader();
 
 		const textEncoder = new TextEncoderStream();
-		textEncoder.readable.pipeTo(this.port.writable);
+		this.writableStreamClosed = textEncoder.readable.pipeTo(this.port.writable);
 		this.writer = textEncoder.writable.getWriter();
 
 		this.keepreading = true;
@@ -35,16 +39,10 @@ export class WebSerialConnection {
 	}
 
 	public init = async () => {
-		const serial = (navigator as Navigator & { serial?: any }).serial;
-		if (!serial) return;
-
-		const ports = await serial.getPorts();
-		const port = ports[0];
-		if (!port) return;
-
-		if (port.readable && port.writable) {
-			await this.attachPort(port);
-		}
+		// Don't auto-open any port — the user must click Connect to get the
+		// port selector. Auto-opening a previously-granted port would set
+		// connected=true and make connect() early-return without showing
+		// the selector.
 	};
 
 	public connect = async () => {
@@ -56,25 +54,70 @@ export class WebSerialConnection {
 		if (this.connected && this.port) {
 			return;
 		}
-		this.port = await serial.requestPort();
-		const baudRate = 115200;
-		await this.port.open({ baudRate });
-		await this.attachPort(this.port);
-		console.log('connected to serial port');
+		try {
+			this.port = await serial.requestPort();
+			await this.port.open({ baudRate: 115200 });
+			await this.attachPort(this.port);
+			this.log('Connected to serial port.\n');
+		} catch (err: any) {
+			if (err.name !== 'NotFoundError') {
+				this.log(`\n--- Connection error: ${err.message} ---\n`);
+			}
+		}
 	};
 
-	public controlD = () => {
-        this.output = '';
-		this.sendText('\x04');
+	public controlD = async () => {
+		await this.sendText('\x04');
 	};
 
-	public controlC = () => {
-		this.sendText('\x03');
+	public controlC = async () => {
+		await this.sendText('\x03');
+	};
+
+	public controlE = async () => {
+		await this.sendText('\x05');
 	};
 
 	public sendText = async (text: string) => {
-		if (!this.writer) return;
+		if (!this.writer) {
+			this.log('\n--- Not connected: writer is not available ---\n');
+			return;
+		}
 		await this.writer.write(text);
+	};
+
+	public runScript = async (script: string) => {
+		await this.controlC();
+		await this.delay(100);
+		await this.controlC();
+		await this.delay(100);
+		await this.controlE();
+		await this.delay(50);
+		await this.sendText(
+			'import gc\n' +
+				'for _n in list(globals()):\n' +
+				'    if not _n.startswith("_") and _n != "gc":\n' +
+				'        try:\n' +
+				'            del globals()[_n]\n' +
+				'        except:\n' +
+				'            pass\n' +
+				'gc.collect()\n' +
+				'\n' +
+				script +
+				'\n'
+		); //RUN the garbage colelctor; avoids out of memory issues.
+		await this.controlD();
+	};
+
+	public saveToDevice = async (script: string) => {
+		await this.controlC();
+		await this.delay(100);
+		await this.controlE();
+		await this.delay(50);
+		await this.sendText(`with open('main.py', 'w') as f:\n    f.write("""${script}""")\n`);
+		await this.controlD();
+		await this.delay(500);
+		await this.controlD();
 	};
 
 	public log = (msg: string) => {
@@ -95,6 +138,12 @@ export class WebSerialConnection {
 		} catch (err: any) {
 			this.log(`\n--- Read error: ${err.message} ---\n`);
 		}
+		this.connected = false;
+		this.attached = false;
+		this.keepreading = false;
+		this.reader = null;
+		this.writer = null;
+		this.port = null;
 	};
 
 	public disconnect = async () => {
@@ -107,6 +156,12 @@ export class WebSerialConnection {
 			if (this.writer) {
 				await this.writer.close();
 				this.writer = null;
+			}
+			if (this.readableStreamClosed) {
+				await this.readableStreamClosed.catch(() => {});
+			}
+			if (this.writableStreamClosed) {
+				await this.writableStreamClosed.catch(() => {});
 			}
 			if (this.port) {
 				await this.port.close();

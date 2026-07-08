@@ -44,7 +44,9 @@ class Display:
 
         self.write_cmd(0x3A) # Interface Pixel Format
         self.write_data(b'\x55') 
-    
+
+        self.write_cmd(0x21) #inv on
+
         self.write_cmd(0x29) 
 
     def update(self):
@@ -58,9 +60,14 @@ class Display:
         
         self.write_cmd(0x2C) #dump pixels
         
+        buf = bytearray(len(self.buffer))
+        for i in range(0, len(self.buffer), 2):
+            buf[i] = self.buffer[i + 1]
+            buf[i + 1] = self.buffer[i]
+
         self.dc.high()
         self.cs.low()
-        self.spi.write(self.buffer)
+        self.spi.write(buf)
         self.cs.high()
 
     def fill(self, color):

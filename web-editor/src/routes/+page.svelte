@@ -13,7 +13,7 @@
 			void output;
 			outputelement.scrollTop = outputelement.scrollHeight;
 		}
-	})
+	});
 
 	let terminalInput = $state('');
 	function sendTerminalInput() {
@@ -25,15 +25,12 @@
 		}
 	}
 
-	function saveToDevice() {
-		//sends in a way that its stored and persistent on the device.
-		if (connection && connection.connected) {
-			connection.controlC(); //stop running script
-			connection.sendText(`with open('main.py', 'w') as f:\n    f.write("""${editorContent}""")\r`);
-			connection.controlD(); //soft reboot, auto runs main.py
-		} else {
+	async function saveToDevice() {
+		if (!connection || !connection.connected) {
 			alert('connect before sending.');
+			return;
 		}
+		await connection.saveToDevice(editorContent);
 	}
 
 	function getSavedScript() {
@@ -66,15 +63,12 @@ display.update()
 		getSavedScript();
 	});
 
-	function uploadScript() {
-		const script = editorContent;
-		if (connection && connection.connected) {
-			connection.controlD(); //soft reboot, neccesary to clear display buffer memory allocation
-			connection.controlC(); //stop running script
-			connection.sendText(script + '\r');
-		} else {
+	async function uploadScript() {
+		if (!connection || !connection.connected) {
 			alert('Not connected to the device.');
+			return;
 		}
+		await connection.runScript(editorContent);
 	}
 </script>
 
@@ -104,10 +98,13 @@ display.update()
 			<Resizable.Pane defaultSize={30} minSize={10}>
 				<div class="flex flex-col h-full w-full min-h-0">
 					{#if connection.connected}
-						<pre class="flex-1 min-h-0 overflow-y-auto whitespace-pre-wrap" bind:this={outputelement}>{connection.output}</pre>
+						<pre
+							class="flex-1 min-h-0 overflow-y-auto whitespace-pre-wrap"
+							bind:this={outputelement}>{connection.output}</pre>
 					{:else}
-						<p class="flex-1 min-h-0 overflow-y-auto">Connect to the device to see output and send terminal commands.</p>
-
+						<p class="flex-1 min-h-0 overflow-y-auto">
+							Connect to the device to see output and send terminal commands.
+						</p>
 					{/if}
 					<form onsubmit={handleSubmit} class="w-full flex-row flex justify-between">
 						<Input
