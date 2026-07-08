@@ -4,6 +4,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Resizable from '$lib/components/ui/resizable';
 	import { Input } from '$lib/components/ui/input/index';
+	import Editor from '$lib/components/ui/editor.svelte';
 
 	let outputelement: HTMLPreElement | null = $state(null);
 
@@ -91,8 +92,7 @@ display.update()
 			class="min-h-50 max-w-md rounded-lg border min-w-screen"
 		>
 			<Resizable.Pane defaultSize={70} minSize={30}>
-				<textarea bind:value={editorContent} class="w-full h-full p-2 border-2 border-amber-950"
-				></textarea>
+			<Editor bind:editorContent></Editor>
 			</Resizable.Pane>
 			<Resizable.Handle />
 			<Resizable.Pane defaultSize={30} minSize={10}>
