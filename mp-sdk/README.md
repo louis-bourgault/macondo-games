@@ -22,6 +22,8 @@ cd ports/rp2
 make submodules
 ```
 
+Note: once you're at this stage, you can use the script ```build.sh``` in this repository to build it. Note, you will have to adapt this script to where everything is on your machine, so its probably easier to just do the commands manually.
+
 ## Building
 Hop into the ```ports/rp2``` directory inside your micropython git clone.
 
@@ -30,8 +32,9 @@ Hop into the ```ports/rp2``` directory inside your micropython git clone.
 rm -rf build-ferretboard
 
 #run the build command with paths to the board directory and the manifest.py. For me this is
-make BOARD_DIR=/Users/louisb/Documents/hardware/macondo-games/mp-sdk/boards/ferretboard FROZEN_MANIFEST=/Users/louisb/Documents/hardware/macondo-games/mp-sdk/modules/manifest.py
+make BOARD_DIR=/Users/louisb/Documents/hardware/macondo-games/mp-sdk/boards/ferretboard FROZEN_MANIFEST=/Users/louisb/Documents/hardware/macondo-games/mp-sdk/boards/ferretboard/manifest.py
 
 ```
 
-This will output a uf2 file in the ```ports/rp2/build-ferretboard/``` directory inside the micropython repo, which you can then copy onto the device
+This will output a uf2 file in the ```ports/rp2/build-ferretboard/``` directory inside the micropython repo, which you can then copy onto the device. If you're using the script as i am, it will instead copy it directly into this repository.
+

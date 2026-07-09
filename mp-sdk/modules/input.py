@@ -1,6 +1,6 @@
 from machine import Pin
 
-class Input:
+class _Input:
     def __init__(self):
         self.pin_a = Pin(4, Pin.IN, Pin.PULL_UP) #enable internal pull-up resistor
         self.pin_b = Pin(5, Pin.IN, Pin.PULL_UP) 
@@ -34,3 +34,9 @@ class Input:
         return not self.keysHeld.get(key, False) and self.oldKeysHeld.get(key, False)
 
     
+_instance = _Input()
+
+update = _instance.update
+is_pressed = _instance.is_pressed
+was_just_pressed = _instance.was_just_pressed
+was_just_released = _instance.was_just_released

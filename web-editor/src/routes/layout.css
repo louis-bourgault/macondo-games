@@ -1,15 +1,20 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
-@import "shadcn-svelte/tailwind.css";
-@import "@fontsource-variable/nunito-sans";
+@import 'tw-animate-css';
+@import 'shadcn-svelte/tailwind.css';
+@import '@fontsource-variable/nunito-sans';
 
 @custom-variant dark (&:is(.dark *));
 
 html,
 body,
 body > div {
-  height: 100%;
-  width: 100%;
+	height: 100%;
+	width: 100%;
+}
+/* bits-ui portals dialog content/overlay directly to <body>, where the rule
+   above would otherwise force them to full viewport height/width. */
+body > [data-slot='dialog-content'] {
+	height: auto;
 }
 :root {
 	--background: oklch(1 0 0);
@@ -35,6 +40,33 @@ body > div {
 	--chart-3: oklch(0.609 0.126 221.723);
 	--chart-4: oklch(0.52 0.105 223.128);
 	--chart-5: oklch(0.45 0.085 224.283);
+	/* CodeMirror syntax highlighting (light) */
+	--syntax-keyword: #cf222e;
+	--syntax-controlKeyword: #cf222e;
+	--syntax-operatorKeyword: #cf222e;
+	--syntax-definitionKeyword: #cf222e;
+	--syntax-moduleKeyword: #cf222e;
+	--syntax-modifier: #cf222e;
+	--syntax-builtin: #cf222e;
+	--syntax-atom: #0550ae;
+	--syntax-bool: #0550ae;
+	--syntax-null: #0550ae;
+	--syntax-number: #0550ae;
+	--syntax-string: #0a3069;
+	--syntax-escape: #0550ae;
+	--syntax-regexp: #0a3069;
+	--syntax-variable: #24292f;
+	--syntax-constant: #0550ae;
+	--syntax-property: #24292f;
+	--syntax-function: #8250df;
+	--syntax-type: #953800;
+	--syntax-namespace: #953800;
+	--syntax-macro: #8250df;
+	--syntax-operator: #0550ae;
+	--syntax-punctuation: #24292f;
+	--syntax-comment: #6e7781;
+	--syntax-meta: #6e7781;
+	--syntax-invalid: #cf222e;
 	--radius: 0.625rem;
 	--sidebar: oklch(0.985 0 0);
 	--sidebar-foreground: oklch(0.141 0.005 285.823);
@@ -70,6 +102,33 @@ body > div {
 	--chart-3: oklch(0.609 0.126 221.723);
 	--chart-4: oklch(0.52 0.105 223.128);
 	--chart-5: oklch(0.45 0.085 224.283);
+	/* CodeMirror syntax highlighting (dark) */
+	--syntax-keyword: #ff7b72;
+	--syntax-controlKeyword: #ff7b72;
+	--syntax-operatorKeyword: #ff7b72;
+	--syntax-definitionKeyword: #ff7b72;
+	--syntax-moduleKeyword: #ff7b72;
+	--syntax-modifier: #ff7b72;
+	--syntax-builtin: #ff7b72;
+	--syntax-atom: #79c0ff;
+	--syntax-bool: #79c0ff;
+	--syntax-null: #79c0ff;
+	--syntax-number: #79c0ff;
+	--syntax-string: #a5d6ff;
+	--syntax-escape: #79c0ff;
+	--syntax-regexp: #a5d6ff;
+	--syntax-variable: #c9d1d9;
+	--syntax-constant: #79c0ff;
+	--syntax-property: #c9d1d9;
+	--syntax-function: #d2a8ff;
+	--syntax-type: #ffa657;
+	--syntax-namespace: #ffa657;
+	--syntax-macro: #d2a8ff;
+	--syntax-operator: #79c0ff;
+	--syntax-punctuation: #c9d1d9;
+	--syntax-comment: #8b949e;
+	--syntax-meta: #8b949e;
+	--syntax-invalid: #f85149;
 	--sidebar: oklch(0.21 0.006 285.885);
 	--sidebar-foreground: oklch(0.985 0 0);
 	--sidebar-primary: oklch(0.585 0.233 277.117);

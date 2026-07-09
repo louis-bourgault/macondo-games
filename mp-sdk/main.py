@@ -3,12 +3,10 @@ import time
 import os
 print("files included in this run: ", os.listdir())
 
-from modules.display import Display
-from modules.input import Input
+import modules.display as display
+import modules.input as input
 
 print("initialising display")
-display = Display()
-input = Input()
 
 while True:
     input.update()
@@ -16,6 +14,7 @@ while True:
         display.fill(0x0000)
     else:
         display.fill(0xFFFF)
+    display.update()
     time.sleep(0.1)
 
 

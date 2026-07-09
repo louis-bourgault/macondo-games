@@ -1,3 +1,5 @@
+import { type ProjectData } from './types';
+
 export class WebSerialConnection {
 	public port: any;
 	public reader: any;
@@ -109,15 +111,34 @@ export class WebSerialConnection {
 		await this.controlD();
 	};
 
-	public saveToDevice = async (script: string) => {
+	public saveProjectToDevice = async (projectData: ProjectData) => {
+		for (const file of projectData.codeFiles) {
+			await this.writeFileToDevice(file.name, file.content);
+		}
+	};
+
+	public writeFileToDevice = async (filename: string, content: string) => {
 		await this.controlC();
 		await this.delay(100);
 		await this.controlE();
 		await this.delay(50);
-		await this.sendText(`with open('main.py', 'w') as f:\n    f.write("""${script}""")\n`);
+		await this.sendText(`with open('${filename}', 'w') as f:\n    f.write("""${content}""")\n`);
 		await this.controlD();
 		await this.delay(500);
 		await this.controlD();
+	};
+
+	public runProject = async (projectData: ProjectData) => {
+		const mainFile =
+			projectData.codeFiles.find((f) => f.name === 'main.py') ?? projectData.codeFiles[0];
+		// Write every non-main file to the device so `import` statements in the
+		// main file resolve at runtime. The main file itself is executed inline
+		// via paste mode (see runScript), so it does not need to be persisted.
+		for (const file of projectData.codeFiles) {
+			if (file.name === mainFile.name) continue;
+			await this.writeFileToDevice(file.name, file.content);
+		}
+		await this.runScript(mainFile.content);
 	};
 
 	public log = (msg: string) => {
