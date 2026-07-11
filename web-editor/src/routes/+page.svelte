@@ -29,12 +29,8 @@
 		codeFiles: [
 			{
 				name: 'main.py',
-				content: `main file`
+				content: `import modules.display as display\nimport modules.input as input\n\n# Your code here!`
 			},
-			{
-				name: 'utils.py',
-				content: `utility functions`
-			}
 		],
 		images: []
 	});

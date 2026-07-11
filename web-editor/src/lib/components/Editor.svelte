@@ -1,7 +1,6 @@
 <script lang="ts">
 	let { editorContent = $bindable() } = $props();
 	//You can bind to editor content, but it is read only (from the pov of the parent component) once it's initialised.
-	import { basicSetup } from 'codemirror';
 	import { onMount } from 'svelte';
 	let editorContainer: HTMLDivElement | null = $state(null);
 	import { EditorState } from '@codemirror/state';
@@ -57,7 +56,52 @@
 			type: 'function',
 			detail: '()',
 			info: 'Send whatever is in the display buffer to the actual display. Call this after you have made a change to the display.'
+		},
+		{
+			label: 'display.pixel',
+			type: 'function',
+			detail: '(x: int, y: int, color: rgb565)',
+			info: 'Set a single pixel in the display buffer to a color. Call display.update afterwards to draw it to the screen.'
+
+		},
+		{
+			label: 'display.rect',
+			type: 'function',
+			detail: '(x: int, y: int, width: int, height: int, color: rgb565)',
+			info: 'Draw a rectangle in the display buffer.'
+		},
+		{
+			label: 'display.text',
+			type: 'function',
+			detail: '(x: int, y: int, text: str, color: rgb565)',
+			info: 'Draw text in the display buffer.'
+		},
+		{
+			label: 'input.update',
+			type: 'function',
+			detail: '()',
+			info: 'Update the input state. Call this before checking for button presses.'
+		},
+		{
+			label: 'input.is_pressed',
+			type: 'function',
+			detail: '(button: str) -> bool',
+			info: 'Check if a button is pressed. Call input.update() first.'
+		},
+		{
+			label: 'input.was_just_pressed',
+			type: 'function',
+			detail: '(button: str) -> bool',
+			info: 'Check if a button was pressed since the last call to input.update(). Call input.update() first.'
+		},
+		{
+			label: 'input.was_just_released',
+			type: 'function',
+			detail: '(button: str) -> bool',
+			info: 'Check if a button was released since the last call to input.update(). Call input.update() first.'
 		}
+
+
 	];
 	
 	function libraryCompletionSource(context: CompletionContext): CompletionResult | null {
