@@ -34,6 +34,7 @@ Once you've done that, the device is pretty much ready to go. Slot the whole con
 If you leave it like that, it will work, but depending on the sizes of all your components, everything will probably rattle and tilt and slide around a ton. I solved this problem by liberally applying small bits of furniture skates, double sided tape, and foam to hold everything in place. This is something that I can probably improve on in version two of the system.
 From there, all you'll need to do is to load the code onto the thing. Plug it in via USB C to your computer, and drag the compiled UF2 file from the compilation instructions below onto the drive that shows up on your file explorer. It'll reboot into the menu, and you're ready to go.
 
+
 ## Games
 
 I initially considered making this a gameboy emulator, but decided that that was against the spirit of the project, since I would like to code most of the things on there and don't particularly feel like playing gameboy games without sound. Initially, I will code games like Pong and Snake in Go, and then who knows what I will go to past then.
@@ -49,6 +50,8 @@ The development is well abstracted, so that the game logic isn't actually connec
   - These are also duplicated in /production, for ease of review.
 - /case - files for the making of the case. This includes f3d and stl files.
 - /img - the images used in this readme
+- /mp-sdk - the micropython sdk, and setup to build to a custom uf2. More information on this system can be found in the readme in this folder.
+- /web-editor - a fully featured web based editor for programs written in the micropython sdk, communicating over webserial.
 
 ## Hardware Constraints
 This project is shaped by its hardware constraints of the device I designed. The RP2040 runs on a 135MHz dual core CPU, and has 264KB of ram (115 of which are taken up by the display buffer). Therefore, we have to be efficient.
@@ -104,6 +107,12 @@ To compile for the actual device, you'll need tinygo installed on your computer.
 ```tinygo build -target=pico -o ./out/firmware.uf2 ./cmd/device```
 
 This will create a .uf2 build artifact in the ```/software/out``` directory. Alternatively, I have chosen not to include this in my .gitignore, so you can find a prebuilt file in this repository at that location, although i make no guarantees about it being up to date.
+
+# Micropython SDK
+In addition to the Go programming system for this device, there is a micropython sdk for this device, intended for ease of development and simplicity.
+The SDK for this can be found in the ```/mp-sdk``` directory in this repository. In addition, there is a web editor for this micropython sdk, which can be found in ```/web-editor```.
+
+This micropython sdk was created for ease of learning to code this system. I was talking to a digital technologies teacher at my school, showing him this board, and he expressed interest in how this kind of system might work for a game development class, because its a way to teach people to program with immediate feedback, and less annoying boilerplate than learning game dev through Unity, Godot et cetera.
 
 # Image Gallery
 ![Fusion Case](/img/fusion-case.png)
