@@ -137,7 +137,9 @@
 			newImageError = `Dimensions must be ${MAX_IMAGE_DIM}\u00d7${MAX_IMAGE_DIM} or less.`;
 			return;
 		}
-		projectData.images.push({ name: name.trim(), width, height, content: '' });
+		let newImageContent = new Uint8Array(width * height * 2);  //initialise it blank so it doens't crash the device when we try to render
+
+		projectData.images.push({ name: name.trim(), width, height, content: newImageContent.toBase64() });
 		newImageData = { name: '', width: 0, height: 0 };
 		newImageError = '';
 		newImageDialogOpen = false;
