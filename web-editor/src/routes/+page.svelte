@@ -39,6 +39,15 @@
 		images: []
 	});
 
+	function syncImages() {
+		console.log('syncing images...');
+		if (!connection || !connection.connected) {
+			alert('connect before sending.');
+			return;
+		}
+		connection.syncImages(projectData.images);
+	}
+
 	let selectedImageIndex: number | null = $state(null);
 
 	let currentFileIndex = $state(0);
@@ -310,11 +319,16 @@
 				<Button variant="secondary" onclick={connection.controlD} class="h-full"
 					>Send control d</Button
 				>
+				<Button variant="secondary" onclick={connection.controlB} class="h-full"
+					>Send control B</Button
+				>
 				<Button variant="secondary" onclick={connection.disconnect} class="h-full"
 					>Disconnect</Button
 				>
 				<Button onclick={uploadScript} class="h-full">Run Script</Button>
 				<Button onclick={saveToDevice} class="h-full">Save to device</Button>
+				<Button onclick={syncImages} class="h-full">Sync images</Button>
+				
 			{/if}
 			<Button variant="secondary" onclick={save} class="h-full"
 				>Save project to local storage</Button

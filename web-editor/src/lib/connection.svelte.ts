@@ -1,4 +1,4 @@
-import { type ProjectData } from './types';
+import type { ProjectData, ImageFile } from './types';
 
 export class WebSerialConnection {
 	public port: any;
@@ -40,6 +40,39 @@ export class WebSerialConnection {
 		this.attached = true;
 	}
 
+	public async syncImages(imgs: ImageFile[]) {
+		console.log('received images to sync', imgs);
+
+		await this.controlC();
+		await this.delay(100);
+		await this.controlC();
+		await this.delay(100);
+		await this.controlE();
+		await this.delay(50);
+		
+		//chunk the file
+		for (const img of imgs) {
+			if (!img.name || !img.content) {
+				console.error("can't send this one", img);
+				continue;
+			}
+			let pythonCode = `import os, binascii\ndef isdir():\n    try: \n        file_stat = os.stat('/img/')\n        return (file_stat[0] & 0o170000) == 0o040000\n    except OSError:\n        return False\nif not isdir(): os.mkdir('/img/')\nwith open('/img/${img.name}', 'wb') as f:\n`;
+			const chunkSize = 1024;
+			for (let i = 0; i < img.content.length; i += chunkSize) {
+				const chunk = img.content.slice(i, i + chunkSize);
+				pythonCode += `    f.write(binascii.a2b_base64('${chunk}'))\n`;
+			}
+			await this.sendText(pythonCode);
+			
+		}
+		await this.controlD();
+		await this.delay(500);
+		await this.controlD();
+		
+	}
+
+	
+
 	public init = async () => {
 		// Don't auto-open any port — the user must click Connect to get the
 		// port selector. Auto-opening a previously-granted port would set
@@ -80,6 +113,10 @@ export class WebSerialConnection {
 		await this.sendText('\x05');
 	};
 
+	public controlB = async () => {
+		await this.sendText('\x02');
+	}
+
 	public sendText = async (text: string) => {
 		if (!this.writer) {
 			this.log('\n--- Not connected: writer is not available ---\n');
@@ -118,6 +155,8 @@ export class WebSerialConnection {
 	};
 
 	public writeFileToDevice = async (filename: string, content: string) => {
+		await this.controlC();
+		await this.delay(100);
 		await this.controlC();
 		await this.delay(100);
 		await this.controlE();

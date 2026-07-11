@@ -16,13 +16,16 @@ def _swap_range(buf: ptr8, start: int, n: int):
         i += 2
 
 @micropython.viper
-def _copy_row_reversed(fb: ptr8, fb_offset: int, src: ptr8, n: int):
+def _copy_clipped_reversed(fb: ptr8, fb_offset: int, src: ptr8, src_off: int, n: int):
     dst = fb_offset + (n - 1) * 2
-    i = 0
-    end = n * 2
+    i = src_off
+    end = src_off + n * 2
     while i < end:
-        fb[dst] = src[i]
-        fb[dst + 1] = src[i + 1]
+        lo = src[i]
+        hi = src[i + 1]
+        if lo != 31 or hi != 248:
+            fb[dst] = lo
+            fb[dst + 1] = hi
         i += 2
         dst -= 2
 
@@ -183,22 +186,38 @@ class _Display:
     def draw_image(self, name, x, y, imageWidth, imageHeight):
         w = imageWidth
         h = imageHeight
-        if x < 0 or y < 0 or w <= 0 or h <= 0 or x + w > 240 or y + h > 240:
-            raise ValueError('draw_image: out of bounds')
+        if w <= 0 or h <= 0 or w > 240:
+            raise ValueError('draw_image: invalid dimensions')
+
+        vis_x0 = x if x > 0 else 0
+        vis_y0 = y if y > 0 else 0
+        vis_x1 = x + w
+        if vis_x1 > 240: vis_x1 = 240
+        vis_y1 = y + h
+        if vis_y1 > 240: vis_y1 = 240
+        vis_w = vis_x1 - vis_x0
+        vis_h = vis_y1 - vis_y0
+        if vis_w <= 0 or vis_h <= 0:
+            return
+
+        sx0 = vis_x0 - x
+        sy0 = vis_y0 - y
+        src_off = sx0 * 2
         fb = self.buffer
         row_buf = self._row_buf
         read_mv = memoryview(row_buf)[:w * 2]
-        col_start = 240 - x - w
-        row_byte_start = col_start * 2
+        col_start = 240 - vis_x1
 
         with open('/img/' + name, 'rb') as f:
-            for iy in range(h):
+            if sy0:
+                f.seek(sy0 * w * 2)
+            for viy in range(vis_h):
                 f.readinto(read_mv)
-                fb_row = 239 - y - iy
-                fb_offset = fb_row * 480 + row_byte_start
-                _copy_row_reversed(fb, fb_offset, row_buf, w)
+                fb_row = 239 - vis_y0 - viy
+                fb_offset = fb_row * 480 + col_start * 2
+                _copy_clipped_reversed(fb, fb_offset, row_buf, src_off, vis_w)
 
-        self._mark(col_start, 240 - y - h, w, h)
+        self._mark(col_start, 240 - vis_y1, vis_w, vis_h)
 
 
 _display_manager = _Display()

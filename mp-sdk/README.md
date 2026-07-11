@@ -38,3 +38,7 @@ make BOARD_DIR=/Users/louisb/Documents/hardware/macondo-games/mp-sdk/boards/ferr
 
 This will output a uf2 file in the ```ports/rp2/build-ferretboard/``` directory inside the micropython repo, which you can then copy onto the device. If you're using the script as i am, it will instead copy it directly into this repository.
 
+# Licences
+This software itself is AGPL licenced. 
+
+Acknowledgement is also given to the framebuf2 library, which makes up an integral part of this repository. This component is licenced under a MIT licence. 
