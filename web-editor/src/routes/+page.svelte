@@ -52,6 +52,8 @@
 		currentFileIndex = index;
 		//the bind: directive is single direction, so we need to call this function to update the editor content when the current file changes.
 		//i hope that the svelte reactivity will change the editor index before this function is called, so that we dont save the wrong thing in the interim
+
+		//UPDATE: it looks like this works fine; ie svelte reactivity updates the editor before this function is called.
 		editor?.loadNewEditorContent(projectData.codeFiles[currentFileIndex].content);
 	}
 

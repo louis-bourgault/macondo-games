@@ -15,6 +15,16 @@ export class WebSerialConnection {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
+	private async waitForPrompt(timeoutMs = 5000): Promise<void> {
+		const startLen = this.output.length;
+		const deadline = Date.now() + timeoutMs;
+		while (Date.now() < deadline) {
+			if (this.output.slice(startLen).includes('>>> ')) return;
+			await this.delay(10);
+		}
+		throw new Error('timeout waiting for >>> prompt');
+	}
+
 	private async attachPort(port: any) {
 		if (this.attached && this.port === port) {
 			this.connected = true;
@@ -40,35 +50,120 @@ export class WebSerialConnection {
 		this.attached = true;
 	}
 
+	// FNV-1a 32-bit checksum, simple and fast, not cryptographically secure
+	private generateChecksum(str: string): string {
+		let hash = 0x811C9DC5; 
+		
+		for (let i = 0; i < str.length; i++) {
+			hash ^= str.charCodeAt(i);
+			hash = Math.imul(hash, 0x01000193);
+		}
+		
+		return (hash >>> 0).toString(16).padStart(8, '0');
+	}
+
 	public async syncImages(imgs: ImageFile[]) {
 		console.log('received images to sync', imgs);
+
+		let sentImagesData = '';
+
+		//request the file with all the checksums
+		await this.controlC();
+		await this.delay(100);
+		await this.controlC();
+		await this.controlE(); //paste mode
+		await this.delay(50);
+		await this.sendText(`try:\n    with open('/img/images.txt', 'r') as f:\n        _data = f.read()\nexcept OSError:\n    _data = ''\nprint(_data)\n`);
+		await this.controlD();
+		await this.waitForPrompt();
+
+		const existingImagesData = this.output.split('>>> ')[1].trim();
+		console.log('existing images data', existingImagesData);
+
+		const existingImagesMap = new Map<string, { width: number; height: number; checksum: string }>();
+		for (const line of existingImagesData.split('\n')) {
+			const [name, widthStr, heightStr, checksum] = line.split(',');
+			if (name && widthStr && heightStr && checksum) {
+				existingImagesMap.set(name, {
+					width: parseInt(widthStr, 10),
+					height: parseInt(heightStr, 10),
+					checksum,
+				});
+			}
+		}
+
+
 
 		await this.controlC();
 		await this.delay(100);
 		await this.controlC();
-		await this.delay(100);
-		await this.controlE();
-		await this.delay(50);
-		
-		//chunk the file
+		await this.waitForPrompt();
+
+		const chunkSize = 8192; //8kb seems to be a decent chunk size to balance speed and stability.
+		//if its too big,we OOM, if its too small, it takes forever to send.
+
 		for (const img of imgs) {
 			if (!img.name || !img.content) {
 				console.error("can't send this one", img);
 				continue;
 			}
-			let pythonCode = `import os, binascii\ndef isdir():\n    try: \n        file_stat = os.stat('/img/')\n        return (file_stat[0] & 0o170000) == 0o040000\n    except OSError:\n        return False\nif not isdir(): os.mkdir('/img/')\nwith open('/img/${img.name}', 'wb') as f:\n`;
-			const chunkSize = 1024;
+			const checksum = this.generateChecksum(img.content);
+			if (existingImagesMap.has(img.name)) {
+				const existing = existingImagesMap.get(img.name);
+				if (
+					existing &&
+					existing.width === img.width &&
+					existing.height === img.height &&
+					existing.checksum === checksum
+				) {
+					console.log(`Skipping ${img.name}, hasn't chnaged since last checksum`);
+					sentImagesData += `\n${img.name},${img.width},${img.height},${checksum}`;
+					continue;
+				}
+			}
+			sentImagesData += `\n${img.name},${img.width},${img.height},${checksum}`;
+			
+			await this.controlE();
+			await this.delay(50);
+			await this.sendText(
+				`import os, binascii\ntry:\n    os.mkdir('/img')\nexcept OSError:\n    pass\n_f = open('/img/${img.name}', 'wb')\n`
+			);
+			await this.controlD();
+			await this.waitForPrompt();
+			
+			//seperate paste blocks so we don't OOM
 			for (let i = 0; i < img.content.length; i += chunkSize) {
 				const chunk = img.content.slice(i, i + chunkSize);
-				pythonCode += `    f.write(binascii.a2b_base64('${chunk}'))\n`;
+				await this.controlE();
+				await this.delay(50);
+				await this.sendText(`_f.write(binascii.a2b_base64('${chunk}'))\n`);
+				await this.controlD();
+				await this.waitForPrompt();
 			}
-			await this.sendText(pythonCode);
-			
+
+			await this.controlE();
+			await this.delay(50);
+			await this.sendText(`_f.close()\n`);
+			await this.controlD();
+			await this.waitForPrompt();
 		}
+
+		for (const [name, { width, height, checksum }] of existingImagesMap.entries()) {
+			if (!imgs.find((img) => img.name === name)) {
+				//delete the image from the device if it is not in the new list
+				await this.controlE();
+				await this.delay(50);
+				await this.sendText(`import os\ntry:\n    os.remove('/img/${name}')\nexcept OSError:\n    pass\n`);
+				await this.controlD();
+				await this.waitForPrompt();
+			}
+		}
+
+		await this.controlE();
+		await this.delay(50);
+		await this.sendText(`with open('/img/images.txt', 'w') as f:\n    f.write("""${sentImagesData}""")\n`);
 		await this.controlD();
-		await this.delay(500);
-		await this.controlD();
-		
+		await this.waitForPrompt();
 	}
 
 	
