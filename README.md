@@ -2,13 +2,14 @@
 # ferretboard!!!
 
 > [!IMPORTANT]
-> The primary documentation for the software system of this project can be found at [ferretboard.louisbourgault.com/docs](https://ferretboard.louisbourgault.com/docs). Please read from that source for better organised information on software interfaces, etc.
+> The primary documentation for this project can be found at [ferretboard.louisbourgault.com/docs](https://ferretboard.louisbourgault.com/docs). Please read from that source for organised information on software interfaces, assembly, and a more complete project overview.
 > 
-> This README remains the authoritative source on commands to build the firmware for the device.
+> This README remains the authoritative source on commands to build the firmware for the device, and also has a nice image gallery at the end.
 
 ### a small games console with rp2040
-I would like to make a simple games console, based around an RP2040 chip on a custom PCB, and including a 240x240 LCD screen. I am designing this roughly to fit in the footprint of an iPod nano shape and size. The overall dimensions are around 50x100x15mm
-This is part of Hack Club Macondo. You can find my project at [macondo.hackclub.com/projects/1137](https://macondo.hackclub.com/projects/1137)
+This is a simple games console, based around a custom PCB with the RP2040 chip and a 240x240 LCD screen. It's small, of dimensions about 50x100x15mm
+
+This is made as a part of Hack Club Macondo. You can find my project at [macondo.hackclub.com/projects/1137](https://macondo.hackclub.com/projects/1137)
 
 ## Project Structure
 - /software - all software to run both on the machine and for development
@@ -53,7 +54,6 @@ This micropython sdk was created for ease of learning to code this system. I was
 
 ## Building the micropython sdk.
 To build the micropython sdk, follow instructions in [its readme](/mp-sdk/README.md)
-
 
 # Image Gallery
 ![Fusion Case](/img/fusion-case.png)
