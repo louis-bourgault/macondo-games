@@ -1,22 +1,42 @@
 ---
 import Layout from "../../layouts/Layout.astro"
 const docs = Object.values(import.meta.glob("./*.md", {eager: true}))
-const visibleDocs = docs.filter((doc:any) => !doc.frontmatter.draft)
+const visibleDocs = docs.filter((doc: any) => !doc.frontmatter.draft)
+
+const categories = [
+  { key: "general", label: "General" },
+  { key: "go", label: "Go" },
+  { key: "mp", label: "Micropython" },
+]
+
+const docsByCategory = Object.fromEntries(
+  categories.map(({ key }) => [
+    key,
+    visibleDocs.filter((doc: any) => doc.frontmatter.category === key),
+  ])
+)
 ---
 <Layout>
 
-    <h1>Docs</h1>
-    <p>Integration guides on how the code, hardware, and different parts of the ferretboard system work.</p>
+  <h1>Docs</h1>
+  <p>Integration guides on how the code, hardware, and different parts of the Ferretboard system work.</p>
 
-    <ul>
-        {visibleDocs.map((doc: any) => (
-          <li>
-            {/* Astro automatically exposes .url and .frontmatter properties */}
-            <a href={doc.url}>
-              {doc.frontmatter.title || "Untitled Document"}
-            </a>
-            {doc.frontmatter.description && <p>{doc.frontmatter.description}</p>}
-          </li>
-        ))}
-      </ul>
+  {categories.map(({ key, label }) => (
+    <section class="doc-section">
+      <h2>{label}</h2>
+      {docsByCategory[key].length > 0 ? (
+        <ul class="doc-list">
+          {docsByCategory[key].map((doc: any) => (
+            <li class="doc-item">
+              <a href={doc.url}>{doc.frontmatter.title || "Untitled Document"}</a>
+              {doc.frontmatter.description && <p>{doc.frontmatter.description}</p>}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No documents yet.</p>
+      )}
+    </section>
+  ))}
 </Layout>
+

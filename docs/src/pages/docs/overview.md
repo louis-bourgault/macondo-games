@@ -2,6 +2,7 @@
 layout: '../../layouts/DocsLayout.astro'
 title: 'Project Overview'
 draft: false
+category: "general"
 ---
 
 # Ferretboard!!!
@@ -17,6 +18,7 @@ As previously mentioned, the system is made up of a custom pcb, including the RP
 - 3.7v 1000mAh LiPo
 - 1.54" LCD Screen of pixel dimensions 240x240 and with an SPI interface
 - 6 basic 6x6x5 push to make switches that I had lying around
+- 3d printed case, the stl file for which is in ```/case/case.stl``` in the repository
 
 ## Controls
 The system has a basic d-pad, as well as A and B buttons as the primary controls. There are also two buttons (currently called start and select, but somewhat confusingly named since that aren't what they do) for other purposes, but it is better to not use them in games since they are smaller, more annoying to access, buttons soldered to the board.
