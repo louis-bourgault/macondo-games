@@ -11,6 +11,10 @@ This is a simple games console, based around a custom PCB with the RP2040 chip a
 
 This is made as a part of Hack Club Macondo. You can find my project at [macondo.hackclub.com/projects/1137](https://macondo.hackclub.com/projects/1137)
 
+## Online stuff!
+Docs site and main site: [ferretboard.louisbourgault.com](https://ferretboard.louisbourgault.com)
+Web editor for the micropython sdk: [editor.louisbourgault.com](https://editor.louisbourgault.com)
+
 ## Project Structure
 - /software - all software to run both on the machine and for development
 - /mini-games - The kicad project and files for the hardware
@@ -67,6 +71,9 @@ To build the micropython sdk, follow instructions in [its readme](/mp-sdk/README
 ## The website that hosts the WASM version and documentation.
 [ferretboard.louisbourgault.com](https://ferretboard.louisbourgault.com)
 ![Web Screenshot](/img/web-version.png)
+
+## The micropython editor working!
+![micropython image system](/img/micropython-images.jpg)
 
 ## Finished Device
 ![Finished device](/img/finished-device.jpg)
