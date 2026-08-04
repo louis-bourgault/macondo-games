@@ -1,10 +1,11 @@
 ![banner](/img/banner.png)
 # ferretboard!!!
 
-> [!IMPORTANT]
+> # [!IMPORTANT] PLEASE PLEASE READ
 > The primary documentation for this project can be found at [ferretboard.louisbourgault.com/docs](https://ferretboard.louisbourgault.com/docs). Please read from that source for organised information on software interfaces, assembly, and a more complete project overview.
 > 
 > This README remains the authoritative source on commands to build the firmware for the device, and also has a nice image gallery at the end.
+
 
 ### a small games console with rp2040
 This is a simple games console, based around a custom PCB with the RP2040 chip and a 240x240 LCD screen. It's small, of dimensions about 50x100x15mm
@@ -50,6 +51,9 @@ To compile for the actual device, you'll need tinygo installed on your computer.
 
 This will create a .uf2 build artifact in the ```/software/out``` directory. Alternatively, I have chosen not to include this in my .gitignore, so you can find a prebuilt file in this repository at that location, although i make no guarantees about it being up to date.
 
+### SDK information
+You can find sdk information and function descriptions at the docs site linked at the top of this README.
+
 # Micropython SDK
 In addition to the Go programming system for this device, there is a micropython sdk for this device, intended for ease of development and simplicity.
 The SDK for this can be found in the ```/mp-sdk``` directory in this repository. In addition, there is a web editor for this micropython sdk, which can be found in ```/web-editor```.
@@ -58,6 +62,9 @@ This micropython sdk was created for ease of learning to code this system. I was
 
 ## Building the micropython sdk.
 To build the micropython sdk, follow instructions in [its readme](/mp-sdk/README.md)
+
+# Assembly instructions
+Assembly instructions can be found at [ferretboard.louisbourgault.com/docs/assembly](https://ferretboard.louisbourgault.com/docs/assembly).
 
 # Image Gallery
 ![Fusion Case](/img/fusion-case.png)
@@ -98,3 +105,6 @@ codemirror v6 - MIT Licenced, https://code.haverbeke.berlin/codemirror/dev/
 This project is dual-licensed:
 * **Hardware:** The schematic, PCB layout, and documentation files are licensed under the [CERN Open Hardware Licence v2 - Strongly Reciprocal (CERN-OHL-S-2.0)](./mini-games/LICENSE.txt). If you modify and distribute this hardware, you must share your changes to it. 
 * **Firmware/Software:** All source code is licensed under the [GNU AGPLv3](./LICENSE.txt). You can't copy and distribute a changed version of this without making your modifications public, including distribution by serving a part of this code over a network. [Even if you're Bambu Labs.](https://consumerrights.wiki/w/Bambu_Lab_cease_and_desist_against_OrcaSlicer_fork_developer)
+
+# Looking for something
+Looking for something, like assembly instructions or something else? Please check the link up the top of the 
