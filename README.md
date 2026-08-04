@@ -1,7 +1,8 @@
 ![banner](/img/banner.png)
 # ferretboard!!!
 
-> # [!IMPORTANT] PLEASE PLEASE READ
+> [!IMPORTANT]
+> # PLEASE PLEASE READ IM ACTUALLY BEGGING YOU
 > The primary documentation for this project can be found at [ferretboard.louisbourgault.com/docs](https://ferretboard.louisbourgault.com/docs). Please read from that source for organised information on software interfaces, assembly, and a more complete project overview.
 > 
 > This README remains the authoritative source on commands to build the firmware for the device, and also has a nice image gallery at the end.
@@ -106,5 +107,5 @@ This project is dual-licensed:
 * **Hardware:** The schematic, PCB layout, and documentation files are licensed under the [CERN Open Hardware Licence v2 - Strongly Reciprocal (CERN-OHL-S-2.0)](./mini-games/LICENSE.txt). If you modify and distribute this hardware, you must share your changes to it. 
 * **Firmware/Software:** All source code is licensed under the [GNU AGPLv3](./LICENSE.txt). You can't copy and distribute a changed version of this without making your modifications public, including distribution by serving a part of this code over a network. [Even if you're Bambu Labs.](https://consumerrights.wiki/w/Bambu_Lab_cease_and_desist_against_OrcaSlicer_fork_developer)
 
-# Looking for something
-Looking for something, like assembly instructions or something else? Please check the link up the top of the 
+# Looking for something?
+Looking for something, like assembly instructions or something else? Please check the link up the top of this readme. 
