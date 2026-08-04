@@ -1,7 +1,8 @@
 ![banner](/img/banner.png)
 # ferretboard!!!
 
-> # [!IMPORTANT] PLEASE PLEASE READ
+> [!IMPORTANT]
+> # PLEASE PLEASE READ IM ACTUALLY BEGGING YOU
 > The primary documentation for this project can be found at [ferretboard.louisbourgault.com/docs](https://ferretboard.louisbourgault.com/docs). Please read from that source for organised information on software interfaces, assembly, and a more complete project overview.
 > 
 > This README remains the authoritative source on commands to build the firmware for the device, and also has a nice image gallery at the end.
