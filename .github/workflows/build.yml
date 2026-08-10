@@ -32,6 +32,11 @@ jobs:
         run: |
           make MICROPYTHON_ROOT="$RUNNER_TEMP/micropython"
 
+      - name: Verify Go export
+        working-directory: mp-embedding
+        run: |
+          nm -g bridge/libbridge.a | grep say_hello
+
       - name: Run
         working-directory: mp-embedding
         run: ./spike

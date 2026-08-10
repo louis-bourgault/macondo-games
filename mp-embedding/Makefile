@@ -1,7 +1,7 @@
 SHELL := /bin/sh
 
 ROOT := $(CURDIR)
-MICROPYTHON_ROOT ?= $(ROOT)/micropython
+MICROPYTHON_ROOT ?= $(HOME)/src/micropython
 MP_TOP := $(MICROPYTHON_ROOT)
 EMBED_SRC_DIR := $(MICROPYTHON_ROOT)/examples/embedding
 EMBED_DIR := $(EMBED_SRC_DIR)/micropython_embed
@@ -59,9 +59,9 @@ $(MP_BUILD_STAMP): $(EMBED_SRC_DIR)/mpconfigport.h
 
 $(PROG): $(HOST_OBJ) $(GO_ARCHIVE) $(MP_BUILD_STAMP)
 	@objs="$$(find $(BUILD_DIR) -name '*.o' ! -path '$(BUILD_DIR)/host/*' | sort)"; \
-	$(CC) -o $@ $(HOST_OBJ) $$objs $(GO_ARCHIVE) -lm -lpthread
+	$(CC) -o $@ $(HOST_OBJ) $$objs -Wl,--whole-archive $(GO_ARCHIVE) -Wl,--no-whole-archive -lm -lpthread
 
 clean:
 	rm -rf $(BUILD_DIR) $(PROG)
-	$(MAKE) -C $(EMBED_SRC_DIR) -f micropython_embed.mk clean MICROPYTHON_TOP=../..
+	@if [ -d "$(EMBED_SRC_DIR)" ]; then $(MAKE) -C $(EMBED_SRC_DIR) -f micropython_embed.mk clean MICROPYTHON_TOP=../..; fi
 	cd $(GO_DIR) && rm -f libbridge.a libbridge.h
