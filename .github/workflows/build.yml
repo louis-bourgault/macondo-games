@@ -15,7 +15,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: bridge/go.mod
+          go-version-file: mp-embedding/bridge/go.mod
           check-latest: true
 
       - name: Install build tools
@@ -28,8 +28,10 @@ jobs:
           git clone --depth 1 https://github.com/micropython/micropython.git "$RUNNER_TEMP/micropython"
 
       - name: Build
+        working-directory: mp-embedding
         run: |
           make MICROPYTHON_ROOT="$RUNNER_TEMP/micropython"
 
       - name: Run
+        working-directory: mp-embedding
         run: ./spike
