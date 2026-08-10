@@ -16,5 +16,6 @@
             "command": "extension.execute",
             "priority": 4
         }
-    ]
+    ],
+    "C_Cpp.default.compilerPath": "/usr/bin/clang"
 }

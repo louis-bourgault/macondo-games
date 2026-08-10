@@ -1,0 +1,35 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  spike:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: bridge/go.mod
+          check-latest: true
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
+      - name: Clone MicroPython
+        run: |
+          git clone --depth 1 https://github.com/micropython/micropython.git "$RUNNER_TEMP/micropython"
+
+      - name: Build
+        run: |
+          make MICROPYTHON_ROOT="$RUNNER_TEMP/micropython"
+
+      - name: Run
+        run: ./spike
