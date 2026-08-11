@@ -1,2 +1,6 @@
 *.o
 *.env
+*.a
+spike
+build/
+libbridge.h
