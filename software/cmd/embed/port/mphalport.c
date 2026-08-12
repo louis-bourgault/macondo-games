@@ -1,0 +1,91 @@
+// Ferretboard embed port: MicroPython stdio hooks.
+//
+// In the Go-hosts-MicroPython layout, Go owns the USB CDC (TinyGo's TinyUSB
+// stack). MP's stdin/stdout must call back into Go, so these hooks delegate to
+// the //export funcs in bridge.go / cdc_tinygo.go. On the device this routes
+// the MP REPL over the Pico's USB CDC; the web editor talks to it exactly as
+// it would to a stock MicroPython firmware.
+//
+// This file replaces the example embed port's mphalport.c (which uses printf).
+// It is copied into the generated embed package by the justfile `embed` recipe
+// and compiled into libmp_embed.a.
+
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include "py/mphal.h"
+#include "ferret_abi.h"
+
+// MP pulls one byte from stdin. Return -1 if none available (caller polls).
+int mp_hal_stdin_rx_chr(void) {
+    return ferret_cdc_read();
+}
+
+// MP pushes `len` bytes to stdout. Route them to the USB CDC via Go. This is
+// the "raw" hook and is deliberately left unmodified: the raw REPL binary
+// framing (\x01 window, \x04 EOF, paste payloads) must stay byte-exact.
+mp_uint_t mp_hal_stdout_tx_strn(const char *str, size_t len) {
+    ferret_cdc_write((char *)str, len);
+    return len;
+}
+
+// Text stdout helpers. MP's exception/traceback printer emits bare '\n' (see
+// py/obj.c mp_obj_print_exception) and some terminals run the tty with output
+// post-processing off (notably `screen` on macOS), so a bare '\n' moves down a
+// line without returning to column 0 and tracebacks "staircase" rightwards.
+// Normalise bare '\n' to "\r\n" here on the text hooks; pyexec's own "\r\n"
+// passes through unchanged because the '\r' is already present. Only the text
+// hooks are translated so raw/binary REPL traffic is never corrupted.
+#if defined(__arm__)
+static uint8_t cdc_prev_cr = 0;
+static void cdc_write_text(const char *str, size_t len) {
+    size_t run_start = 0;
+    for (size_t i = 0; i < len; i++) {
+        if (str[i] != '\n') {
+            continue;
+        }
+        uint8_t prev_cr = (i > 0) ? (str[i - 1] == '\r') : cdc_prev_cr;
+        if (run_start < i) {
+            ferret_cdc_write((char *)&str[run_start], (int)(i - run_start));
+        }
+        if (!prev_cr) {
+            ferret_cdc_write((char *)"\r", 1);
+        }
+        ferret_cdc_write((char *)"\n", 1);
+        run_start = i + 1;
+    }
+    if (run_start < len) {
+        ferret_cdc_write((char *)&str[run_start], (int)(len - run_start));
+    }
+    cdc_prev_cr = (len > 0) ? (str[len - 1] == '\r') : cdc_prev_cr;
+}
+#else
+// Host reference: the host terminal already does its own newline translation.
+static void cdc_write_text(const char *str, size_t len) {
+    ferret_cdc_write((char *)str, len);
+}
+#endif
+
+// Short-string stdout helper; the REPL (pyexec.c) splices raw "OK", banners etc.
+void mp_hal_stdout_tx_str(const char *str) {
+    cdc_write_text(str, strlen(str));
+}
+
+// Cooked printf helper (used by MP internally); just forward to stdout hook.
+void mp_hal_stdout_tx_strn_cooked(const char *str, size_t len) {
+    cdc_write_text(str, len);
+}
+
+// Monotonic milliseconds, used by pyexec.c to time pastes/execs. On the device
+// this reads the RP2040/RP2350 hardware timer (0x40054000, TIMERAWL in us at
+// 1MHz), which the TinyGo runtime has already initialised.
+mp_uint_t mp_hal_ticks_ms(void) {
+#if defined(__arm__)
+    volatile uint32_t *timerawl = (uint32_t *)0x40054008;
+    return *timerawl / 1000;
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (mp_uint_t)(ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
+#endif
+}
