@@ -81,6 +81,55 @@ STATIC mp_obj_t t_random_int(mp_obj_t min, mp_obj_t max) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(t_random_int_obj, t_random_int);
 
+// --- input ---
+
+STATIC mp_obj_t t_input_update(void) {
+    ferret_input_update();
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(t_input_update_obj, t_input_update);
+
+STATIC mp_obj_t t_input_is_pressed(mp_obj_t key) {
+    return mp_obj_new_bool(ferret_input_is_pressed((char *)mp_obj_str_get_str(key)) != 0);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(t_input_is_pressed_obj, t_input_is_pressed);
+
+STATIC mp_obj_t t_input_was_just_pressed(mp_obj_t key) {
+    return mp_obj_new_bool(ferret_input_was_just_pressed((char *)mp_obj_str_get_str(key)) != 0);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(t_input_was_just_pressed_obj, t_input_was_just_pressed);
+
+STATIC mp_obj_t t_input_was_just_released(mp_obj_t key) {
+    return mp_obj_new_bool(ferret_input_was_just_released((char *)mp_obj_str_get_str(key)) != 0);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(t_input_was_just_released_obj, t_input_was_just_released);
+
+// --- helpers ---
+
+STATIC mp_obj_t t_rgb_to_565(mp_obj_t r, mp_obj_t g, mp_obj_t b) {
+    return MP_OBJ_NEW_SMALL_INT(ferret_rgb_to_565(mp_obj_get_int(r), mp_obj_get_int(g),
+                                                  mp_obj_get_int(b)));
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_3(t_rgb_to_565_obj, t_rgb_to_565);
+
+STATIC mp_obj_t t_draw_image(size_t n_args, const mp_obj_t *args) {
+    mp_buffer_info_t bufinfo;
+    mp_get_buffer_raise(args[4], &bufinfo, MP_BUFFER_READ);
+    ferret_draw_image(mp_obj_get_int(args[0]), mp_obj_get_int(args[1]),
+                      mp_obj_get_int(args[2]), mp_obj_get_int(args[3]),
+                      (uint8_t *)bufinfo.buf, bufinfo.len);
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_VAR(t_draw_image_obj, 5, t_draw_image);
+
+STATIC mp_obj_t t_measure_text(mp_obj_t text) {
+    int w, h;
+    ferret_measure_text((char *)mp_obj_str_get_str(text), &w, &h);
+    mp_obj_t elems[2] = { MP_OBJ_NEW_SMALL_INT(w), MP_OBJ_NEW_SMALL_INT(h) };
+    return mp_obj_new_tuple(2, elems);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(t_measure_text_obj, t_measure_text);
+
 // Register the `ferret` module at runtime (survives the Go/.a qstr boundary).
 void register_ferret_module(void) {
     mp_obj_t mod = mp_obj_new_module(qstr_from_str("ferret"));
@@ -97,6 +146,20 @@ void register_ferret_module(void) {
                       MP_OBJ_FROM_PTR(&t_draw_text_obj));
     mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("random_int")),
                       MP_OBJ_FROM_PTR(&t_random_int_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("input_update")),
+                      MP_OBJ_FROM_PTR(&t_input_update_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("input_is_pressed")),
+                      MP_OBJ_FROM_PTR(&t_input_is_pressed_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("input_was_just_pressed")),
+                      MP_OBJ_FROM_PTR(&t_input_was_just_pressed_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("input_was_just_released")),
+                      MP_OBJ_FROM_PTR(&t_input_was_just_released_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("rgb_to_565")),
+                      MP_OBJ_FROM_PTR(&t_rgb_to_565_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("draw_image")),
+                      MP_OBJ_FROM_PTR(&t_draw_image_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("measure_text")),
+                      MP_OBJ_FROM_PTR(&t_measure_text_obj));
 }
 
 // run_repl runs MicroPython's real REPL (shared/runtime/pyexec.c), which is

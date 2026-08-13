@@ -22,6 +22,20 @@ void ferret_pixel(int x, int y, uint16_t color);
 void ferret_present(void);
 void ferret_draw_text(char *text, int x, int y, uint16_t color);
 int ferret_random_int(int min, int max);
+
+// Input (platform/device/input.go). Keys are SDK strings ("A", "B", "UP",
+// "DOWN", "LEFT", "RIGHT", "START", "EXIT"); unknown names read as None.
+void ferret_input_update(void);
+int ferret_input_is_pressed(char *key);
+int ferret_input_was_just_pressed(char *key);
+int ferret_input_was_just_released(char *key);
+
+// Helpers (internal/helpers): colour conversion, image blitting (raw RGB565
+// bytes, chroma-keyed like the Go games), and text measurement.
+uint16_t ferret_rgb_to_565(int r, int g, int b);
+void ferret_draw_image(int x, int y, int w, int h, uint8_t *data, int n);
+void ferret_measure_text(char *text, int *w, int *h);
+
 int ferret_cdc_read(void);
 void ferret_cdc_write(char *s, int n);
 

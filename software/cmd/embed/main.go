@@ -37,8 +37,15 @@ import (
 // or a host stub (display_stub.go) when building on a PC for the reference.
 var display platform.Screen
 
+// input is the singleton engine input system. Same per-build story as display:
+// device.NewHardwareInput() on a Pico, or a host stub (input_stub.go) on a PC.
+// Students drive it by calling ferret.input_update() once per frame, exactly
+// like input.update() in the standalone MicroPython SDK.
+var input platform.InputSystem
+
 func init() {
 	display = newDisplay() // defined per-build: device or stub
+	input = newInput()     // defined per-build: device or stub
 	_ = helpers.RandomInt  // ensure helpers is linked (used by games)
 }
 
