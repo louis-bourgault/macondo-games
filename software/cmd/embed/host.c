@@ -23,6 +23,9 @@
 #include "port/micropython_embed.h"
 #include "ferret_abi.h"
 
+// The on-device LittleFS2 volume (port/flash_storage.c), mounted at "/".
+void ferret_fs_init(void);
+
 #ifndef STATIC
 #define STATIC static
 #endif
@@ -117,6 +120,7 @@ void run_repl(void) {
     mp_stack_set_top(&stack_marker);
     mp_embed_init(repl_heap, repl_heap_size, &stack_marker);
     register_ferret_module();
+    ferret_fs_init();
 
     for (;;) {
         int ret;
@@ -128,10 +132,13 @@ void run_repl(void) {
         if (ret & PYEXEC_FORCED_EXIT) {
             // soft reset (Ctrl-D from the REPL): tear down and re-bootstrap MP
             // with a fresh heap, like rp2's soft_setup. register_ferret_module()
-            // runs again via MICROPY_BOARD_BEFORE_PYTHON_EXEC on each exec.
+            // runs again via MICROPY_BOARD_BEFORE_PYTHON_EXEC on each exec, and
+            // the VFS mount table is wiped by the reset, so re-mount "/".
             mp_deinit();
             gc_sweep_all();
             mp_embed_init(repl_heap, repl_heap_size, &stack_marker);
+            register_ferret_module();
+            ferret_fs_init();
         }
     }
 }

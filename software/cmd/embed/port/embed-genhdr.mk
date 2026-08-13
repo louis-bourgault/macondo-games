@@ -21,9 +21,17 @@ include $(MICROPYTHON_TOP)/py/py.mk
 # Extra sources the bare generator omitted but our firmware compiles.
 # NOTE: must come BEFORE mkrules.mk — GNU make expands rule prerequisites
 # immediately, so the qstr.i.last rule must see SRC_QSTR including these files.
-SRC_QSTR += $(wildcard extmod/*.c) $(wildcard shared/runtime/*.c) shared/readline/readline.c
+SRC_QSTR += $(wildcard extmod/*.c) $(wildcard shared/runtime/*.c) shared/readline/readline.c $(wildcard port/*.c)
 
 include $(MICROPYTHON_TOP)/py/mkrules.mk
+
+# makeqstrdefs.py `cat` merges per-file qstrs via glob.glob("*.qstr"), which
+# silently SKIPS dotfiles; sources gcc records with a "./" prefix (e.g.
+# extmod/vfs_lfsx.c) end up as .__extmod__vfs_lfsx.c.qstr and would be dropped
+# (link errors: undefined MP_QSTR_FileIO / TextIOWrapper). Merge dotfiles too.
+$(HEADER_BUILD)/qstrdefs.collected.h: $(HEADER_BUILD)/qstr.split
+	$(ECHO) "GEN $@"
+	$(Q)cat $(HEADER_BUILD)/qstr/*.qstr $(HEADER_BUILD)/qstr/.*.qstr 2>/dev/null | LC_ALL=C sort > $@
 
 # mpconfigport.h lives in port/ (QSTR_GLOBAL_DEPENDENCIES references it as a
 # bare filename); mkrules' $(HEADER_BUILD) rule creates build-local/genhdr.

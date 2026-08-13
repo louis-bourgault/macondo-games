@@ -13,7 +13,7 @@
 # linked in via generated cgo LDFLAGS (z_cgo_link_*.go). host.c is compiled by
 # cgo as part of the Go build and bridges MP calls to the Go //export funcs.
 
-MICROPYTHON_ROOT := "{{ env_var(\"HOME\") }}/src/micropython"
+MICROPYTHON_ROOT := env_var_or_default("MICROPYTHON_ROOT", env_var("HOME") + "/src/micropython")
 EMBED_SRC := MICROPYTHON_ROOT + "/examples/embedding"
 EMBED_DIR := EMBED_SRC + "/micropython_embed"
 ROOT := justfile_directory()
@@ -30,6 +30,11 @@ embed:
     cp {{ROOT}}/port/mphalport.c {{EMBED_DIR}}/port/mphalport.c
     cp {{ROOT}}/port/mphalport.h {{EMBED_DIR}}/port/mphalport.h
     cp {{ROOT}}/port/repl_stubs.c {{EMBED_DIR}}/port/repl_stubs.c
+    cp {{ROOT}}/port/flash_storage.c {{EMBED_DIR}}/port/flash_storage.c
+    # ABI header for the port C sources (mphalport.c, flash_storage.c), which
+    # are compiled both by cgo (from ROOT, where the header lives) and as part
+    # of the embed package (where it must sit in port/ for -Iport).
+    cp {{ROOT}}/ferret_abi.h {{EMBED_DIR}}/port/ferret_abi.h
     cp {{MICROPYTHON_ROOT}}/shared/runtime/pyexec.c {{EMBED_DIR}}/shared/runtime/pyexec.c
     cp {{MICROPYTHON_ROOT}}/shared/runtime/pyexec.h {{EMBED_DIR}}/shared/runtime/pyexec.h
     cp {{MICROPYTHON_ROOT}}/shared/runtime/interrupt_char.c {{EMBED_DIR}}/shared/runtime/interrupt_char.c
@@ -42,6 +47,21 @@ embed:
     cp {{MICROPYTHON_ROOT}}/extmod/vfs_blockdev.c {{EMBED_DIR}}/extmod/vfs_blockdev.c
     cp {{MICROPYTHON_ROOT}}/extmod/modos.c {{EMBED_DIR}}/extmod/modos.c
     cp {{MICROPYTHON_ROOT}}/extmod/misc.h {{EMBED_DIR}}/extmod/misc.h
+    # LFS2 filesystem + base64 (binascii) for the image sync; vfs_lfs.c
+    # #includes vfs_lfsx.c itself (one build per LFS version).
+    cp {{MICROPYTHON_ROOT}}/extmod/vfs_lfs.c {{EMBED_DIR}}/extmod/vfs_lfs.c
+    cp {{MICROPYTHON_ROOT}}/extmod/vfs_lfs.h {{EMBED_DIR}}/extmod/vfs_lfs.h
+    cp {{MICROPYTHON_ROOT}}/extmod/vfs_lfsx.c {{EMBED_DIR}}/extmod/vfs_lfsx.c
+    cp {{MICROPYTHON_ROOT}}/extmod/vfs_lfsx_file.c {{EMBED_DIR}}/extmod/vfs_lfsx_file.c
+    cp {{MICROPYTHON_ROOT}}/extmod/modbinascii.c {{EMBED_DIR}}/extmod/modbinascii.c
+    mkdir -p {{EMBED_DIR}}/lib/littlefs
+    cp {{MICROPYTHON_ROOT}}/lib/littlefs/lfs2.c {{EMBED_DIR}}/lib/littlefs/lfs2.c
+    cp {{MICROPYTHON_ROOT}}/lib/littlefs/lfs2.h {{EMBED_DIR}}/lib/littlefs/lfs2.h
+    cp {{MICROPYTHON_ROOT}}/lib/littlefs/lfs2_util.c {{EMBED_DIR}}/lib/littlefs/lfs2_util.c
+    cp {{MICROPYTHON_ROOT}}/lib/littlefs/lfs2_util.h {{EMBED_DIR}}/lib/littlefs/lfs2_util.h
+    mkdir -p {{EMBED_DIR}}/shared/timeutils
+    cp {{MICROPYTHON_ROOT}}/shared/timeutils/timeutils.c {{EMBED_DIR}}/shared/timeutils/timeutils.c
+    cp {{MICROPYTHON_ROOT}}/shared/timeutils/timeutils.h {{EMBED_DIR}}/shared/timeutils/timeutils.h
     # regenerate genhdr so qstrs / root pointers / module defs cover the extra
     # sources above (vfs, modos, pyexec, readline), which the bare generator's
     # py/-only scan would otherwise miss
@@ -54,9 +74,12 @@ embed:
 MP_CFLAGS := "-I" + ROOT + " -I" + EMBED_DIR + " -I" + EMBED_DIR + "/port -I" + EMBED_DIR + "/.. -I" + EMBED_DIR + "/../.."
 
 # --- compile all MP embed C sources into a static archive --------------------
-# TARGET decides the CPU flags; defaults to the RP2040 (cortex-m0plus).
-TARGET := "pico"
-ARM_MCPU := if TARGET == "pico2" { "cortex-m33" } else { "cortex-m0plus" }
+# TARGET decides the CPU flags; defaults to the Ferretboard (RP2040 with a
+# 16 MiB flash chip: __flash_size=16M in ferretboard.json). The 8 MiB
+# LittleFS region needs the 16 MiB target; the stock "pico" (2 MiB) target
+# would make the region math go negative and panic at boot.
+TARGET := "ferretboard.json"
+ARM_MCPU := if TARGET == "ferretboard2.json" { "cortex-m33" } else { "cortex-m0plus" }
 
 mp-arm: embed
     mkdir -p {{ROOT}}/build/arm
@@ -65,6 +88,9 @@ mp-arm: embed
         arm-none-eabi-gcc {{MP_CFLAGS}} -mcpu={{ARM_MCPU}} -mthumb -Wall -O2 -fno-common -c "$src" -o "$obj"; \
     done
     arm-none-eabi-ar rcs {{ROOT}}/build/libmp_embed.a {{ROOT}}/build/arm/*.o
+    # re-fingerprint with the fresh archive (embed already ran gen_cgo.sh
+    # before the archive was rebuilt, so its md5 was one build behind)
+    sh {{ROOT}}/gen_cgo.sh {{MICROPYTHON_ROOT}}
 
 mp-host: embed
     mkdir -p {{ROOT}}/build/host
@@ -73,6 +99,7 @@ mp-host: embed
         gcc {{MP_CFLAGS}} -Wall -Og -fno-common -c "$src" -o "$obj"; \
     done
     ar rcs {{ROOT}}/build/libmp_embed_host.a {{ROOT}}/build/host/*.o
+    sh {{ROOT}}/gen_cgo.sh {{MICROPYTHON_ROOT}}
 
 # === DEVICE (RP2040 / RP2350) ================================================
 # tinygo builds the whole firmware (Go engine + MP archive + host.c) and

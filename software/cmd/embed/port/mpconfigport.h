@@ -30,13 +30,24 @@
 #define MICROPY_ENABLE_GC                       (1)
 #define MICROPY_PY_GC                           (1)
 
+// LittleFS2 needs finalisers (fs userspace data is freed from finalisers).
+#define MICROPY_ENABLE_FINALISER                (1)
+
 // REPL / editor support.
 #define MICROPY_HELPER_REPL                     (1)
 #define MICROPY_REPL_INFO                       (1)
 #define MICROPY_KBD_EXCEPTION                   (1)
 #define MICROPY_PY_SYS                          (1)
 #define MICROPY_PY_OS                           (1)
+// vfs_blockdev.c's block-device I/O uses a memoryview buffer (bytearray is
+// disabled at our ROM level and would be a larger footgun anyway); memoryview
+// needs the array module's internal constructors.
+#define MICROPY_PY_BUILTINS_MEMORYVIEW          (1)
+#define MICROPY_PY_ARRAY                        (1)
 #define MICROPY_VFS                             (1)
+#define MICROPY_VFS_LFS2                        (1)
+#define MICROPY_PY_IO                           (1)
+#define MICROPY_PY_BINASCII                     (1)
 #define MICROPY_READER_VFS                      (0)
 #define MICROPY_READER_POSIX                    (0)
 #define MICROPY_READLINE_HISTORY_SIZE           (8)

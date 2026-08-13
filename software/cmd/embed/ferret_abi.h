@@ -25,6 +25,15 @@ int ferret_random_int(int min, int max);
 int ferret_cdc_read(void);
 void ferret_cdc_write(char *s, int n);
 
+// Internal flash block device (flash_common.go): 4 KiB blocks over the
+// reserved filesystem region. Used by port/flash_storage.c for the on-device
+// LittleFS2 volume at "/".
+int ferret_flash_read(uint32_t block, uint32_t off, uint8_t *buf, uint32_t n);
+int ferret_flash_write(uint32_t block, uint32_t off, uint8_t *buf, uint32_t n);
+int ferret_flash_erase(uint32_t block);
+int ferret_flash_block_count(void);
+int ferret_flash_block_size(void);
+
 #ifdef __cplusplus
 }
 #endif

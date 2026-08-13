@@ -13,6 +13,12 @@ MP_ROOT="${1:?usage: gen_cgo.sh <MICROPYTHON_ROOT>}"
 EMBED_DIR="$MP_ROOT/examples/embedding/micropython_embed"
 CFLAGS="-I${EMBED_DIR} -I${EMBED_DIR}/port -I${EMBED_DIR}/.. -I${EMBED_DIR}/../.."
 
+# Go's build cache keys cgo link actions on the generated file's CONTENT, not
+# on the -l archive's bytes; without a fingerprint here, a rebuilt
+# libmp_embed*.a would be silently linked against a stale cached archive.
+HOST_FP="$(md5sum "$ROOT/build/libmp_embed_host.a" 2>/dev/null | cut -d' ' -f1)"
+ARM_FP="$(md5sum "$ROOT/build/libmp_embed.a" 2>/dev/null | cut -d' ' -f1)"
+
 cat > "$ROOT/z_cgo_link_host.go" <<EOF
 //go:build !tinygo
 
@@ -23,6 +29,7 @@ package main
 /*
 #cgo CFLAGS: ${CFLAGS}
 #cgo LDFLAGS: -Lbuild -lmp_embed_host -lm
+// host archive fingerprint: ${HOST_FP}
 */
 import "C"
 EOF
@@ -37,6 +44,7 @@ package main
 /*
 #cgo CFLAGS: ${CFLAGS}
 #cgo LDFLAGS: -Lbuild -lmp_embed
+// arm archive fingerprint: ${ARM_FP}
 */
 import "C"
 EOF

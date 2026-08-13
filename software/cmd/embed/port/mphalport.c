@@ -89,3 +89,9 @@ mp_uint_t mp_hal_ticks_ms(void) {
     return (mp_uint_t)(ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
 #endif
 }
+
+// Nanosecond wall-clock, used by extmod/vfs_lfsx.c for file mtimes. ns
+// resolution isn't needed; derive from the same clocks as mp_hal_ticks_ms.
+uint64_t mp_hal_time_ns(void) {
+    return (uint64_t)mp_hal_ticks_ms() * 1000000ULL;
+}
