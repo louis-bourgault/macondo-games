@@ -9,6 +9,7 @@ import "C"
 import (
 	"machine"
 	"runtime"
+	"sync"
 	"unsafe"
 )
 
@@ -23,20 +24,25 @@ import (
 // (yield, don't overwrite) when it fills.
 var cdcBuf [4096]byte
 var cdcHead, cdcTail int // head = write, tail = read
+var cdcMu sync.Mutex
 
 //export ferret_cdc_read
 func ferret_cdc_read() C.int {
-	for cdcHead == cdcTail {
-		drainCDC()
+	for {
+		cdcMu.Lock()
+		drainCDCLocked()
+		if cdcHead != cdcTail {
+			b := cdcBuf[cdcTail]
+			cdcTail = (cdcTail + 1) % len(cdcBuf)
+			// MP can consume the software ring faster than the pump runs. Refill
+			// it before returning, while this is the sole producer.
+			drainCDCLocked()
+			cdcMu.Unlock()
+			return C.int(b)
+		}
+		cdcMu.Unlock()
 		runtime.Gosched()
 	}
-	b := cdcBuf[cdcTail]
-	cdcTail = (cdcTail + 1) % len(cdcBuf)
-	// Drain on the way out too: MP can chew through the ring faster than the
-	// pump goroutine gets scheduled, and a full TinyUSB RX ring (512 B) drops
-	// bytes, not backpressure.
-	drainCDC()
-	return C.int(b)
 }
 
 //export ferret_cdc_write
@@ -60,6 +66,14 @@ func ferret_cdc_write(s *C.char, n C.int) {
 // pumpCDC reads from USB CDC into the ring buffer. Runs as a goroutine so the
 // REPL loop in host.c can poll ferret_cdc_read without blocking on USB I/O.
 func drainCDC() {
+	cdcMu.Lock()
+	drainCDCLocked()
+	cdcMu.Unlock()
+}
+
+// drainCDCLocked is the only code that writes cdcBuf or cdcHead.  It is called
+// from both the USB pump and the REPL reader, so callers must hold cdcMu.
+func drainCDCLocked() {
 	for machine.Serial.Buffered() > 0 {
 		next := (cdcHead + 1) % len(cdcBuf)
 		if next == cdcTail {

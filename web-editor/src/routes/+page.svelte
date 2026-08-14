@@ -35,13 +35,18 @@
 		images: []
 	});
 
-	function syncImages() {
+	async function syncImages() {
 		console.log('syncing images...');
 		if (!connection || !connection.connected) {
 			alert('connect before sending.');
 			return;
 		}
-		connection.syncImages(projectData.images);
+		try {
+			await connection.syncImages(projectData.images);
+		} catch (err) {
+			console.error('image sync failed', err);
+			alert(`Image sync failed: ${err instanceof Error ? err.message : String(err)}`);
+		}
 	}
 
 	let selectedImageIndex: number | null = $state(null);

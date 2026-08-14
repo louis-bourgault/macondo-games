@@ -15,14 +15,37 @@ export class WebSerialConnection {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
-	private async waitForPrompt(timeoutMs = 5000): Promise<void> {
-		const startLen = this.output.length;
+	private async waitForOutputSince(
+		needle: string,
+		startLen: number,
+		timeoutMs = 5000
+	): Promise<void> {
 		const deadline = Date.now() + timeoutMs;
 		while (Date.now() < deadline) {
-			if (this.output.slice(startLen).includes('>>> ')) return;
+			if (this.output.slice(startLen).includes(needle)) return;
 			await this.delay(10);
 		}
-		throw new Error('timeout waiting for >>> prompt');
+		throw new Error(`timeout waiting for ${needle}`);
+	}
+
+	private async pasteAndRun(source: string): Promise<string> {
+		// Do not rely on a fixed delay here. A payload sent before Ctrl-E has
+		// actually reached the device is interpreted by the friendly REPL.
+		const pasteStart = this.output.length;
+		await this.controlE();
+		await this.waitForOutputSince('=== ', pasteStart);
+
+		// Take the checkpoint before Ctrl-D: a quick device can print the prompt
+		// before the next await gets to inspect output.
+		const responseStart = this.output.length;
+		await this.sendText(source);
+		await this.controlD();
+		await this.waitForOutputSince('>>> ', responseStart);
+		const response = this.output.slice(responseStart);
+		if (response.includes('Traceback (most recent call last):')) {
+			throw new Error(`device rejected paste:\n${response}`);
+		}
+		return response;
 	}
 
 	private async attachPort(port: any) {
@@ -71,16 +94,12 @@ export class WebSerialConnection {
 		await this.delay(100);
 		await this.controlC();
 		await this.delay(100);
-		await this.controlE(); //paste mode
-		await this.delay(50);
 		// Note where output ends before querying the manifest so we only parse
 		// the response to THIS query. connection.output accumulates the whole
 		// session (including the controlC prompts above), so splitting on the
 		// first '>>> ' would grab the stale bytes between the first two prompts.
 		const manifestStart = this.output.length;
-		await this.sendText(`import ferret\nprint(ferret.image_manifest())\n`);
-		await this.controlD();
-		await this.waitForPrompt();
+		await this.pasteAndRun(`import ferret\nprint(ferret.image_manifest())\n`);
 
 		const existingImagesData = this.output.slice(manifestStart);
 		console.log('existing images data', existingImagesData);
@@ -101,9 +120,10 @@ export class WebSerialConnection {
 			}
 		}
 
-		const chunkSize = 2048; //must fit the MP GC heap (16 KiB): a base64 string literal this big plus
-		//its parse tree/bytecode OOMs at ~4 KiB, so 2 KiB is a safe margin. Too big and the paste
-		//fails to compile; too small and it takes forever to send.
+		// TinyUSB has a 512-byte receive staging buffer. Keep the complete Python
+		// paste (wrapper plus payload) comfortably below it; the previous 2 KiB
+		// writes could overrun that buffer before the RP2040 drained it.
+		const chunkSize = 320;
 
 		for (const img of imgs) {
 			if (!img.name || !img.content) {
@@ -134,31 +154,18 @@ export class WebSerialConnection {
 					i === 0
 						? `ferret.write_image("${img.name}", ${img.width}, ${img.height}, "${chunk}")`
 						: `ferret.append_image("${img.name}", "${chunk}")`;
-				//seperate paste blocks so we don't OOM
-				await this.controlE();
-				await this.delay(50);
-				await this.sendText(`import ferret\n${call}\n`);
-				await this.controlD();
-				await this.waitForPrompt();
+				await this.pasteAndRun(`import ferret\n${call}\n`);
 			}
 
-			await this.controlE();
-			await this.delay(50);
-			await this.sendText(`import ferret\nferret.write_image_end("${img.name}")\n`);
-			await this.controlD();
-			await this.waitForPrompt();
+			await this.pasteAndRun(`import ferret\nferret.write_image_end("${img.name}")\n`);
 		}
 
 		for (const name of existingImagesMap.keys()) {
 			if (!imgs.find((img) => img.name === name)) {
 				//delete the image from the device if it is not in the new list
-				await this.controlE();
-				await this.delay(50);
-				await this.sendText(
+				await this.pasteAndRun(
 					`import ferret\ntry:\n    ferret.delete_image("${name}")\nexcept OSError:\n    pass\n`
 				);
-				await this.controlD();
-				await this.waitForPrompt();
 			}
 		}
 	}
@@ -220,9 +227,7 @@ export class WebSerialConnection {
 		await this.delay(100);
 		await this.controlC();
 		await this.delay(100);
-		await this.controlE();
-		await this.delay(50);
-		await this.sendText(
+		await this.pasteAndRun(
 			'import gc\n' +
 				'for _n in list(globals()):\n' +
 				'    if not _n.startswith("_") and _n != "gc":\n' +
@@ -235,7 +240,6 @@ export class WebSerialConnection {
 				script +
 				'\n'
 		); //RUN the garbage colelctor; avoids out of memory issues.
-		await this.controlD();
 	};
 
 	public saveProjectToDevice = async (projectData: ProjectData) => {
@@ -260,9 +264,9 @@ export class WebSerialConnection {
 		// Chunked so we don't OOM the MicroPython heap. write_file opens the
 		// file, append_file adds the rest. Backslashes and triple quotes are
 		// escaped so the paste literal round-trips the content byte-for-byte.
-		// 2 KiB keeps the string literal well under the 16 KiB GC heap (4 KiB
-		// chunks already fail to compile).
-		const chunkSize = 2048;
+		// Use the same wire-safe limit as images: the full paste must fit through
+		// TinyUSB's receive staging buffer, not merely the MP heap.
+		const chunkSize = 320;
 		for (let i = 0; i < content.length; i += chunkSize) {
 			const chunk = content
 				.slice(i, i + chunkSize)
@@ -272,11 +276,7 @@ export class WebSerialConnection {
 				i === 0
 					? `ferret.write_file("${filename}", """${chunk}""")`
 					: `ferret.append_file("${filename}", """${chunk}""")`;
-			await this.controlE();
-			await this.delay(50);
-			await this.sendText(`import ferret\n${call}\n`);
-			await this.controlD();
-			await this.waitForPrompt();
+			await this.pasteAndRun(`import ferret\n${call}\n`);
 		}
 	};
 
