@@ -10,59 +10,16 @@ import Layout from "../layouts/Layout.astro";
   <h1>Ferretboard</h1>
   <p>
     Ferretboard is a small games console running on a custom PCB with a rp2040
-    chip and 240x240 screen.
+    chip and 240x240 screen. It's got various different ways of making games for it, including a web based editor based on a micropython sdk (well, actually 2), and a pure golang compile time system.
   </p>
   <p>
     Created for <a href="https://macondo.hackclub.com/?ref=F2RS4">Hack Club Macondo</a> by <a
       href="https://new.louisbourgault.com">Louis Bourgault du Coudray</a>
   </p>
-  <h2>Wasm Simulator (golang games system)</h2>
-  <canvas id="canvas" width="240" height="240"></canvas>
-  <script src="/wasm_exec.js" is:inline></script>
-  <script>
-    const go = new Go();
-    WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject)
-      .then((result) => go.run(result.instance))
-      .catch(console.error);
-    let canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = false;
-  </script>
-  <p class="game-instructions">Use WASD for d-pad buttons. Use J and K for A and B buttons, respectively. Use Enter for START and Shift for EXIT.</p>
-  <p class="game-instructions">Press Shift (select) to exit any game</p>
-  <h3>Controls for different games</h2>
-  <details>
-    <summary>Snake</summary>
-    <p>Use WASD to move the snake, and J to restart if you lose</p>
-  </details>
-  <details>
-    <summary>Flappy Bird</summary>
-    <p>Use J to flap. Also use J to restart if you lose</p>
-  </details>
-  <details>
-    <summary>Mandelbrot Set</summary>
-    <p>There are two modes - iterate mode and zoom mode. You start in iterate mode, and can toggle between them with Select (enter)</p>
-    <p>Iterate mode - K to increase iterations, J to decrease</p>
-    <p>Zoom mode - WASD to move the view, J to zoom in, K to zoom out</p>
-  </details>
-  <details>
-    <summary>Julia Set</summary>
-    <p>Use WASD to move the seed of the set, J and K to increase and decrease iterations.</p>
-  </details>
-  <details>
-    <summary>Chess</summary>
-    <p>Use WASD to move the cursor, and J to select a piece and J to put it down again. To deselect a piece, just try to put it down in an illegal place.</p>
-    <p>Note: there is no castling, pawn promotion, or en passant.</p>
-  </details>
-  <details>
-    <summary>Blackjack</summary>
-    <p>J to hit, K to stand, up to double down. The game explains it on screen.</p>
-  </details>
-  <details>
-    <summary>Tetris</summary>
-    <p>Use A and D to move left and right, W to rotate clockwise, and S to drop. If you lose, press A to restart.</p>
-  </details>
-  <h2>Hardware and Physical Device</h2>
+
+  
+  
+  <h2>Hardware and Physical Device (v1)</h2>
   <p><a href="https://www.youtube.com/shorts/Q-nbf0EjklA">Demo on Youtube of finished device</a></p>
   <img src="https://cdn.hackclub.com/019ee35f-67a7-7709-b699-a4260c96196b/PXL_20260620_040404639.jpg" alt="Photo of the physical device, showing the screen and buttons" />
 </Layout>
