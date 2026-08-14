@@ -41,21 +41,16 @@ embed:
     mkdir -p {{EMBED_DIR}}/shared/readline
     cp {{MICROPYTHON_ROOT}}/shared/readline/readline.c {{EMBED_DIR}}/shared/readline/readline.c
     cp {{MICROPYTHON_ROOT}}/shared/readline/readline.h {{EMBED_DIR}}/shared/readline/readline.h
-    # Regenerate genhdr so qstrs / root pointers / module defs cover the extra
-    # sources above (pyexec, readline), which the bare generator's py/-only
-    # scan would otherwise miss. Wipe the previous outputs first: the make
-    # only re-collects when sources change, and the per-file .qstr scans
-    # encode the OLD mpconfigport.h (e.g. array/io/os module defs).
-    rm -rf {{EMBED_DIR}}/build-local {{EMBED_DIR}}/genhdr
-    cp {{ROOT}}/port/embed-genhdr.mk {{EMBED_DIR}}/embed-genhdr.mk
-    cd {{EMBED_DIR}} && make -f embed-genhdr.mk MICROPYTHON_TOP={{MICROPYTHON_ROOT}} genhdr
-    mkdir -p {{EMBED_DIR}}/genhdr
-    cp {{EMBED_DIR}}/build-local/genhdr/*.h {{EMBED_DIR}}/genhdr/
-    sh {{ROOT}}/gen_cgo.sh {{MICROPYTHON_ROOT}}
-    # Drop sources that earlier builds copied in but the Go-owned filesystem
-    # no longer compiles (vfs, os, binascii, littlefs, flash_storage): the
-    # embed package is regenerated from scratch by the make above, but the
-    # extra copies below would otherwise linger and get compiled again.
+    # The `time` module (sleep/ticks); enabled by MICROPY_PY_TIME in our
+    # mpconfigport.h. extmod/*.c present here are picked up both by the genhdr
+    # scan below (SRC_QSTR wildcard) and by the mp-*/device archive compile.
+    cp {{MICROPYTHON_ROOT}}/extmod/modtime.c {{EMBED_DIR}}/extmod/modtime.c
+    cp {{MICROPYTHON_ROOT}}/extmod/modtime.h {{EMBED_DIR}}/extmod/modtime.h
+    # Drop sources from earlier builds that the Go-owned filesystem no longer
+    # compiles (vfs, os, binascii, littlefs, flash_storage). This must run
+    # BEFORE genhdr: the module-def scan reads every extmod/*.c present, and a
+    # regenerated module def for a source we then delete would fail the link
+    # with undefined mp_module_* symbols (see BUILDING.md §4).
     rm -f {{EMBED_DIR}}/extmod/vfs.c {{EMBED_DIR}}/extmod/vfs.h \
           {{EMBED_DIR}}/extmod/vfs_blockdev.c {{EMBED_DIR}}/extmod/modos.c \
           {{EMBED_DIR}}/extmod/misc.h {{EMBED_DIR}}/extmod/vfs_lfs.c \
@@ -65,6 +60,17 @@ embed:
           {{EMBED_DIR}}/lib/littlefs/lfs2_util.c {{EMBED_DIR}}/lib/littlefs/lfs2_util.h \
           {{EMBED_DIR}}/shared/timeutils/timeutils.c {{EMBED_DIR}}/shared/timeutils/timeutils.h \
           {{EMBED_DIR}}/port/flash_storage.c
+    # Regenerate genhdr so qstrs / root pointers / module defs cover the extra
+    # sources above (pyexec, readline, modtime), which the bare generator's
+    # py/-only scan would otherwise miss. Wipe the previous outputs first: the
+    # make only re-collects when sources change, and the per-file .qstr scans
+    # encode the OLD mpconfigport.h (e.g. array/io/os module defs).
+    rm -rf {{EMBED_DIR}}/build-local {{EMBED_DIR}}/genhdr
+    cp {{ROOT}}/port/embed-genhdr.mk {{EMBED_DIR}}/embed-genhdr.mk
+    cd {{EMBED_DIR}} && make -f embed-genhdr.mk MICROPYTHON_TOP={{MICROPYTHON_ROOT}} genhdr
+    mkdir -p {{EMBED_DIR}}/genhdr
+    cp {{EMBED_DIR}}/build-local/genhdr/*.h {{EMBED_DIR}}/genhdr/
+    sh {{ROOT}}/gen_cgo.sh {{MICROPYTHON_ROOT}}
 
 # --- shared MP CFLAGS (host and device differ only in the compiler) ----------
 MP_CFLAGS := "-I" + ROOT + " -I" + EMBED_DIR + " -I" + EMBED_DIR + "/port -I" + EMBED_DIR + "/.. -I" + EMBED_DIR + "/../.."

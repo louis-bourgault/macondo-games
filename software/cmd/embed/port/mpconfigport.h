@@ -34,6 +34,40 @@
 #define MICROPY_PY_GC                           (1)
 #define MICROPY_ENABLE_FINALISER                (1)
 
+// The `time` module (extmod/modtime.c, copied into the embed package by the
+// justfile): sleep / sleep_ms / sleep_us and ticks_* for pacing game loops.
+// Backed by mp_hal_delay_ms/us + mp_hal_ticks_us/cpu in mphalport.c (RP2040
+// timer on device, nanosleep on host). GMTIME/LOCALTIME/MKTIME and time() stay
+// off: there is no RTC/epoch source (mp_hal_time_ns is ticks-based).
+#define MICROPY_PY_TIME                         (1)
+
+// Floating point: needed for `math` (its whole module is gated on float) and
+// for float literals/`float()`. Soft-float on the device: arithmetic comes from
+// compiler-rt's AEABI helpers, transcendentals (sqrtf/sinf/...) from picolibc.
+#define MICROPY_FLOAT_IMPL                      (MICROPY_FLOAT_IMPL_FLOAT)
+
+// Builtin modules kept minimal but useful for games: math (rotation, easing),
+// struct (binary save data), array (typed buffers) and collections (namedtuple
+// / deque). All four live in py/ so no extra sources need copying; these flags
+// are off at MICROPY_CONFIG_ROM_LEVEL_MINIMUM so they must be set explicitly.
+#define MICROPY_PY_MATH                         (1)
+#define MICROPY_PY_MATH_CONSTANTS               (1)  // pi, e
+#define MICROPY_PY_MATH_FACTORIAL               (1)
+#define MICROPY_PY_MATH_ISCLOSE                 (1)
+#define MICROPY_PY_STRUCT                       (1)
+#define MICROPY_PY_ARRAY                        (1)
+#define MICROPY_PY_ARRAY_SLICE_ASSIGN           (1)
+// Slice syntax (a[1:3]) is gated behind the slice type at MINIMUM; enable it
+// (plus slice.start/stop/step attrs and .indices()) so array slicing works.
+#define MICROPY_PY_BUILTINS_SLICE               (1)
+#define MICROPY_PY_BUILTINS_SLICE_ATTRS         (1)
+#define MICROPY_PY_BUILTINS_SLICE_INDICES       (1)
+#define MICROPY_PY_COLLECTIONS                  (1)
+#define MICROPY_PY_COLLECTIONS_DEQUE            (1)
+#define MICROPY_PY_COLLECTIONS_DEQUE_ITER       (1)
+#define MICROPY_PY_COLLECTIONS_DEQUE_SUBSCR     (1)
+#define MICROPY_PY_COLLECTIONS_ORDEREDDICT      (1)
+
 // REPL / editor support.
 #define MICROPY_HELPER_REPL                     (1)
 #define MICROPY_REPL_INFO                       (1)

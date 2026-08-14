@@ -90,6 +90,63 @@ mp_uint_t mp_hal_ticks_ms(void) {
 #endif
 }
 
+// 64-bit microsecond counter (TIMERAWH at +0x04, TIMERAWL at +0x08) on the
+// RP2040/RP2350. Read high before low and re-check high so a rollover between
+// the two reads doesn't produce a wrapped 64-bit value.
+#if defined(__arm__)
+static uint64_t ferret_time_us_64(void) {
+    volatile uint32_t *t = (uint32_t *)0x40054004;
+    uint32_t hi = t[0];
+    uint32_t lo = t[1];
+    if (hi != t[0]) {
+        hi = t[0];
+        lo = t[1];
+    }
+    return ((uint64_t)hi << 32) | lo;
+}
+#endif
+
+// Blocking sleeps backing the `time` module (time.sleep / sleep_ms / sleep_us).
+// Device: busy-wait on the hardware timer. Host: nanosleep.
+void mp_hal_delay_ms(mp_uint_t ms) {
+#if defined(__arm__)
+    uint64_t target = ferret_time_us_64() + (uint64_t)ms * 1000;
+    while (ferret_time_us_64() < target) {
+    }
+#else
+    struct timespec ts = { .tv_sec = ms / 1000, .tv_nsec = (long)(ms % 1000) * 1000000 };
+    nanosleep(&ts, NULL);
+#endif
+}
+
+void mp_hal_delay_us(mp_uint_t us) {
+#if defined(__arm__)
+    uint64_t target = ferret_time_us_64() + us;
+    while (ferret_time_us_64() < target) {
+    }
+#else
+    struct timespec ts = { .tv_sec = us / 1000000, .tv_nsec = (long)(us % 1000000) * 1000 };
+    nanosleep(&ts, NULL);
+#endif
+}
+
+// Microsecond ticks for time.ticks_us. The low 32 bits of the us counter is a
+// sane ticks source (period wraps to MICROPY_PY_TIME_TICKS_PERIOD).
+mp_uint_t mp_hal_ticks_us(void) {
+#if defined(__arm__)
+    return (mp_uint_t)(ferret_time_us_64() & 0xffffffffUL);
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (mp_uint_t)(ts.tv_sec * 1000000 + ts.tv_nsec / 1000);
+#endif
+}
+
+// time.ticks_cpu: no DWT setup on this board; the us counter is good enough.
+mp_uint_t mp_hal_ticks_cpu(void) {
+    return mp_hal_ticks_us();
+}
+
 // Nanosecond wall-clock, used by extmod/vfs_lfsx.c for file mtimes. ns
 // resolution isn't needed; derive from the same clocks as mp_hal_ticks_ms.
 uint64_t mp_hal_time_ns(void) {

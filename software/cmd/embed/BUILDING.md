@@ -88,13 +88,19 @@ The `embed` recipe then **overlays our files** onto that package:
    replace the stock ones. `mpconfigport.h` is the master switch for every MP
    feature (compiler, GC, `sys`, `readline`, REPL helpers, banner). Notably it
    enables `MICROPY_ENABLE_EXTERNAL_IMPORT` so Python can `import` from files
-   (see §9), and disables VFS/`os`/`binascii`/`io`/`array` — the filesystem
-   lives in Go instead (see `flash_fs.go`).
+   (see §9), disables VFS/`os`/`binascii`/`io` (the filesystem lives in Go
+   instead — see `flash_fs.go`), and re-enables a minimal set of useful builtin
+   modules above the `MICROPY_CONFIG_ROM_LEVEL_MINIMUM` defaults: `time`
+   (sleep/ticks), `math` (+ float support via soft-float/picolibc), `struct`,
+   `array` (with slice assign), `collections` (namedtuple/deque/OrderedDict)
+   and slices.
 2. Extra upstream sources are copied in because the stock generator ships only a
    minimal subset:
    * `shared/runtime/pyexec.{c,h}` — the REPL (friendly / raw / paste modes),
    * `shared/runtime/interrupt_char.{c,h}` — `mp_hal_set_interrupt_char` (Ctrl-C),
    * `shared/readline/` — line editing used by the friendly REPL.
+   * `extmod/modtime.{c,h}` — the `time` module (`sleep`, `ticks_*`), backed by
+     `mp_hal_delay_ms/us` + `mp_hal_ticks_us/cpu` in `mphalport.c`.
    (`extmod/vfs*`, `modos.c`, `modbinascii.c` and `port/flash_storage.c` were
    used by the pre-Go-FS layout and must **not** be copied in any more.)
 3. **`embed-genhdr.mk` regenerates the package's `genhdr/`.** This is the
