@@ -235,6 +235,13 @@ export class WebSerialConnection {
 		for (const file of projectData.codeFiles) {
 			await this.writeFileToDevice(file.name, file.content);
 		}
+		// Boot main.py right away: a soft reset re-runs the boot script, so the
+		// game starts immediately instead of needing a power cycle.
+		await this.controlC();
+		await this.delay(100);
+		await this.controlC();
+		await this.delay(100);
+		await this.controlD();
 	};
 
 	public writeFileToDevice = async (filename: string, content: string) => {

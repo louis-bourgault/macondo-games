@@ -41,69 +41,129 @@
 	} from '@codemirror/autocomplete';
 	import { lintKeymap } from '@codemirror/lint';
 
-	
-	
-	
 	const libraryCompletions: Completion[] = [
 		{
-			label: 'display.fill',
+			label: 'ferret.fill',
 			type: 'function',
-			detail: '(color: rgb565)',
-			info: 'Fill the whole display with a single RGB565 color, e.g. 0xF800 for red.'
+			detail: '(color: int)',
+			info: 'Fill the whole display with a single RGB565 color, e.g. ferret.rgb_to_565(255, 0, 0) for red.'
 		},
 		{
-			label: 'display.update',
+			label: 'ferret.fill_rect',
+			type: 'function',
+			detail: '(x, y, width, height, color)',
+			info: 'Draw a filled rectangle in the display buffer.'
+		},
+		{
+			label: 'ferret.pixel',
+			type: 'function',
+			detail: '(x, y, color)',
+			info: 'Set a single pixel in the display buffer.'
+		},
+		{
+			label: 'ferret.present',
 			type: 'function',
 			detail: '()',
-			info: 'Send whatever is in the display buffer to the actual display. Call this after you have made a change to the display.'
+			info: 'Send whatever is in the display buffer to the actual display. Call this after drawing.'
 		},
 		{
-			label: 'display.pixel',
+			label: 'ferret.draw_text',
 			type: 'function',
-			detail: '(x: int, y: int, color: rgb565)',
-			info: 'Set a single pixel in the display buffer to a color. Call display.update afterwards to draw it to the screen.'
-
+			detail: '(text, x, y, color)',
+			info: 'Draw text at the given position. Use ferret.measure_text to center it.'
 		},
 		{
-			label: 'display.rect',
+			label: 'ferret.measure_text',
 			type: 'function',
-			detail: '(x: int, y: int, width: int, height: int, color: rgb565)',
-			info: 'Draw a rectangle in the display buffer.'
+			detail: '(text) -> (width, height)',
+			info: 'Measure the space text will take up, so you can position or center it.'
 		},
 		{
-			label: 'display.text',
+			label: 'ferret.rgb_to_565',
 			type: 'function',
-			detail: '(x: int, y: int, text: str, color: rgb565)',
-			info: 'Draw text in the display buffer.'
+			detail: '(r, g, b) -> int',
+			info: 'Convert an 8-bit-per-channel color to the RGB565 format the display uses.'
 		},
 		{
-			label: 'input.update',
+			label: 'ferret.draw_image',
+			type: 'function',
+			detail: '(name, x, y)',
+			info: 'Draw an image from the device at (x, y). Its size is read from the image manifest, so sync your images first.'
+		},
+		{
+			label: 'ferret.random_int',
+			type: 'function',
+			detail: '(min, max) -> int',
+			info: 'A random integer in the range [min, max], e.g. ferret.random_int(1, 6) rolls a die.'
+		},
+		{
+			label: 'ferret.input_update',
 			type: 'function',
 			detail: '()',
-			info: 'Update the input state. Call this before checking for button presses.'
+			info: 'Update the input state. Call this once per frame before checking buttons.'
 		},
 		{
-			label: 'input.is_pressed',
+			label: 'ferret.input_is_pressed',
 			type: 'function',
 			detail: '(button: str) -> bool',
-			info: 'Check if a button is pressed. Call input.update() first.'
+			info: 'Check if a button is currently held down. Call ferret.input_update() first. Buttons: "A", "B", "UP", "DOWN", "LEFT", "RIGHT", "START", "EXIT".'
 		},
 		{
-			label: 'input.was_just_pressed',
+			label: 'ferret.input_was_just_pressed',
 			type: 'function',
 			detail: '(button: str) -> bool',
-			info: 'Check if a button was pressed since the last call to input.update(). Call input.update() first.'
+			info: 'Check if a button was pressed since the last call to ferret.input_update(). Call ferret.input_update() first. Buttons: "A", "B", "UP", "DOWN", "LEFT", "RIGHT", "START", "EXIT".'
 		},
 		{
-			label: 'input.was_just_released',
+			label: 'ferret.input_was_just_released',
 			type: 'function',
 			detail: '(button: str) -> bool',
-			info: 'Check if a button was released since the last call to input.update(). Call input.update() first.'
+			info: 'Check if a button was released since the last call to ferret.input_update(). Call ferret.input_update() first. Buttons: "A", "B", "UP", "DOWN", "LEFT", "RIGHT", "START", "EXIT".'
+		},
+		{
+			label: 'ferret.write_file',
+			type: 'function',
+			detail: '(path, content)',
+			info: 'Write a file to the device flash (used by the editor when saving, but handy for things like saving a high score).'
+		},
+		{
+			label: 'ferret.append_file',
+			type: 'function',
+			detail: '(path, content)',
+			info: 'Append content to a file on the device flash. Create it first with ferret.write_file.'
+		},
+		{
+			label: 'ferret.image_manifest',
+			type: 'function',
+			detail: '() -> str',
+			info: 'List the images stored on the device, one "name,width,height,checksum" per line. Used by the editor when syncing images.'
+		},
+		{
+			label: 'ferret.delete_image',
+			type: 'function',
+			detail: '(name)',
+			info: 'Remove an image from the device flash. Raises OSError if it does not exist.'
+		},
+		{
+			label: 'ferret.write_image',
+			type: 'function',
+			detail: '(name, width, height, base64_chunk)',
+			info: 'Start uploading an image as base64 (used by the editor). Finish with ferret.write_image_end.'
+		},
+		{
+			label: 'ferret.append_image',
+			type: 'function',
+			detail: '(name, base64_chunk)',
+			info: 'Add more base64 characters to an in-progress image upload (used by the editor).'
+		},
+		{
+			label: 'ferret.write_image_end',
+			type: 'function',
+			detail: '(name)',
+			info: 'Validate and save a finished image upload (used by the editor).'
 		}
-
-
 	];
-	
+
 	function libraryCompletionSource(context: CompletionContext): CompletionResult | null {
 		const word = context.matchBefore(/[\w.]+/);
 		if (!word && !context.explicit) return null;
@@ -115,7 +175,7 @@
 	}
 
 	let view: EditorView;
-	
+
 	const libraryCompletionExtension = pythonLanguage.data.of({
 		autocomplete: libraryCompletionSource
 	});
@@ -359,7 +419,7 @@
 </script>
 
 <!-- nested divs are a plague upon this  -->
-<div class="w-full h-full">
+<div class="h-full w-full">
 	<div class="editor h-full" bind:this={editorContainer}></div>
 </div>
 

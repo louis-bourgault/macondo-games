@@ -29,8 +29,8 @@
 		codeFiles: [
 			{
 				name: 'main.py',
-				content: `import modules.display as display\nimport modules.input as input\n\n# Your code here!`
-			},
+				content: `import ferret\n\n# Your code here!`
+			}
 		],
 		images: []
 	});
@@ -137,9 +137,14 @@
 			newImageError = `Dimensions must be ${MAX_IMAGE_DIM}\u00d7${MAX_IMAGE_DIM} or less.`;
 			return;
 		}
-		let newImageContent = new Uint8Array(width * height * 2);  //initialise it blank so it doens't crash the device when we try to render
+		let newImageContent = new Uint8Array(width * height * 2); //initialise it blank so it doens't crash the device when we try to render
 
-		projectData.images.push({ name: name.trim(), width, height, content: newImageContent.toBase64() });
+		projectData.images.push({
+			name: name.trim(),
+			width,
+			height,
+			content: newImageContent.toBase64()
+		});
 		newImageData = { name: '', width: 0, height: 0 };
 		newImageError = '';
 		newImageDialogOpen = false;
@@ -160,12 +165,12 @@
 			newFileError = 'A file with this name already exists.';
 			return;
 		}
-		projectData.codeFiles.push({ name, content: '' });
+		projectData.codeFiles.push({ name, content: 'import ferret\n\n# Your code here!\n' });
 		newFileName = '';
 		newFileError = '';
 		newFileDialogOpen = false;
 		currentFileIndex = projectData.codeFiles.length - 1;
-		editor?.loadNewEditorContent('');
+		editor?.loadNewEditorContent('import ferret\n\n# Your code here!\n');
 	}
 
 	function confirmRename(event: Event) {
@@ -309,8 +314,8 @@
 </script>
 
 {#if connection}
-	<div class="h-full w-full flex flex-col overscroll-none">
-		<div class="w-full flex flex-row">
+	<div class="flex h-full w-full flex-col overscroll-none">
+		<div class="flex w-full flex-row">
 			<Button onclick={connection.connect} class="h-full">Connect</Button>
 			{#if connection.connected}
 				<Button variant="secondary" onclick={connection.controlC} class="h-full"
@@ -328,7 +333,6 @@
 				<Button onclick={uploadScript} class="h-full">Run Script</Button>
 				<Button onclick={saveToDevice} class="h-full">Save to device</Button>
 				<Button onclick={syncImages} class="h-full">Sync images</Button>
-				
 			{/if}
 			<Button variant="secondary" onclick={save} class="h-full"
 				>Save project to local storage</Button
@@ -352,12 +356,12 @@
 		</div>
 		<Resizable.PaneGroup
 			direction="horizontal"
-			class="flex-1 min-h-0 max-w-screen rounded-lg border"
+			class="min-h-0 max-w-screen flex-1 rounded-lg border"
 		>
 			<Resizable.Pane defaultSize={70} minSize={30}>
 				<Resizable.PaneGroup
 					direction="vertical"
-					class="min-h-50 max-w-md rounded-lg border min-w-screen"
+					class="min-h-50 max-w-md min-w-screen rounded-lg border"
 				>
 					<Resizable.Pane defaultSize={70} minSize={30}>
 						<Editor
@@ -367,17 +371,17 @@
 					</Resizable.Pane>
 					<Resizable.Handle withHandle />
 					<Resizable.Pane defaultSize={30} minSize={10}>
-						<div class="flex flex-col h-full w-full min-h-0">
+						<div class="flex h-full min-h-0 w-full flex-col">
 							{#if connection.connected}
 								<pre
-									class="flex-1 min-h-0 overflow-y-auto whitespace-pre-wrap"
+									class="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap"
 									bind:this={outputelement}>{connection.output}</pre>
 							{:else}
-								<p class="flex-1 min-h-0 overflow-y-auto">
+								<p class="min-h-0 flex-1 overflow-y-auto">
 									Connect to the device to see output and send terminal commands.
 								</p>
 							{/if}
-							<form onsubmit={handleSubmit} class="w-full flex-row flex justify-between">
+							<form onsubmit={handleSubmit} class="flex w-full flex-row justify-between">
 								<Input
 									class="w-full"
 									bind:value={terminalInput}
@@ -395,7 +399,7 @@
 				<Accordion.Root
 					type="multiple"
 					value={['files', 'images']}
-					class="w-full h-full flex flex-col"
+					class="flex h-full w-full flex-col"
 				>
 					<Accordion.Item value="files" class="flex flex-col">
 						<Accordion.Trigger class="px-4">Files</Accordion.Trigger>
@@ -417,7 +421,7 @@
 												: 'hover:bg-muted/60'}"
 										>
 											<button
-												class="flex flex-1 items-center gap-1.5 text-left text-xs min-w-0"
+												class="flex min-w-0 flex-1 items-center gap-1.5 text-left text-xs"
 												onclick={() => changeActiveFile(index)}
 											>
 												<FileCode
@@ -462,7 +466,7 @@
 					</Accordion.Item> -->
 					<Accordion.Item value="images" class="flex flex-col">
 						<Accordion.Trigger class="px-4">Images</Accordion.Trigger>
-						<Accordion.Content class="px-2 flex-1 overflow-y-auto">
+						<Accordion.Content class="flex-1 overflow-y-auto px-2">
 							<div class="flex flex-col gap-1">
 								<Button
 									variant="outline"
@@ -484,7 +488,7 @@
 													: 'hover:bg-muted/60'}"
 											>
 												<button
-													class="flex flex-1 items-center gap-1.5 text-left text-xs min-w-0"
+													class="flex min-w-0 flex-1 items-center gap-1.5 text-left text-xs"
 													onclick={() => (selectedImageIndex = index)}
 												>
 													<ImageIcon class="size-3.5 shrink-0 text-muted-foreground" />
