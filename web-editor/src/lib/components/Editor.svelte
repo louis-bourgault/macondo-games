@@ -119,7 +119,10 @@
 			type: 'function',
 			detail: '(button: str) -> bool',
 			info: 'Check if a button was released since the last call to ferret.input_update(). Call ferret.input_update() first. Buttons: "A", "B", "UP", "DOWN", "LEFT", "RIGHT", "START", "EXIT".'
-		},
+		}
+		/*
+		// Internal ferret API used by the editor (save/sync) — not for student
+		// code, so kept out of the completions. Uncomment to bring them back.
 		{
 			label: 'ferret.write_file',
 			type: 'function',
@@ -162,6 +165,7 @@
 			detail: '(name)',
 			info: 'Validate and save a finished image upload (used by the editor).'
 		}
+		*/
 	];
 
 	function libraryCompletionSource(context: CompletionContext): CompletionResult | null {
