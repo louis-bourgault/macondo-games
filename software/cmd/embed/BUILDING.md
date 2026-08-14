@@ -45,8 +45,10 @@ MicroPython's C interpreter is precompiled into a **static archive**
 cmd/embed/
   justfile             recipes: embed, mp-arm, mp-host, host, device, clean
   gen_cgo.sh           writes z_cgo_link_{host,tinygo}.go (include/link flags)
-  host.c               C glue: ferret module trampolines, run_repl(), soft reset
+  host.c               C glue: ferret module trampolines, run_repl(), boot script
   bridge.go            //export funcs the `ferret` module calls (thin, engine-facing)
+  flash_common.go      device flash driver (XO2 pico-flash library, SPI CS on GP22)
+  flash_fs.go          //export ferret_* filesystem + image service (Go-owned LittleFS)
   cdc_stub.go          host CDC: reads stdin / writes stdout            [go:build !tinygo]
   cdc_tinygo.go        device CDC: TinyUSB ring buffer + pump goroutine  [go:build tinygo]
   display_stub.go      host display singleton (no-op)                   [go:build !tinygo]
@@ -57,7 +59,7 @@ cmd/embed/
     mpconfigport.h     our MicroPython feature configuration
     mphalport.c        MP stdio/ticks hooks -> ferret_cdc_* (Go)
     mphalport.h        MP HAL extra declarations (interrupt_char prototype)
-    repl_stubs.c       mp_lexer_new_from_file stub (no POSIX FS on device)
+    repl_stubs.c       mp_import_stat + mp_lexer_new_from_file -> Go exports
     embed-genhdr.mk    regenerates qstrs / root pointers / module defs
   z_cgo_link_*.go      generated (see §5)
   build/               per-target .o files + the static archives (gitignored)
@@ -84,14 +86,17 @@ The `embed` recipe then **overlays our files** onto that package:
 
 1. Our `port/mpconfigport.h`, `mphalport.c`, `mphalport.h`, `repl_stubs.c`
    replace the stock ones. `mpconfigport.h` is the master switch for every MP
-   feature (compiler, GC, `sys`, `os`, VFS, readline, REPL helpers, banner).
+   feature (compiler, GC, `sys`, `readline`, REPL helpers, banner). Notably it
+   enables `MICROPY_ENABLE_EXTERNAL_IMPORT` so Python can `import` from files
+   (see §9), and disables VFS/`os`/`binascii`/`io`/`array` — the filesystem
+   lives in Go instead (see `flash_fs.go`).
 2. Extra upstream sources are copied in because the stock generator ships only a
    minimal subset:
    * `shared/runtime/pyexec.{c,h}` — the REPL (friendly / raw / paste modes),
    * `shared/runtime/interrupt_char.{c,h}` — `mp_hal_set_interrupt_char` (Ctrl-C),
-   * `shared/readline/` — line editing used by the friendly REPL,
-   * `extmod/vfs.c`, `vfs_blockdev.c`, `modos.c`, `misc.h` — the `os` module
-     and the VFS layer (file ops; a filesystem mount is the next step).
+   * `shared/readline/` — line editing used by the friendly REPL.
+   (`extmod/vfs*`, `modos.c`, `modbinascii.c` and `port/flash_storage.c` were
+   used by the pre-Go-FS layout and must **not** be copied in any more.)
 3. **`embed-genhdr.mk` regenerates the package's `genhdr/`.** This is the
    subtle bit — see §4.
 4. `gen_cgo.sh` writes the cgo include/link flags (see §5).
@@ -104,13 +109,13 @@ MicroPython scans its **compiled sources** to build three generated headers:
 
 * `qstrdefs.generated.h` — every `MP_QSTR_*` used in C,
 * `root_pointers.h` — every `MP_REGISTER_ROOT_POINTER` (state that the GC must
-  trace, e.g. `vfs_mount_table`, readline history),
-* `moduledefs.h` — every `MP_REGISTER_MODULE` (e.g. the `os` module).
+  trace, e.g. readline history),
+* `moduledefs.h` — every `MP_REGISTER_MODULE` (e.g. `sys`).
 
-The stock embed generator only scans `py/` sources, so the extra files copied in
-step 2 would contribute nothing: you would get link errors like
-`undefined reference to MP_QSTR_mount`, a missing `vfs_mount_table` root pointer,
-and `import os` would fail. `embed-genhdr.mk` therefore re-runs MicroPython's
+The stock embed generator only scans `py/` sources, so the extra files copied
+in step 2 would contribute nothing: you would get link errors like
+`undefined reference to MP_QSTR_mount` and `import ferret`'s helpers would
+misfire. `embed-genhdr.mk` therefore re-runs MicroPython's
 own generation machinery *inside the package directory*, adding our sources to
 `SRC_QSTR`:
 
@@ -129,6 +134,11 @@ Two gotchas, both hit during bring-up:
   `cd $EMBED_DIR`), because `$(wildcard extmod/*.c)` and the `-I.` include paths
   are relative. Also add `vpath mpconfigport.h port` so the qstr dependency
   scan can find our config file.
+* **The generated headers are stale after a config change.** The per-file
+  `qstr.i` scan bakes in `mpconfigport.h` as it was when the package was
+  generated. After editing MP features, `just embed` deletes
+  `build-local/genhdr/` and `genhdr/` and regenerates from scratch — otherwise
+  module/qstr lists from the old config leak into the build.
 
 The regenerated headers land in `build-local/genhdr/` and are copied back over
 the package's `genhdr/`.
@@ -237,10 +247,24 @@ calls before *every* paste/exec. Re-registration is idempotent.
      `ferret_cdc_read()` blocks (spin + `runtime.Gosched()`) because pyexec
      expects blocking reads; writes go straight to `machine.Serial`.
    * Host: `cdc_stub.go` bridges to `os.Stdin` / `os.Stdout`.
-4. **soft reset (Ctrl-D):** pyexec returns `PYEXEC_FORCED_EXIT`; `run_repl`
+4. **the filesystem is Go-owned.** `flash_fs.go` mounts a LittleFS volume on
+   the flash driver (`flash_common.go`) at boot and serves the `ferret.*` file
+   and image functions. MicroPython never touches storage directly: with
+   `MICROPY_ENABLE_EXTERNAL_IMPORT` set and VFS disabled, `mp_import_stat()` /
+   `mp_lexer_new_from_file()` (in `repl_stubs.c`) route every `import` through
+   the Go exports `ferret_stat` / `ferret_read_file`. A 16 KB scratch buffer
+   (`ferret_fs_buf`, shared between boot script and module imports) is safe
+   because source text is only needed until compilation finishes.
+5. **the boot script:** `run_boot_script()` (in `host.c`) runs after every
+   (re)init: it fetches `/main.py` from Go and executes it with a **fresh
+   module globals dict**, so a game boots automatically on power-up and on
+   Ctrl-D, with its own namespace and working `import`s. Exceptions are caught
+   with `nlr_push` and printed as a traceback — the REPL survives a crashing
+   boot script.
+6. **soft reset (Ctrl-D):** pyexec returns `PYEXEC_FORCED_EXIT`; `run_repl`
    runs `mp_deinit()` → `gc_sweep_all()` → `mp_embed_init(...)` (fresh heap +
-   VM state) and continues the loop. `ferret` is re-registered on the next exec
-   via the board hook.
+   VM state) and continues the loop — which re-runs the boot script. `ferret`
+   is re-registered on the next exec via the board hook.
 
 ---
 
@@ -256,16 +280,34 @@ calls before *every* paste/exec. Re-registration is idempotent.
 3. **No POSIX on bare metal.** `MICROPY_READER_POSIX` pulls in `open/read/close/
    errno`, which TinyGo's libc lacks. `pyexec.c` references
    `mp_lexer_new_from_file` for the never-used "run file by path" path, so
-   `repl_stubs.c` provides a stub raising `OSError(ENOENT)` instead.
+   `repl_stubs.c` implements it (plus `mp_import_stat`) via the Go FS instead.
 4. **`mp_hal_ticks_ms` / `mp_hal_stdout_tx_str` are port responsibilities.**
    pyexec needs them; `mphalport.c` implements both (hardware timer on device,
    `clock_gettime` on host).
 5. **genhdr scan coverage** — see §4. If a new module/source adds qstrs or root
    pointers and isn't in `SRC_QSTR`, the *link* fails with `undefined reference`
-   to `MP_QSTR_*`, not the compile.
+   to `MP_QSTR_*`, not the compile. Stale generated headers after a config
+   change are just as sneaky — see §4.
 6. **`MP_STATE_PORT`** must alias `MP_STATE_VM` or readline history doesn't
    compile.
 7. **tinygo is not bundled** — `just device` needs it on `PATH`.
+8. **Boot scripts need explicit globals.** The REPL only creates its globals
+   dict on first input, and `mp_parse_compile_execute(lex, kind, globals,
+   locals)` overwrites the thread globals with its arguments — passing `NULL`
+   makes `mp_compile` capture a NULL module context, which segfaults on the
+   first name lookup. Pass a fresh `mp_obj_new_dict()`.
+9. **Exceptions must not cross the cgo boundary.** nlr-longjmp across Go frames
+   is undefined behaviour (the host build hangs, the device crashes). Any code
+   that runs Python from C — like the boot script — must `nlr_push`/catch and
+   print the traceback.
+10. **tinyfs/littlefs quirks.** `File.Write`/`Read` panic on empty buffers
+    (guard `len == 0`); `Mkdir` on an existing directory reports an "already
+    exists" error that must be tolerated on remount; error checks compare
+    against `littlefs.Error(-2)` / `Error(-17)` (there is no `ErrNoEntry`).
+11. **Base64 uploads accumulate.** The editor splits payloads at arbitrary
+    chunk boundaries, so individual chunks are not valid base64. `flash_fs.go`
+    accumulates characters and decodes once at `write_image_end`, when the
+    full padded string is available.
 
 ---
 
@@ -280,7 +322,15 @@ calls before *every* paste/exec. Re-registration is idempotent.
 **Enable an MP feature/module.** Add the `MICROPY_*` define to
 `port/mpconfigport.h`. If it compiles extra sources (e.g. `extmod/foo.c`), copy
 them into the package in the `embed` recipe **and** make sure they reach
-`SRC_QSTR` in `embed-genhdr.mk`, then rebuild `embed` so `genhdr/` regenerates.
+`SRC_QSTR` in `embed-genhdr.mk`, then rebuild `embed` so `genhdr/` regenerates
+(see the stale-genhdr gotcha in §4).
+
+**Change the filesystem.** The volume, limits (`maxFsFile`, `maxImageFile`,
+`imgCacheBudget`) and the `ferret.*` file/image API all live in `flash_fs.go`
+and `ferret_abi.h`; nothing on the MicroPython side needs rebuilding. Note the
+editor protocol: `write_file`/`append_file` for code, `write_image`/
+`append_image`/`write_image_end` for base64 images, `image_manifest` to list
+them, `delete_image` to remove one, and a soft reset to boot `/main.py`.
 
 **Upgrade the MicroPython checkout.** Point `MICROPYTHON_ROOT` at the new
 checkout and run `just embed` — the package and generated files are rebuilt

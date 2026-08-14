@@ -55,6 +55,7 @@ var mpHeap [16 * 1024]byte
 
 func main() {
 	setupFlashRegion()
+	initGoFS() // mount the LittleFS2 volume (owns /main.py, /img, ...)
 	// Bootstrap libmicropython: point its GC at mpHeap and set the stack top
 	// from a local so MP's stack-based GC scanning has a sane upper bound.
 	C.ferret_boot(unsafe.Pointer(&mpHeap[0]), C.size_t(len(mpHeap)))

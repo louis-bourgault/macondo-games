@@ -17,8 +17,6 @@ package main
 import "C"
 
 import (
-	"unsafe"
-
 	"github.com/louis-bourgault/macondo-games/software/internal/helpers"
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
 )
@@ -110,15 +108,6 @@ func ferret_input_was_just_released(key *C.char) C.int {
 //export ferret_rgb_to_565
 func ferret_rgb_to_565(r, g, b C.int) C.uint16_t {
 	return C.uint16_t(helpers.RGBto565(int(r), int(g), int(b)))
-}
-
-//export ferret_draw_image
-func ferret_draw_image(x, y, w, h C.int, data *C.uint8_t, n C.int) {
-	helpers.DrawImage(display, helpers.Image{
-		Data: string(unsafe.Slice((*byte)(unsafe.Pointer(data)), int(n))),
-		W:    uint8(w),
-		H:    uint8(h),
-	}, int16(x), int16(y))
 }
 
 //export ferret_measure_text
