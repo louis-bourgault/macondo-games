@@ -6,8 +6,6 @@ on:
 jobs:
   device:
     runs-on: ubuntu-latest
-    env:
-      MICROPYTHON_ROOT: ${{ runner.temp }}/micropython
 
     steps:
       - name: Checkout project
@@ -41,6 +39,8 @@ jobs:
       # The embed package is generated into this checkout, so pin the
       # MicroPython revision the firmware is built and tested against.
       - name: Checkout MicroPython at pinned commit
+        env:
+          MICROPYTHON_ROOT: ${{ runner.temp }}/micropython
         run: |
           git clone --depth 1 https://github.com/micropython/micropython.git "$MICROPYTHON_ROOT"
           git -C "$MICROPYTHON_ROOT" fetch --depth 1 origin 0ee1eba9e1d425edb416cf4b483250a8a3331e89
@@ -48,6 +48,8 @@ jobs:
 
       - name: Build firmware (just device)
         working-directory: software/cmd/embed
+        env:
+          MICROPYTHON_ROOT: ${{ runner.temp }}/micropython
         run: just device
 
       - name: Upload UF2 artifact
