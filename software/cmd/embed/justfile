@@ -19,19 +19,18 @@ EMBED_DIR := EMBED_SRC + "/micropython_embed"
 ROOT := justfile_directory()
 
 # --- shared: generate the MP embed package + our cgo link flags --------------
-# Extra MP sources the stock embed generator omits but the raw REPL + VFS need:
+# Extra MP sources the stock embed generator omits but the raw REPL needs:
 #   pyexec.c:            the friendly/raw/paste REPL loop the editor speaks to
 #   interrupt_char.c:    mp_hal_set_interrupt_char (Ctrl-C while executing)
 #   readline/:           line editing used by the friendly REPL
-#   extmod/ vfs+modos:   the `os` module / VFS (file ops; FS mount comes later)
+# (No VFS/extmod sources: the filesystem is owned by Go, flash_fs.go.)
 embed:
     cd {{EMBED_SRC}} && make -f micropython_embed.mk MICROPYTHON_TOP=../..
     cp {{ROOT}}/port/mpconfigport.h {{EMBED_DIR}}/port/mpconfigport.h
     cp {{ROOT}}/port/mphalport.c {{EMBED_DIR}}/port/mphalport.c
     cp {{ROOT}}/port/mphalport.h {{EMBED_DIR}}/port/mphalport.h
     cp {{ROOT}}/port/repl_stubs.c {{EMBED_DIR}}/port/repl_stubs.c
-    cp {{ROOT}}/port/flash_storage.c {{EMBED_DIR}}/port/flash_storage.c
-    # ABI header for the port C sources (mphalport.c, flash_storage.c), which
+    # ABI header for the port C sources (mphalport.c, repl_stubs.c), which
     # are compiled both by cgo (from ROOT, where the header lives) and as part
     # of the embed package (where it must sit in port/ for -Iport).
     cp {{ROOT}}/ferret_abi.h {{EMBED_DIR}}/port/ferret_abi.h
@@ -42,33 +41,30 @@ embed:
     mkdir -p {{EMBED_DIR}}/shared/readline
     cp {{MICROPYTHON_ROOT}}/shared/readline/readline.c {{EMBED_DIR}}/shared/readline/readline.c
     cp {{MICROPYTHON_ROOT}}/shared/readline/readline.h {{EMBED_DIR}}/shared/readline/readline.h
-    cp {{MICROPYTHON_ROOT}}/extmod/vfs.c {{EMBED_DIR}}/extmod/vfs.c
-    cp {{MICROPYTHON_ROOT}}/extmod/vfs.h {{EMBED_DIR}}/extmod/vfs.h
-    cp {{MICROPYTHON_ROOT}}/extmod/vfs_blockdev.c {{EMBED_DIR}}/extmod/vfs_blockdev.c
-    cp {{MICROPYTHON_ROOT}}/extmod/modos.c {{EMBED_DIR}}/extmod/modos.c
-    cp {{MICROPYTHON_ROOT}}/extmod/misc.h {{EMBED_DIR}}/extmod/misc.h
-    # LFS2 filesystem + base64 (binascii) for the image sync; vfs_lfs.c
-    # #includes vfs_lfsx.c itself (one build per LFS version).
-    cp {{MICROPYTHON_ROOT}}/extmod/vfs_lfs.c {{EMBED_DIR}}/extmod/vfs_lfs.c
-    cp {{MICROPYTHON_ROOT}}/extmod/vfs_lfs.h {{EMBED_DIR}}/extmod/vfs_lfs.h
-    cp {{MICROPYTHON_ROOT}}/extmod/vfs_lfsx.c {{EMBED_DIR}}/extmod/vfs_lfsx.c
-    cp {{MICROPYTHON_ROOT}}/extmod/vfs_lfsx_file.c {{EMBED_DIR}}/extmod/vfs_lfsx_file.c
-    cp {{MICROPYTHON_ROOT}}/extmod/modbinascii.c {{EMBED_DIR}}/extmod/modbinascii.c
-    mkdir -p {{EMBED_DIR}}/lib/littlefs
-    cp {{MICROPYTHON_ROOT}}/lib/littlefs/lfs2.c {{EMBED_DIR}}/lib/littlefs/lfs2.c
-    cp {{MICROPYTHON_ROOT}}/lib/littlefs/lfs2.h {{EMBED_DIR}}/lib/littlefs/lfs2.h
-    cp {{MICROPYTHON_ROOT}}/lib/littlefs/lfs2_util.c {{EMBED_DIR}}/lib/littlefs/lfs2_util.c
-    cp {{MICROPYTHON_ROOT}}/lib/littlefs/lfs2_util.h {{EMBED_DIR}}/lib/littlefs/lfs2_util.h
-    mkdir -p {{EMBED_DIR}}/shared/timeutils
-    cp {{MICROPYTHON_ROOT}}/shared/timeutils/timeutils.c {{EMBED_DIR}}/shared/timeutils/timeutils.c
-    cp {{MICROPYTHON_ROOT}}/shared/timeutils/timeutils.h {{EMBED_DIR}}/shared/timeutils/timeutils.h
-    # regenerate genhdr so qstrs / root pointers / module defs cover the extra
-    # sources above (vfs, modos, pyexec, readline), which the bare generator's
-    # py/-only scan would otherwise miss
+    # Regenerate genhdr so qstrs / root pointers / module defs cover the extra
+    # sources above (pyexec, readline), which the bare generator's py/-only
+    # scan would otherwise miss. Wipe the previous outputs first: the make
+    # only re-collects when sources change, and the per-file .qstr scans
+    # encode the OLD mpconfigport.h (e.g. array/io/os module defs).
+    rm -rf {{EMBED_DIR}}/build-local {{EMBED_DIR}}/genhdr
     cp {{ROOT}}/port/embed-genhdr.mk {{EMBED_DIR}}/embed-genhdr.mk
     cd {{EMBED_DIR}} && make -f embed-genhdr.mk MICROPYTHON_TOP={{MICROPYTHON_ROOT}} genhdr
+    mkdir -p {{EMBED_DIR}}/genhdr
     cp {{EMBED_DIR}}/build-local/genhdr/*.h {{EMBED_DIR}}/genhdr/
     sh {{ROOT}}/gen_cgo.sh {{MICROPYTHON_ROOT}}
+    # Drop sources that earlier builds copied in but the Go-owned filesystem
+    # no longer compiles (vfs, os, binascii, littlefs, flash_storage): the
+    # embed package is regenerated from scratch by the make above, but the
+    # extra copies below would otherwise linger and get compiled again.
+    rm -f {{EMBED_DIR}}/extmod/vfs.c {{EMBED_DIR}}/extmod/vfs.h \
+          {{EMBED_DIR}}/extmod/vfs_blockdev.c {{EMBED_DIR}}/extmod/modos.c \
+          {{EMBED_DIR}}/extmod/misc.h {{EMBED_DIR}}/extmod/vfs_lfs.c \
+          {{EMBED_DIR}}/extmod/vfs_lfs.h {{EMBED_DIR}}/extmod/vfs_lfsx.c \
+          {{EMBED_DIR}}/extmod/vfs_lfsx_file.c {{EMBED_DIR}}/extmod/modbinascii.c \
+          {{EMBED_DIR}}/lib/littlefs/lfs2.c {{EMBED_DIR}}/lib/littlefs/lfs2.h \
+          {{EMBED_DIR}}/lib/littlefs/lfs2_util.c {{EMBED_DIR}}/lib/littlefs/lfs2_util.h \
+          {{EMBED_DIR}}/shared/timeutils/timeutils.c {{EMBED_DIR}}/shared/timeutils/timeutils.h \
+          {{EMBED_DIR}}/port/flash_storage.c
 
 # --- shared MP CFLAGS (host and device differ only in the compiler) ----------
 MP_CFLAGS := "-I" + ROOT + " -I" + EMBED_DIR + " -I" + EMBED_DIR + "/port -I" + EMBED_DIR + "/.. -I" + EMBED_DIR + "/../.."
@@ -83,6 +79,7 @@ ARM_MCPU := if TARGET == "ferretboard2.json" { "cortex-m33" } else { "cortex-m0p
 
 mp-arm: embed
     mkdir -p {{ROOT}}/build/arm
+    rm -f {{ROOT}}/build/arm/*.o
     find {{EMBED_DIR}} -name '*.c' | sort | while read src; do \
         obj={{ROOT}}/build/arm/$(basename "$src" .c).o; \
         arm-none-eabi-gcc {{MP_CFLAGS}} -mcpu={{ARM_MCPU}} -mthumb -Wall -O2 -fno-common -c "$src" -o "$obj"; \
@@ -94,6 +91,7 @@ mp-arm: embed
 
 mp-host: embed
     mkdir -p {{ROOT}}/build/host
+    rm -f {{ROOT}}/build/host/*.o
     find {{EMBED_DIR}} -name '*.c' | sort | while read src; do \
         obj={{ROOT}}/build/host/$(basename "$src" .c).o; \
         gcc {{MP_CFLAGS}} -Wall -Og -fno-common -c "$src" -o "$obj"; \

@@ -1,0 +1,60 @@
+name: device build
+
+on:
+  push:
+
+jobs:
+  device:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: software/go.mod
+
+      - name: Install arm-none-eabi-gcc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi
+
+      - name: Install just
+        run: |
+          curl -fsSL -o /tmp/just.tar.gz \
+            https://github.com/casey/just/releases/download/1.21.0/just-1.21.0-x86_64-unknown-linux-musl.tar.gz
+          tar -C /usr/local/bin -xzf /tmp/just.tar.gz just
+
+      - name: Install TinyGo
+        run: |
+          curl -fsSL -o /tmp/tinygo.tar.gz \
+            https://github.com/tinygo-org/tinygo/releases/download/v0.41.1/tinygo0.41.1.linux-amd64.tar.gz
+          mkdir -p /opt/tinygo
+          tar -C /opt/tinygo --strip-components=1 -xzf /tmp/tinygo.tar.gz
+          echo "/opt/tinygo/bin" >> "$GITHUB_PATH"
+          echo "TINYGO=/opt/tinygo" >> "$GITHUB_ENV"
+
+      # The embed package is generated into this checkout, so pin the
+      # MicroPython revision the firmware is built and tested against.
+      - name: Checkout MicroPython at pinned commit
+        env:
+          MICROPYTHON_ROOT: ${{ runner.temp }}/micropython
+        run: |
+          git clone --depth 1 https://github.com/micropython/micropython.git "$MICROPYTHON_ROOT"
+          git -C "$MICROPYTHON_ROOT" fetch --depth 1 origin 0ee1eba9e1d425edb416cf4b483250a8a3331e89
+          git -C "$MICROPYTHON_ROOT" checkout --detach FETCH_HEAD
+
+      - name: Build firmware (just device)
+        working-directory: software/cmd/embed
+        env:
+          MICROPYTHON_ROOT: ${{ runner.temp }}/micropython
+        run: just device
+
+      - name: Upload UF2 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ferret-uf2
+          path: software/cmd/embed/ferret.uf2
+          if-no-files-found: error
