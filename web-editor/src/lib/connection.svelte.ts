@@ -73,20 +73,26 @@ export class WebSerialConnection {
 		await this.delay(100);
 		await this.controlE(); //paste mode
 		await this.delay(50);
+		// Note where output ends before querying the manifest so we only parse
+		// the response to THIS query. connection.output accumulates the whole
+		// session (including the controlC prompts above), so splitting on the
+		// first '>>> ' would grab the stale bytes between the first two prompts.
+		const manifestStart = this.output.length;
 		await this.sendText(`import ferret\nprint(ferret.image_manifest())\n`);
 		await this.controlD();
 		await this.waitForPrompt();
 
-		const existingImagesData = this.output.split('>>> ')[1].trim();
+		const existingImagesData = this.output.slice(manifestStart);
 		console.log('existing images data', existingImagesData);
 
 		const existingImagesMap = new Map<
 			string,
 			{ width: number; height: number; checksum: string }
 		>();
-		for (const line of existingImagesData.split('\n')) {
-			const [name, widthStr, heightStr, checksum] = line.split(',');
-			if (name && widthStr && heightStr && checksum) {
+		for (const rawLine of existingImagesData.split('\n')) {
+			// trim so a trailing \r (the device sends CRLF) doesn't corrupt the checksum
+			const [name, widthStr, heightStr, checksum] = rawLine.trim().split(',');
+			if (name && widthStr && heightStr && checksum && !isNaN(parseInt(widthStr, 10))) {
 				existingImagesMap.set(name, {
 					width: parseInt(widthStr, 10),
 					height: parseInt(heightStr, 10),
