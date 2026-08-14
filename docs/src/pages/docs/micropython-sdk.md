@@ -1,11 +1,15 @@
 ---
 layout: '../../layouts/DocsLayout.astro'
-title: 'Micropython SDK - About'
+title: 'Micropython SDK (new) - About'
 draft: false
-category: "mp"
+category: "ogmp"
 ---
 
-Apart from the golang sdk, there is also a micropython sdk. This is designed for ease of use, even to go so far as to be an introduction to programming.
-This came about after I showed this project to a digital technologies teacher at my school, and he was somewhat interested in how something like the device could be used in a school setting due to its simplicity and people being able to make something that they can actually hold in their hands in a relatively limited amount of time. However, coding in Go doesn't really work for this: it's not that beginner friendly a language (for someone who's never coded before, at least), and more importantly there would be a significant amount of software that would need to be installed on the computers for people to even start working on it, including VS code and the compiler.
+note: this docs page is a wip
 
-So I made a simple micropython sdk, that can be programmed through a web editor. 
+
+The micropython sdk is the new scripting language for the system - you write your code in the web editor at ```/web-editor``` in the repository (deployed at [https://editor.louisbourgault.com](editor.louisbourgault.com).)
+
+The intention of this system is to provide an easy entry to the system. I am first writing this with my idea being to give these devices to school as a way to teach students to code, or at least to pitch the idea to a teacher. I think that having an easy to code system that runs fully in a browser without having to install anything is pretty cool, personally.
+
+This is better than the other micropython sdk because its backend is in go, and the micropython is just a thin wrapper on top, with a thin C glue layer in the middle. This is because I like coding in go more, and i can get more performance from go theoretically (untested, but i dont see why not).
