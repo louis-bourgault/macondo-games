@@ -95,8 +95,9 @@ export class WebSerialConnection {
 			}
 		}
 
-		const chunkSize = 8192; //8kb seems to be a decent chunk size to balance speed and stability.
-		//if its too big, we OOM, if its too small, it takes forever to send.
+		const chunkSize = 2048; //must fit the MP GC heap (16 KiB): a base64 string literal this big plus
+		//its parse tree/bytecode OOMs at ~4 KiB, so 2 KiB is a safe margin. Too big and the paste
+		//fails to compile; too small and it takes forever to send.
 
 		for (const img of imgs) {
 			if (!img.name || !img.content) {
@@ -253,7 +254,9 @@ export class WebSerialConnection {
 		// Chunked so we don't OOM the MicroPython heap. write_file opens the
 		// file, append_file adds the rest. Backslashes and triple quotes are
 		// escaped so the paste literal round-trips the content byte-for-byte.
-		const chunkSize = 8192;
+		// 2 KiB keeps the string literal well under the 16 KiB GC heap (4 KiB
+		// chunks already fail to compile).
+		const chunkSize = 2048;
 		for (let i = 0; i < content.length; i += chunkSize) {
 			const chunk = content
 				.slice(i, i + chunkSize)

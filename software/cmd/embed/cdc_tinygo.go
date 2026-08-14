@@ -13,7 +13,15 @@ import (
 )
 
 // CDC ring buffer: Go's USB read pump fills it; MP drains it via ferret_cdc_read.
-var cdcBuf [512]byte
+//
+// Sized for the web editor's largest paste block (a base64 image chunk). The
+// pump must never overwrite unread bytes: on the RP2040's cooperative
+// scheduler the pump can run far ahead of the REPL while MP is busy echoing a
+// paste, and a too-small buffer silently dropped the wrapper line
+// (import ferret + ferret.write_image(...)), leaving only raw base64 to be
+// executed. Keep the buffer big enough for one full paste and backpressure
+// (yield, don't overwrite) when it fills.
+var cdcBuf [4096]byte
 var cdcHead, cdcTail int // head = write, tail = read
 
 //export ferret_cdc_read
@@ -49,9 +57,16 @@ func ferret_cdc_write(s *C.char, n C.int) {
 func pumpCDC() {
 	for {
 		for machine.Serial.Buffered() > 0 {
+			next := (cdcHead + 1) % len(cdcBuf)
+			if next == cdcTail {
+				// Ring is full; the REPL hasn't drained it yet. Yield so MP can
+				// consume before we push more, instead of overwriting unread
+				// bytes (which silently corrupts large pastes).
+				break
+			}
 			if b, err := machine.Serial.ReadByte(); err == nil {
 				cdcBuf[cdcHead] = b
-				cdcHead = (cdcHead + 1) % len(cdcBuf)
+				cdcHead = next
 			}
 		}
 		// Must yield every iteration: the RP2040 scheduler is cooperative, so a
