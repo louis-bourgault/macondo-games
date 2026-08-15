@@ -74,6 +74,15 @@ func drainCDC() {
 // drainCDCLocked is the only code that writes cdcBuf or cdcHead.  It is called
 // from both the USB pump and the REPL reader, so callers must hold cdcMu.
 func drainCDCLocked() {
+	_ = drainCDCInterruptLocked(-1)
+}
+
+// drainCDCInterruptLocked drains USB input while retaining ordinary bytes for
+// the REPL.  When interruptChar is enabled, consume that byte separately so
+// MicroPython can turn it into KeyboardInterrupt instead of later treating it
+// as REPL input.  Callers must hold cdcMu.
+func drainCDCInterruptLocked(interruptChar int) bool {
+	interrupted := false
 	for machine.Serial.Buffered() > 0 {
 		next := (cdcHead + 1) % len(cdcBuf)
 		if next == cdcTail {
@@ -82,10 +91,26 @@ func drainCDCLocked() {
 			break
 		}
 		if b, err := machine.Serial.ReadByte(); err == nil {
+			if interruptChar >= 0 && int(b) == interruptChar {
+				interrupted = true
+				continue
+			}
 			cdcBuf[cdcHead] = b
 			cdcHead = next
 		}
 	}
+	return interrupted
+}
+
+//export ferret_cdc_poll_interrupt
+func ferret_cdc_poll_interrupt(interruptChar C.int) C.int {
+	cdcMu.Lock()
+	interrupted := drainCDCInterruptLocked(int(interruptChar))
+	cdcMu.Unlock()
+	if interrupted {
+		return 1
+	}
+	return 0
 }
 
 func pumpCDC() {

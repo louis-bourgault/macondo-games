@@ -75,6 +75,12 @@
 #define MICROPY_PY_SYS                          (1)
 #define MICROPY_READLINE_HISTORY_SIZE           (8)
 
+// Service USB CDC at MicroPython VM safe points so Ctrl-C can schedule a
+// KeyboardInterrupt even while a program is running rather than waiting for
+// the REPL to read stdin.  The hook rate-limits itself in mphalport.c.
+extern void ferret_vm_hook_loop(void);
+#define MICROPY_VM_HOOK_LOOP                     ferret_vm_hook_loop();
+
 // `import foo` compiles foo.py from the Go-owned filesystem (repl_stubs.c
 // provides mp_import_stat / mp_lexer_new_from_file).
 #define MICROPY_ENABLE_EXTERNAL_IMPORT          (1)

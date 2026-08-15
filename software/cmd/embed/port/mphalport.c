@@ -14,7 +14,27 @@
 #include <string.h>
 #include <time.h>
 #include "py/mphal.h"
+#include "py/runtime.h"
+#include "shared/runtime/interrupt_char.h"
 #include "ferret_abi.h"
+
+// MicroPython calls this from its bytecode loop (configured through
+// MICROPY_VM_HOOK_LOOP).  Poll at most once per millisecond: that keeps the
+// Go/C boundary out of the hot path, while making Ctrl-C responsive even for
+// a pure `while True: pass` loop that never reads from the REPL.
+void ferret_vm_hook_loop(void) {
+    static mp_uint_t last_poll_ms;
+    mp_uint_t now = mp_hal_ticks_ms();
+    if ((mp_uint_t)(now - last_poll_ms) == 0) {
+        return;
+    }
+    last_poll_ms = now;
+
+    if (mp_interrupt_char >= 0
+        && ferret_cdc_poll_interrupt(mp_interrupt_char)) {
+        mp_sched_keyboard_interrupt();
+    }
+}
 
 // MP pulls one byte from stdin. Return -1 if none available (caller polls).
 int mp_hal_stdin_rx_chr(void) {

@@ -35,3 +35,10 @@ func ferret_cdc_write(s *C.char, n C.int) {
 	buf := unsafe.Slice((*byte)(unsafe.Pointer(s)), int(n))
 	_, _ = os.Stdout.Write(buf)
 }
+
+//export ferret_cdc_poll_interrupt
+func ferret_cdc_poll_interrupt(interruptChar C.int) C.int {
+	// The host stub blocks directly in ferret_cdc_read, so there is no
+	// non-blocking input source to poll while bytecode is executing.
+	return 0
+}

@@ -50,6 +50,9 @@ int ferret_draw_image(char *name, int x, int y);  // 0 ok, -1 unknown, -2 too bi
 
 int ferret_cdc_read(void);
 void ferret_cdc_write(char *s, int n);
+// Drain USB CDC while MicroPython bytecode is running.  Returns non-zero when
+// interrupt_char was received; ordinary input remains queued for the REPL.
+int ferret_cdc_poll_interrupt(int interrupt_char);
 
 // Shared scratch buffer for file content (boot script + module imports),
 // defined in port/repl_stubs.c.
