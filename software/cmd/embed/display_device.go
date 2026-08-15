@@ -4,6 +4,8 @@
 // hardware display (ST7789 over SPI) via the existing platform/device package.
 // Compiled only for the `tinygo` build (Pico/RP2350).
 
+//a mini wrapper, the only reason this exists is so that we can do build tags here.
+
 package main
 
 import (

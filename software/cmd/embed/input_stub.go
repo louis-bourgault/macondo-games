@@ -5,6 +5,9 @@
 // keys read as released. On the device, input_device.go (tagged `tinygo`)
 // provides the real button reading.
 
+//This is primarily useful for headless testing, which is neccesary because
+//a lot of this code was written by agents without hardware access.
+
 package main
 
 import "github.com/louis-bourgault/macondo-games/software/internal/platform"

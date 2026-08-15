@@ -4,6 +4,10 @@
 // target on a PC (no SPI hardware) so the reference links and runs. On the
 // device, display_device.go (tagged `tinygo`) provides the real ST7789 display.
 
+//This is primarily useful for headless testing, which is neccesary because
+//a lot of this code was written by agents without hardware access.
+
+
 package main
 
 import "github.com/louis-bourgault/macondo-games/software/internal/platform"
