@@ -5260,6 +5260,16 @@
 		)
 		(uuid "1cb406d9-f1d4-4f22-8658-8e14b83d7478")
 	)
+	(text "note for RUN: there used to be a button here, \nbut its easy to just power cycle instead"
+		(exclude_from_sim no)
+		(at 97.79 74.676 0)
+		(effects
+			(font
+				(size 0.889 0.889)
+			)
+		)
+		(uuid "3db2d891-b1d3-41f9-ac6f-ba8914d4b4cb")
+	)
 	(text "Flash Memory"
 		(exclude_from_sim no)
 		(at 54.864 14.224 0)
@@ -5367,12 +5377,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4cab4d18-2161-4d10-b4d5-e448e8db8132")
-	)
-	(junction
-		(at 69.85 76.2)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "4fd0d75c-682b-417c-afa6-03693054d330")
 	)
 	(junction
 		(at 29.21 187.96)
@@ -5568,23 +5572,13 @@
 	)
 	(wire
 		(pts
-			(xy 34.29 33.02) (xy 36.83 33.02)
+			(xy 34.29 33.02) (xy 46.99 33.02)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "008eb6d8-1013-44db-b90f-98cd23bb5bf0")
-	)
-	(wire
-		(pts
-			(xy 69.85 86.36) (xy 69.85 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0618d474-e742-4248-bffd-40bde8d8423c")
 	)
 	(wire
 		(pts
@@ -5645,16 +5639,6 @@
 			(type default)
 		)
 		(uuid "112369ff-554d-4dcc-83b0-1921e35bff27")
-	)
-	(wire
-		(pts
-			(xy 55.88 87.63) (xy 55.88 83.82)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "11b1301f-8bd0-463a-9a20-c3ee7a204ad3")
 	)
 	(wire
 		(pts
@@ -5825,16 +5809,6 @@
 			(type default)
 		)
 		(uuid "3506b0a0-2018-4002-a06e-7e5d1e010bef")
-	)
-	(wire
-		(pts
-			(xy 69.85 87.63) (xy 55.88 87.63)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3cf0d18d-c39d-45e5-af9d-7c8a8220fd8b")
 	)
 	(wire
 		(pts
@@ -6065,16 +6039,6 @@
 			(type default)
 		)
 		(uuid "6d70a48e-2fb2-408b-a85a-cd1ac21f4182")
-	)
-	(wire
-		(pts
-			(xy 69.85 76.2) (xy 69.85 74.93)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7163824d-630f-4be5-8efc-5c80f7d9a913")
 	)
 	(wire
 		(pts
@@ -6378,6 +6342,16 @@
 	)
 	(wire
 		(pts
+			(xy 114.3 76.2) (xy 116.84 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a1de1668-564f-4e35-b0b8-c00fb83415f7")
+	)
+	(wire
+		(pts
 			(xy 97.79 83.82) (xy 102.87 83.82)
 		)
 		(stroke
@@ -6475,16 +6449,6 @@
 			(type default)
 		)
 		(uuid "b86c963e-8902-4002-bb48-82c7accbb479")
-	)
-	(wire
-		(pts
-			(xy 44.45 33.02) (xy 46.99 33.02)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bc7b7c15-665b-48ab-99a1-1c39f2f52457")
 	)
 	(wire
 		(pts
@@ -6648,16 +6612,6 @@
 	)
 	(wire
 		(pts
-			(xy 55.88 76.2) (xy 69.85 76.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d976ecc4-9d68-492e-a746-8863c5a6b224")
-	)
-	(wire
-		(pts
 			(xy 54.61 118.11) (xy 54.61 119.38)
 		)
 		(stroke
@@ -6665,16 +6619,6 @@
 			(type default)
 		)
 		(uuid "dc531d2d-b294-4cf0-8f47-53de3f1b204f")
-	)
-	(wire
-		(pts
-			(xy 69.85 76.2) (xy 116.84 76.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e0aba843-c600-4cfa-b0eb-ad01a8856c25")
 	)
 	(wire
 		(pts
@@ -6808,16 +6752,6 @@
 	)
 	(wire
 		(pts
-			(xy 281.94 151.13) (xy 279.4 151.13)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f8fb4fdf-bb0d-4ab1-b241-d9535f09f12c")
-	)
-	(wire
-		(pts
 			(xy 54.61 109.22) (xy 64.77 109.22)
 		)
 		(stroke
@@ -6873,30 +6807,6 @@
 		(uuid "007a402f-0f83-4853-9896-79ee6f958656")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 114.08 114.3 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-	)
-	(global_label "GPIO7"
-		(shape input)
-		(at 167.64 78.74 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "09395cd7-328b-4a32-b4db-f7818e03e6cc")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 176.31 78.74 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7580,30 +7490,6 @@
 			)
 		)
 	)
-	(global_label "GPIO7"
-		(shape output)
-		(at 269.24 151.13 180)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "99231f8b-b5b5-4f10-8214-2bb86812ce63")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 260.57 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-	)
 	(global_label "GPIO11"
 		(shape input)
 		(at 167.64 88.9 0)
@@ -8133,88 +8019,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_Push")
-		(at 69.85 81.28 270)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "00315dad-57e3-41e5-93f4-030058f5a334")
-		(property "Reference" "SW11"
-			(at 73.66 80.0099 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "reset_run"
-			(at 73.66 82.5499 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Button_Switch_SMD:SW_Push_SPST_NO_Alps_SKRK"
-			(at 74.93 81.28 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 74.93 81.28 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Push button switch, generic, two pins"
-			(at 69.85 81.28 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "93a09c1d-d847-4f9f-859e-912a36354549")
-		)
-		(pin "1"
-			(uuid "6d431fec-fd10-4532-abdb-b1d481b8f7c7")
-		)
-		(instances
-			(project "mini-games"
-				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
-					(reference "SW11")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:+3V3")
 		(at 69.85 27.94 0)
 		(unit 1)
@@ -8367,6 +8171,84 @@
 			(project "mini-games"
 				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
 					(reference "SW4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 114.3 76.2 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0ebd187b-866e-4e88-85b7-ef172dfd709d")
+		(property "Reference" "#PWR036"
+			(at 114.3 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 114.3 71.12 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 114.3 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 114.3 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 114.3 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "574d3772-99af-4d1c-8ab1-b13b3baefc4c")
+		)
+		(instances
+			(project "mini-games"
+				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
+					(reference "#PWR036")
 					(unit 1)
 				)
 			)
@@ -8687,84 +8569,6 @@
 			(project "mini-games"
 				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
 					(reference "L1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 281.94 151.13 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "26d50bab-a2c9-437b-9e26-0e19230b34f1")
-		(property "Reference" "#PWR036"
-			(at 281.94 157.48 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 281.94 156.21 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 281.94 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 281.94 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 281.94 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "49855ce5-820d-4dec-bbe0-bd0abfff6f88")
-		)
-		(instances
-			(project "mini-games"
-				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
-					(reference "#PWR036")
 					(unit 1)
 				)
 			)
@@ -11951,7 +11755,7 @@
 				)
 			)
 		)
-		(property "Value" "SELECT"
+		(property "Value" "MENU"
 			(at 274.32 134.62 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12977,86 +12781,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_Push")
-		(at 274.32 151.13 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a2915a38-6d3d-494c-9e3a-5f4d048481c9")
-		(property "Reference" "SW9"
-			(at 274.32 143.51 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "START"
-			(at 274.32 146.05 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Button_Switch_SMD:SW_Push_SPST_NO_Alps_SKRK"
-			(at 274.32 146.05 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 274.32 146.05 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Push button switch, generic, two pins"
-			(at 274.32 151.13 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "996604e9-7668-44eb-8332-f6a6da2a91e3")
-		)
-		(pin "1"
-			(uuid "5ef5e809-b1d7-4214-9553-8d23eb38a8a2")
-		)
-		(instances
-			(project "mini-games"
-				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
-					(reference "SW9")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:+3V3")
 		(at 104.14 40.64 0)
 		(unit 1)
@@ -13129,88 +12853,6 @@
 			(project "mini-games"
 				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
 					(reference "#PWR018")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 55.88 80.01 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a8831636-998b-4de9-8f59-baae4136c492")
-		(property "Reference" "C17"
-			(at 59.69 78.7399 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100nF"
-			(at 59.69 81.2799 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 56.8452 83.82 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 55.88 80.01 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 55.88 80.01 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "d716f79d-1056-495f-812e-5a2c83a9ccf7")
-		)
-		(pin "2"
-			(uuid "68080a9b-529d-4b05-8190-b2c162343039")
-		)
-		(instances
-			(project "mini-games"
-				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
-					(reference "C17")
 					(unit 1)
 				)
 			)
@@ -13656,88 +13298,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 69.85 71.12 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "b137bf51-cb86-4a4e-b5a8-d25f7298ba57")
-		(property "Reference" "R9"
-			(at 72.39 69.8499 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10k"
-			(at 72.39 72.3899 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 68.072 71.12 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 69.85 71.12 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 69.85 71.12 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "4a3da294-5ca4-4fe7-bb5a-3ed71d28182b")
-		)
-		(pin "2"
-			(uuid "9b09df0b-d7e1-44ca-80cd-f0cd2efe28c8")
-		)
-		(instances
-			(project "mini-games"
-				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
-					(reference "R9")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Switch:SW_Push")
 		(at 250.19 151.13 0)
 		(unit 1)
@@ -14083,165 +13643,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+3V3")
-		(at 69.85 67.31 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "b86c6981-afdd-473f-aa69-188b95eb6b62")
-		(property "Reference" "#PWR037"
-			(at 69.85 71.12 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 69.85 62.23 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 69.85 67.31 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 69.85 67.31 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3V3\""
-			(at 69.85 67.31 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "7ea1ea30-4b1b-4550-b9d6-74aeebd25cc5")
-		)
-		(instances
-			(project "mini-games"
-				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
-					(reference "#PWR037")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 40.64 33.02 90)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "bc5f0e49-be11-43e9-8f62-ebdd18a922ef")
-		(property "Reference" "R6"
-			(at 41.402 28.448 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10K"
-			(at 41.9099 30.48 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 40.64 34.798 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 40.64 33.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 40.64 33.02 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "b8f3c9f4-de75-46aa-b247-d1a9b939caf0")
-		)
-		(pin "2"
-			(uuid "ae450a8a-0344-4f9b-8ca7-58ae859895ef")
-		)
-		(instances
-			(project "mini-games"
-				(path "/78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
-					(reference "R6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Connector:Conn_01x08_Socket")
 		(at 198.12 125.73 0)
 		(unit 1)
@@ -14275,7 +13676,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x08_P2.54mm_Vertical"
+		(property "Footprint" "Connector_PinHeader_2.54mm:1.54_ TFT Header"
 			(at 198.12 125.73 0)
 			(hide yes)
 			(show_name no)
