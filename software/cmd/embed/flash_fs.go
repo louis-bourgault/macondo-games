@@ -57,9 +57,13 @@ const (
 	// maxImageFile caps a single image (raw RGB565 bytes).
 	maxImageFile = 64 * 1024
 
-	imgDirPath       = "/img"
-	imgManifestPath  = "/img/images.txt"
-	imgCacheBudget   = 48 * 1024 // RAM budget for decoded sprites
+	imgDirPath      = "/img"
+	imgManifestPath = "/img/images.txt"
+	imgCacheBudget  = 0 // RAM budget for decoded sprites
+	//the cache was previously 48KiB, but we're kind of having OOM problems
+	//the whole caching system will probably have to be changed later to deal with caching backgrounds seperately, but thats quite a rework and only worth it when we upgrade
+	//to the RP2350 and have more RAM
+	//TODO: do the above
 )
 
 var (
@@ -98,7 +102,7 @@ type spriteCache struct {
 
 type pendingImage struct {
 	w, h int
-	b64  []byte // base64 chars accumulate here; decoded once at write_image_end
+	b64  []byte      // base64 chars accumulate here; decoded once at write_image_end
 	f    hash.Hash32 // FNV-1a over the base64 chunks, in order
 }
 
@@ -247,8 +251,9 @@ func ferret_get_boot_script(buf *C.char, max C.int) C.int {
 
 // --- module imports (mp_import_stat / mp_lexer_new_from_file) ----------------
 
-//export ferret_stat
 // Returns MP_IMPORT_STAT_*: 0 = missing, 1 = dir, 2 = file, -1 = error.
+//
+//export ferret_stat
 func ferret_stat(path *C.char) C.int {
 	p := cleanPath(C.GoString(path))
 	if p == "" {
@@ -264,8 +269,9 @@ func ferret_stat(path *C.char) C.int {
 	return 2
 }
 
-//export ferret_read_file
 // Returns the content length, 0 if missing, -1 on error, -2 if too big.
+//
+//export ferret_read_file
 func ferret_read_file(path *C.char, buf *C.char, max C.int) C.int {
 	p := cleanPath(C.GoString(path))
 	if p == "" {
@@ -287,8 +293,9 @@ func ferret_read_file(path *C.char, buf *C.char, max C.int) C.int {
 
 // --- code files (web editor) ------------------------------------------------
 
-//export ferret_write_file
 // Replaces the file. 0 = ok, -1 = error, -2 = too big.
+//
+//export ferret_write_file
 func ferret_write_file(path *C.char, data *C.char, n C.int) C.int {
 	p := cleanPath(C.GoString(path))
 	if p == "" || n > maxFsFile {
@@ -300,8 +307,9 @@ func ferret_write_file(path *C.char, data *C.char, n C.int) C.int {
 	return 0
 }
 
-//export ferret_append_file
 // Appends to the file (creating it if needed). Same return codes as write.
+//
+//export ferret_append_file
 func ferret_append_file(path *C.char, data *C.char, n C.int) C.int {
 	p := cleanPath(C.GoString(path))
 	if p == "" {
@@ -367,8 +375,9 @@ func loadManifest() {
 	}
 }
 
-//export ferret_write_image
 // Starts (or restarts) a base64 upload. 0 = ok, -1 = invalid args.
+//
+//export ferret_write_image
 func ferret_write_image(name *C.char, w, h C.int, b64 *C.char, n C.int) C.int {
 	nm := C.GoString(name)
 	if !validImageName(nm) || int(w) <= 0 || int(h) <= 0 || int(w)*int(h)*2 > maxImageFile {
@@ -382,9 +391,10 @@ func ferret_write_image(name *C.char, w, h C.int, b64 *C.char, n C.int) C.int {
 	return 0
 }
 
-//export ferret_append_image
 // Appends a base64 chunk to an in-progress upload.
 // 0 = ok, -1 = invalid, -2 = no upload started, -3 = exceeds maxImageFile.
+//
+//export ferret_append_image
 func ferret_append_image(name *C.char, b64 *C.char, n C.int) C.int {
 	nm := C.GoString(name)
 	p, ok := pendingImgs[nm]
@@ -412,9 +422,10 @@ func pendingAppend(p *pendingImage, chunk []byte) bool {
 	return true
 }
 
-//export ferret_write_image_end
 // Validates and persists a finished upload. 0 = ok, -1 = bad base64/size, -2 =
 // no upload started.
+//
+//export ferret_write_image_end
 func ferret_write_image_end(name *C.char) C.int {
 	nm := C.GoString(name)
 	p, ok := pendingImgs[nm]
@@ -440,9 +451,10 @@ func ferret_write_image_end(name *C.char) C.int {
 	return 0
 }
 
-//export ferret_image_manifest
 // Returns the manifest as "name,width,height,checksum" lines. Returns the
 // length, or -1 if the buffer is too small.
+//
+//export ferret_image_manifest
 func ferret_image_manifest(buf *C.char, max C.int) C.int {
 	s := manifestString()
 	if len(s) > int(max) {
@@ -452,8 +464,9 @@ func ferret_image_manifest(buf *C.char, max C.int) C.int {
 	return C.int(len(s))
 }
 
-//export ferret_delete_image
 // Removes an image and its manifest entry. 0 = ok, -1 = invalid name/error.
+//
+//export ferret_delete_image
 func ferret_delete_image(name *C.char) C.int {
 	nm := C.GoString(name)
 	if !validImageName(nm) {
@@ -518,9 +531,10 @@ func (c *spriteCache) evict(name string) {
 	}
 }
 
-//export ferret_draw_image
 // Blits an image by manifest name. 0 = ok, -1 = unknown image, -2 = too big,
 // -3 = read error.
+//
+//export ferret_draw_image
 func ferret_draw_image(name *C.char, x, y C.int) C.int {
 	nm := C.GoString(name)
 	m, ok := imgManifest[nm]
