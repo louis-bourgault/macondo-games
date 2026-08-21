@@ -11968,7 +11968,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_Push_SPST_NO_Alps_SKRK"
+		(property "Footprint" "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 			(at 274.32 134.62 0)
 			(hide yes)
 			(show_name no)
