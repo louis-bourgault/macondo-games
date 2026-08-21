@@ -1782,7 +1782,7 @@
 	(footprint "Connector_PinHeader_2.54mm:1.54_ TFT Header"
 		(layer "F.Cu")
 		(uuid "31533f06-1bea-4e39-88cc-373cf52dd1e3")
-		(at 80.11 31.84)
+		(at 80 31.75)
 		(descr "Through hole straight pin header, 1x08, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x08 2.54mm single row")
 		(property "Reference" "J2"
@@ -9840,7 +9840,7 @@
 	(footprint "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12"
 		(layer "F.Cu")
 		(uuid "c58326c8-c773-455f-b71d-d2f43d0bb01b")
-		(at 79.62 79.48)
+		(at 80 79.25)
 		(descr "USB Type-C receptacle for USB 2.0 and PD, http://www.krhro.com/uploads/soft/180320/1-1P320120243.pdf")
 		(tags "usb usb-c 2.0 pd")
 		(property "Reference" "J1"
