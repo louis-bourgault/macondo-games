@@ -944,7 +944,7 @@
 	(footprint "Inductor_SMD:L_0805_2012Metric"
 		(layer "F.Cu")
 		(uuid "155500ca-7500-4253-82b6-d81abd5461ff")
-		(at 116.2625 40.45)
+		(at 113.8 28.1)
 		(descr "Inductor SMD 0805 (2012 Metric), square (rectangular) end terminal, IPC-7351 nominal, (Body size source: IPC-SM-782 page 80, https://www.pcb-3d.com/wordpress/wp-content/uploads/ipc-sm-782a_amendment_1_and_2.pdf)")
 		(tags "inductor")
 		(property "Reference" "L1"
@@ -1522,7 +1522,7 @@
 	(footprint "Button_Switch_SMD:SW_Push_SPST_NO_Alps_SKRK"
 		(layer "F.Cu")
 		(uuid "2cece269-2bc6-484e-974c-6981e18087c2")
-		(at 100.42 34.38)
+		(at 102.9 13.9)
 		(descr "http://www.alps.com/prod/info/E/HTML/Tact/SurfaceMount/SKRK/SKRKAHE020.html")
 		(tags "SMD SMT button")
 		(property "Reference" "SW8"
@@ -2772,7 +2772,7 @@
 	(footprint "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 		(layer "F.Cu")
 		(uuid "433519ac-9d9a-4785-978c-5e6eda122743")
-		(at 109.49 66.06)
+		(at 110 63.375)
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW6"
@@ -4809,7 +4809,7 @@
 	(footprint "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 		(layer "F.Cu")
 		(uuid "6acc9b59-3070-4f8d-8fd1-d3d955b69b2c")
-		(at 43.94 46.17)
+		(at 43.5 43.375)
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW2"
@@ -6138,7 +6138,7 @@
 	(footprint "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 		(layer "F.Cu")
 		(uuid "9517f825-010d-4f2c-8a4b-42efa8602fb9")
-		(at 99.38 56.98)
+		(at 99.5 53.375)
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW10"
@@ -6668,7 +6668,7 @@
 	(footprint "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 		(layer "F.Cu")
 		(uuid "9a28db6f-6290-4b91-99f9-4fb1839c98ff")
-		(at 109.54 48.11)
+		(at 110 43.375)
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW13"
@@ -7040,7 +7040,7 @@
 	(footprint "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 		(layer "F.Cu")
 		(uuid "9b6a108b-fe99-432f-a471-aa564711b2a8")
-		(at 54.27 54.22)
+		(at 54 53.375)
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW4"
@@ -7860,13 +7860,13 @@
 	(footprint "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 		(layer "F.Cu")
 		(uuid "a1078be9-76f9-4057-9e94-8412f30bba44")
-		(at 33.3 54.56)
+		(at 33 53.375)
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW3"
 			(at 3.25 -2 0)
 			(layer "F.SilkS")
-			(uuid "e870f757-921f-47a4-b835-0207f62ac07b")
+			(uuid "238913fe-fa50-476d-95d0-6cf8e7b57cc6")
 			(effects
 				(font
 					(size 1 1)
@@ -7877,7 +7877,7 @@
 		(property "Value" "DPAD_LEFT"
 			(at 3.75 6.7 0)
 			(layer "F.Fab")
-			(uuid "8c1a12d5-3b31-462b-bd4e-dc93c78d33bc")
+			(uuid "f2afa872-d20c-476c-ae90-20acc4a0ba69")
 			(effects
 				(font
 					(size 1 1)
@@ -7890,7 +7890,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "2f53718e-ff9d-46af-bd50-9660659f4ac7")
+			(uuid "d63e2d5b-1328-4b47-ab6c-8abefcf5271e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7903,7 +7903,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "c772408f-eda7-4138-9413-58d37abc4aa7")
+			(uuid "7c009929-3410-441f-97b5-2d77aa94a9db")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8232,7 +8232,7 @@
 	(footprint "Package_SO:SOIC-8_5.3x5.3mm_P1.27mm"
 		(layer "F.Cu")
 		(uuid "a1a8918f-56a1-47b5-bdec-820bba7c4942")
-		(at 115.6925 34.295)
+		(at 117.4 21.2)
 		(descr "SOIC, 8 Pin (JEITA/EIAJ ED-7311-19 variation 08-001-BBA and Atmel/Microchip, 208 mils width, https://www.jeita.or.jp/japanese/standard/book/ED-7311-19/#target/page_no=21, https://ww1.microchip.com/downloads/en/DeviceDoc/20005045C.pdf#page=23, https://ww1.microchip.com/downloads/en/DeviceDoc/doc2535.pdf#page=162)")
 		(tags "SOIC SO P-SOP SOP SOP-8 SO SO-8 8S2 S2AE/F K04-056 CASE-751BE SO8W 8-Pin-SOIC PSA W8-2 W8-4 W8MS-1 FPT-8P-M08")
 		(property "Reference" "U3"
@@ -8994,7 +8994,7 @@
 	(footprint "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 		(layer "F.Cu")
 		(uuid "b45da173-a9a5-4395-a675-1106b3215dcd")
-		(at 43.99 63.26)
+		(at 43.5 63.375)
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW5"
@@ -11868,13 +11868,13 @@
 	(footprint "Button_Switch_THT:SW_PUSH_6mm+6mm_Dual"
 		(layer "F.Cu")
 		(uuid "e8ad75b7-04da-4418-ac1d-d24c25134122")
-		(at 118.82 57.07)
+		(at 120.5 53.3)
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW7"
 			(at 3.25 -2 0)
 			(layer "F.SilkS")
-			(uuid "79df2d5f-8216-4d07-88b9-985a18331eeb")
+			(uuid "5ed72eed-1017-43ea-b853-ac697646a900")
 			(effects
 				(font
 					(size 1 1)
@@ -11885,7 +11885,7 @@
 		(property "Value" "BTN_B"
 			(at 3.75 6.7 0)
 			(layer "F.Fab")
-			(uuid "cddaec71-e64e-4d49-8687-8eb2be08d27e")
+			(uuid "aa70c882-f96e-4556-a782-c29cd050e238")
 			(effects
 				(font
 					(size 1 1)
@@ -11898,7 +11898,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "6134177e-e1b2-485a-b275-56f788787fa3")
+			(uuid "53cb6a2e-002f-47fb-8b7f-a26626a9c860")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11911,7 +11911,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "0d114d57-0b0a-444f-b020-9529b45943d1")
+			(uuid "180ab13d-4a62-4409-ac93-9a5ed7cae8a7")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12714,7 +12714,7 @@
 	(footprint "Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm"
 		(layer "F.Cu")
 		(uuid "f29abdde-9c0e-400b-9878-001eab7145e0")
-		(at 125.94 40.79)
+		(at 133.8 19.8)
 		(descr "SMD3225/4, Crystal, 3.2x2.5mm package, SMD, http://www.txccrystal.com/images/pdf/7m-accuracy.pdf")
 		(property "Reference" "Y1"
 			(at 0 -2.45 0)
@@ -13184,7 +13184,7 @@
 	(footprint "Package_DFN_QFN:QFN-60-1EP_7x7mm_P0.4mm_EP3.4x3.4mm"
 		(layer "F.Cu")
 		(uuid "f34faebd-ed99-43c9-b24b-2dec4145721c")
-		(at 106.39 41.3)
+		(at 148.45 19.15)
 		(descr "QFN, 60 Pin (https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf)")
 		(tags "QFN NoLead")
 		(property "Reference" "U1"
