@@ -1834,13 +1834,13 @@
 	(footprint "TestPoint:TestPoint_Pad_2.0x2.0mm"
 		(layer "F.Cu")
 		(uuid "379621d2-b85e-4db8-8933-dc5c82fdaaef")
-		(at 58 41 180)
+		(at 59 43 180)
 		(descr "SMD rectangular pad as test Point, square 2.0mm side length")
 		(tags "test point SMD pad rectangle square")
 		(property "Reference" "J5"
 			(at 0 -1.998 0)
 			(layer "F.SilkS")
-			(uuid "ff45546c-76ac-418b-902e-de1618b80b00")
+			(uuid "e194b737-259c-4622-a118-bd7c997e694a")
 			(effects
 				(font
 					(size 1 1)
@@ -1851,7 +1851,7 @@
 		(property "Value" "Conn_01x01"
 			(at 0 2.05 0)
 			(layer "F.Fab")
-			(uuid "117fa787-5648-4f8d-be35-c0318b2d4ac5")
+			(uuid "8f3082ec-c2b3-497c-8589-fec1b493762f")
 			(effects
 				(font
 					(size 1 1)
@@ -1864,7 +1864,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "b9360bd1-b80d-4329-9745-5cda53eab824")
+			(uuid "218582f9-7c3e-45d8-8aba-13786724db97")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1877,7 +1877,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "b8310ee0-2d6d-425e-bb80-b10393a7f567")
+			(uuid "dcfd2dcf-4e1c-4ecf-a150-38cadd83ea58")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4510,13 +4510,13 @@
 	(footprint "TestPoint:TestPoint_Pad_2.0x2.0mm"
 		(layer "F.Cu")
 		(uuid "7d15054e-64c1-436f-a854-78864a27de24")
-		(at 58 36 180)
+		(at 59 38 180)
 		(descr "SMD rectangular pad as test Point, square 2.0mm side length")
 		(tags "test point SMD pad rectangle square")
 		(property "Reference" "J6"
 			(at 0 -1.998 0)
 			(layer "F.SilkS")
-			(uuid "0f73f293-1e26-4210-8d04-8ddb24b31cf9")
+			(uuid "0e986bcd-258b-442b-9eb8-c65b20e559aa")
 			(effects
 				(font
 					(size 1 1)
@@ -4527,7 +4527,7 @@
 		(property "Value" "Conn_01x01"
 			(at 0 2.05 0)
 			(layer "F.Fab")
-			(uuid "fcd45153-fc1a-4370-ad4f-d1fc092cb26f")
+			(uuid "1f196a2a-bccb-4cd9-92f2-e2389af63815")
 			(effects
 				(font
 					(size 1 1)
@@ -4540,7 +4540,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "366596d5-c751-4de6-9c97-505f544fe5cd")
+			(uuid "2d72fbc5-ff37-4652-a14f-f63b69d384c0")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4553,7 +4553,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "8f02dacf-4846-4ef9-934f-1ca00ff37c38")
+			(uuid "d2c20d6e-db97-4750-9166-54d66d48b721")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13436,13 +13436,13 @@
 	(footprint "TestPoint:TestPoint_Pad_2.0x2.0mm"
 		(layer "B.Cu")
 		(uuid "4f4db900-b4e5-4768-b028-63420fb949ff")
-		(at 58 36)
+		(at 59 38)
 		(descr "SMD rectangular pad as test Point, square 2.0mm side length")
 		(tags "test point SMD pad rectangle square")
 		(property "Reference" "J4"
 			(at 0 1.998 0)
 			(layer "B.SilkS")
-			(uuid "fbab017a-57bc-44e4-8a98-c5416bdbac18")
+			(uuid "8e2b6223-ccd8-4f24-9a48-87e5c71cd9e2")
 			(effects
 				(font
 					(size 1 1)
@@ -13454,7 +13454,7 @@
 		(property "Value" "Conn_01x01"
 			(at 0 -2.05 0)
 			(layer "B.Fab")
-			(uuid "c2d464ce-6125-4ab1-a901-eb2fa35bfc6b")
+			(uuid "b89a66da-a421-4b56-94c4-c70bd57818db")
 			(effects
 				(font
 					(size 1 1)
@@ -13468,7 +13468,7 @@
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "60366c9e-886e-4b17-9aa8-ab84c065d146")
+			(uuid "501bfb44-1fd2-455b-a7cb-05ebf2e056ed")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13482,7 +13482,7 @@
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "26181e06-fd02-40d7-8fe9-d2903b8359e8")
+			(uuid "d6aed2fc-4274-4c68-8e41-af5d84868168")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13608,13 +13608,13 @@
 	(footprint "TestPoint:TestPoint_Pad_2.0x2.0mm"
 		(layer "B.Cu")
 		(uuid "850f475c-1953-4355-a4f7-d7fd82d011f7")
-		(at 58 41)
+		(at 59 43)
 		(descr "SMD rectangular pad as test Point, square 2.0mm side length")
 		(tags "test point SMD pad rectangle square")
 		(property "Reference" "J3"
 			(at 0 1.998 0)
 			(layer "B.SilkS")
-			(uuid "8059415e-309a-4a81-af52-8125e3011df8")
+			(uuid "676c50cc-de59-48c8-869b-248457e0691e")
 			(effects
 				(font
 					(size 1 1)
@@ -13626,7 +13626,7 @@
 		(property "Value" "Conn_01x01"
 			(at 0 -2.05 0)
 			(layer "B.Fab")
-			(uuid "53918b30-7789-4755-b64e-ed0bf1b2acc4")
+			(uuid "d495914c-bae1-455f-8506-dc294b3a2c16")
 			(effects
 				(font
 					(size 1 1)
@@ -13640,7 +13640,7 @@
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "13525933-7890-4da5-b1a2-ba4cd03a9d85")
+			(uuid "ee2c8106-720e-4392-87ac-9b2a7ad675d4")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13654,7 +13654,7 @@
 			(unlocked yes)
 			(layer "B.Fab")
 			(hide yes)
-			(uuid "c2ffa2a4-8a61-44d0-940d-e3804e86b5a5")
+			(uuid "75f796c5-cd38-4541-9c81-a68d6230f02c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14086,7 +14086,7 @@
 		)
 	)
 	(gr_text "+"
-		(at 61.9 36.75 0)
+		(at 62.9 38.75 0)
 		(layer "F.SilkS")
 		(uuid "be89c0a6-b3ff-4015-aea8-5600eda12de0")
 		(effects
@@ -14112,7 +14112,7 @@
 		)
 	)
 	(gr_text "+"
-		(at 56.25 36.8 0)
+		(at 57.25 38.8 0)
 		(layer "B.SilkS")
 		(uuid "d8fbd5b7-65b3-4315-97a3-84b5bf952d96")
 		(effects
