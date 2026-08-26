@@ -1,1 +1,1 @@
-these files are copied from /mini-games/jlcpcb/production-files. They're just here to make it easier for the reviewer to find them, if you want the original, SOT ones look there. I'll try to remember to keep these up to date.
+production files aren't here anymore. look in /mini-games/jlcpcb/production-files for v1, or /hardware-v2/jlcpcb/production-files for v2
