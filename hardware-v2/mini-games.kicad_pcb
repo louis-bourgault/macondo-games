@@ -149,6 +149,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "27af9962-1853-4fdd-bd99-14f14cd2a8f9")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/990409bf-6ace-4291-8758-9f0a73987124")
 		(sheetname "/")
@@ -317,6 +328,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C2286"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "4baaebcf-0453-42e8-8477-29ae6f6a5277")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -529,6 +551,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C52923"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "1447b3a5-ac6b-4a92-b224-cb68bfda1d3b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/656d0c72-f730-423e-abd4-b90fbce00410")
 		(sheetname "/")
@@ -687,6 +720,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C42411119"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "4fc2eff1-4049-46ec-b4e7-06d40904b9e2")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "Choke_* *Coil* Inductor_* L_*")
 		(path "/1fe192ef-ee26-4b46-9d4c-fa0c8c7943f3")
 		(sheetname "/")
@@ -792,7 +836,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW8"
-			(at 3.25 -2 0)
+			(at 3.1 2.2 0)
 			(layer "F.SilkS")
 			(uuid "8fd3954e-9492-4208-812d-472a88d5962e")
 			(effects
@@ -1595,6 +1639,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C49023418"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "31408fbc-b495-4a75-b4ac-7492677837fb")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "D*SMA*")
 		(path "/86704670-56cd-48d3-aa37-4e4fd14ee638")
 		(sheetname "/")
@@ -2060,6 +2115,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25905"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "ce8554f1-c442-42a2-b2fb-1481a4a50ab5")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "R_*")
 		(path "/9d0740a6-43ff-4974-9f2f-9d7c0f553eeb")
 		(sheetname "/")
@@ -2163,7 +2229,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW6"
-			(at 3.25 -2 0)
+			(at 3.3 2.425 0)
 			(layer "F.SilkS")
 			(uuid "390b08bf-3186-4a04-b3fb-ae10186c8981")
 			(effects
@@ -2590,6 +2656,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C2909343"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "0f76bd81-1bbb-4c01-81c7-f95e2e3add66")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "R_*")
 		(path "/e264b11b-d570-4e4d-a625-7a1733dd49c5")
 		(sheetname "/")
@@ -2748,6 +2825,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C23733"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "cb8a2645-37e7-45dd-9bfa-b9f6c4e04447")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/f29b937c-2549-4c60-a464-91347f1d28d8")
 		(sheetname "/")
@@ -2903,6 +2991,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "d4a4f353-9ba0-44f6-88b1-7be45abb6229")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -3067,6 +3166,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "81de6eb3-249d-46c8-b23b-f0d11e13d62a")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/f4aa3245-a3d3-4d1c-9104-2ddd21c9fa7c")
 		(sheetname "/")
@@ -3222,6 +3332,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C16581"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "664063b7-4974-4fe5-8da3-c69ccd6f013d")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -3729,6 +3850,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C15525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "bd4894f1-6e23-4177-a3bf-d537949f7571")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/2cc84bd7-8429-44a6-9b07-29f814dc20ee")
 		(sheetname "/")
@@ -3987,7 +4119,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW2"
-			(at 3.25 -2 0)
+			(at 3.1 2.325 0)
 			(layer "F.SilkS")
 			(uuid "c73566b1-7d3a-45f6-ae1c-c2d4f78284f0")
 			(effects
@@ -4414,6 +4546,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C15525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "e842e171-66ef-42df-a56b-5895c1114c97")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/516378ee-8306-4a2b-b38e-5e5fcc2cc394")
 		(sheetname "/")
@@ -4739,6 +4882,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "8fc037c3-7778-44aa-97e4-f4a9e50c90ff")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/c74b122e-a406-4513-92c6-3a554bd43130")
 		(sheetname "/")
@@ -4896,6 +5050,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "db485d61-3716-4089-8f68-cb79ce6f6686")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -5057,6 +5222,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25882"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "98d7f410-0667-48be-bc62-d689b3c111b8")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "R_*")
 		(path "/c6a77808-34ea-4cd6-ae90-e4ddcd3f43eb")
 		(sheetname "/")
@@ -5215,6 +5391,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "232d6cd6-60d4-467f-9a43-ab4c3741603c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/320bce96-d9b4-4f96-961b-4ea65219dd68")
 		(sheetname "/")
@@ -5318,7 +5505,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW10"
-			(at 3.25 -2 0)
+			(at 3.25 2.225 0)
 			(layer "F.SilkS")
 			(uuid "f37632b6-b6dc-47f4-9d39-4860a423b77e")
 			(effects
@@ -5745,6 +5932,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C2909343"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "d3e5b25b-a40d-4fbd-bebe-fd28db573617")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "R_*")
 		(path "/289a374d-e4a7-43cc-b018-471806274b50")
 		(sheetname "/")
@@ -5848,7 +6046,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW13"
-			(at 3.25 -2 0)
+			(at 3.3 2.225 0)
 			(layer "F.SilkS")
 			(uuid "b2c84c4d-dd65-41fc-bf1a-bc3569c58d90")
 			(effects
@@ -6220,7 +6418,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW4"
-			(at 3.25 -2 0)
+			(at 3.1 2.225 0)
 			(layer "F.SilkS")
 			(uuid "12da50c1-d776-4d68-9bf8-7773a858ac62")
 			(effects
@@ -6639,6 +6837,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C49023418"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "8a04e01d-d709-4d69-a64f-ba1ba785595d")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "D*SMA*")
 		(path "/b71f611c-a62b-46ff-8734-0c1badc3335e")
 		(sheetname "/")
@@ -6937,6 +7146,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C11702"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "1da3f013-22ab-4e71-8721-55f82d62f048")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "R_*")
 		(path "/48d7dd81-e6de-432b-9434-5098e6711e4d")
 		(sheetname "/")
@@ -7040,7 +7260,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW3"
-			(at 3.25 -2 0)
+			(at 3.15 2.275 0)
 			(layer "F.SilkS")
 			(uuid "83b348ab-812c-4f79-8430-6478a4065e16")
 			(effects
@@ -7467,6 +7687,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C97521"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "f95af48e-2bbc-4295-b49b-ec4097141f74")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "*SOIC*5.3x5.3mm*P1.27mm*")
 		(path "/79cc9766-acf6-4e2d-82a8-008916d98659")
 		(sheetname "/")
@@ -7862,6 +8093,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C2290"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "4c2a4129-e242-40b0-96f9-7c2caa2b4cad")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/50c28b4c-0544-456a-93b8-981658fe5363")
 		(sheetname "/")
@@ -8068,6 +8310,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C11702"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "e4f2c566-f05c-4c83-9373-9005851e6d7e")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -8603,6 +8856,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "9da2e779-a5d4-40fb-9d28-35046c4979b2")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/ad5b8734-e098-4cd0-86a6-71a11fef3c2a")
 		(sheetname "/")
@@ -8763,6 +9027,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1548"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "30a7485d-7ca6-45f5-b610-e5c4ae274ba4")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/64322d1a-eb7f-4908-a8cd-3fccedc1c784")
 		(sheetname "/")
@@ -8910,6 +9185,17 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C165948"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "7f310308-1f56-4f25-a972-ee771a8e4ced")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -9351,6 +9637,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C720477"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "624e89a0-f306-4d97-b0a1-e093b4a9400e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(path "/28779446-9191-414d-acac-2a4a70e6c7d1")
 		(sheetname "/")
 		(sheetfile "mini-games.kicad_sch")
@@ -9619,6 +9916,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25744"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "2f1a74a1-6847-4bdf-85ae-3bf38da21dc0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "R_*")
 		(path "/3b3c8360-1130-461c-989f-bddb82e6e87f")
 		(sheetname "/")
@@ -9777,6 +10085,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C23733"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "e8f5825e-0460-4874-9cea-4412c0271aa3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/4f3c381f-d3e6-4cd7-855b-4d1d0ed63ea9")
 		(sheetname "/")
@@ -9932,6 +10251,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C11702"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "31a77946-ae33-462c-b674-3884fd00ce58")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -10095,6 +10425,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "33ecfcc8-3df1-49df-8496-9df445cd26ea")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/52cf3405-b482-4838-a7ce-90d106e91731")
 		(sheetname "/")
@@ -10253,6 +10594,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "2459be7c-5003-4c85-afaa-89a71bc6e8c3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/b6690cd9-3250-4d86-a00e-d9d222bc9fb7")
 		(sheetname "/")
@@ -10408,6 +10760,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C5446"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "1ebb8c4b-c6a5-4ddb-b710-e2acf35f27c2")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -10793,6 +11156,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C25905"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "56399bb5-a566-4d95-99d9-07dcb2c68019")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "R_*")
 		(path "/dd328fd4-5cb3-459c-86aa-dbdcafc1e8da")
 		(sheetname "/")
@@ -10896,7 +11270,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW7"
-			(at 3.25 -2 0)
+			(at 3.2 2.15 0)
 			(layer "F.SilkS")
 			(uuid "ec8222fc-8cfd-4505-b28c-22557930faef")
 			(effects
@@ -11323,6 +11697,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C23733"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "3b37c704-7a44-4bd2-b3ad-579245f695c0")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/5d6660db-1a88-4bbb-bf41-f4a098a39e03")
 		(sheetname "/")
@@ -11478,6 +11863,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C25105"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "8044b718-f6f7-4064-aec8-d9c70c978946")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -11639,6 +12035,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1525"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "eee0f708-60e4-4bb5-b12a-af26f75be57e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/3cd973e2-bebd-4e54-8db7-1a9efe7580c0")
 		(sheetname "/")
@@ -11793,6 +12200,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C20625731"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "fd5e4e98-f59b-4ce4-bf66-2ab8fed60178")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -11966,6 +12384,17 @@
 				(font
 					(size 1.27 1.27)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C49023418"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "432db4fb-b87c-4fb0-b7bf-a03d60c207d0")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -12264,6 +12693,17 @@
 				(font
 					(size 1 1)
 					(thickness 0.15)
+				)
+			)
+		)
+		(property "LCSC" "C42411118"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "88a68002-9ef3-4a45-9000-48f8d69dcc06")
+			(effects
+				(font
+					(size 1.27 1.27)
 				)
 			)
 		)
@@ -13348,6 +13788,17 @@
 				)
 			)
 		)
+		(property "LCSC" "C1548"
+			(at 0 0 0)
+			(layer "F.SilkS")
+			(hide yes)
+			(uuid "8055db07-1679-4842-bc9f-e2bca36a7e5e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(property ki_fp_filters "C_*")
 		(path "/8b359004-212c-43f2-a781-0e8fea6dc1ff")
 		(sheetname "/")
@@ -14046,6 +14497,42 @@
 		(layer "Edge.Cuts")
 		(uuid "b8199dcd-bece-4aec-881b-6330a230ecae")
 	)
+	(gr_text "github.com/louisbourgault"
+		(at 39.6 35 0)
+		(layer "F.SilkS")
+		(uuid "123fc6c6-a060-4743-a56c-80bd23697627")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "ferretboard.louisbourgault.com"
+		(at 39.65 33.45 0)
+		(layer "F.SilkS")
+		(uuid "d6556919-e3aa-4fe8-95f8-b007380fa9cf")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "thank you nathan :)"
+		(at 105.4 33.25 0)
+		(layer "F.SilkS")
+		(uuid "051f8ea5-6a1b-4d57-bca3-967200991c0e")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
+		)
+	)
 	(gr_text "SCREEN CONNECTOR"
 		(at 68.35 36.1 0)
 		(layer "F.SilkS")
@@ -14124,6 +14611,30 @@
 			(justify left bottom mirror)
 		)
 	)
+	(gr_text "hack club!!!"
+		(at 40.6 71.75 0)
+		(layer "B.SilkS")
+		(uuid "424dab3d-b71f-496e-9e42-a00a6d8d7624")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
+	(gr_text "licenced under CERN-OHL-S\nopen source forever"
+		(at 61.9 80 0)
+		(layer "B.SilkS")
+		(uuid "490ee5e8-ced9-4df4-abfd-45996169673c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom mirror)
+		)
+	)
 	(gr_text "+"
 		(at 57.25 38.8 0)
 		(layer "B.SilkS")
@@ -14135,6 +14646,18 @@
 				(bold yes)
 			)
 			(justify left bottom mirror)
+		)
+	)
+	(gr_text "RESET"
+		(at 111.05 50.05 0)
+		(layer "Edge.Cuts")
+		(uuid "a7617aa3-9e40-40e8-8951-d2ac704bc929")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+			(justify left bottom)
 		)
 	)
 	(segment
