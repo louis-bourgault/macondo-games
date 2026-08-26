@@ -11,3 +11,4 @@ _autosave-*
 todo
 *.log
 /micropython/*
+_restore_backup_*/
