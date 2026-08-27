@@ -7,6 +7,8 @@
 > 
 > This README remains the authoritative source on commands to build the firmware for the device, and also has a nice image gallery at the end.
 
+[![View PCB on KiCanvas](https://hack.club/pcb-badge)](https://kicanvas.org/?repo=https://github.com/louis-bourgault/macondo-games/tree/main/hardware-v2)
+
 
 ### a small games console with rp2040
 This is a simple games console, based around a custom PCB with the RP2040 chip and a 240x240 LCD screen. It's small, of dimensions about 50x100x15mm
