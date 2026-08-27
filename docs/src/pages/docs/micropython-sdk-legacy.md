@@ -11,3 +11,6 @@ This came about after I showed this project to a digital technologies teacher at
 So I made a simple micropython sdk, that can be programmed through a web editor. 
 
 Note: this is the old version of the mp-sdk. There is a new, better one.
+
+## Building the micropython sdk.
+To build the micropython sdk, follow instructions in its readme, at /mp-sdk/README.md in the Github repository
