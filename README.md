@@ -9,8 +9,6 @@
 
 [![View PCB on KiCanvas](https://hack.club/pcb-badge)](https://kicanvas.org/?repo=https://github.com/louis-bourgault/macondo-games/tree/main/hardware-v2)
 
-![New Version](/img/newcase.png)
-
 # What is this?
 Ferretboard is a simple games console, made to be easy to program and cheap to produce. Version one uses a RP2040 MCU; version two, currently in development, upgrades this to the RP2350 and changes the form factor significantly. The display is a 240x240 1.54" LCD, which is common and cost effective. It is battery powered, using a basic 3.7v LiPo.
 
@@ -47,6 +45,8 @@ The full gallery can be found at [ferretboard.louisbourgault.com/gallery](https:
 ## Finished Device (v1)
 ![Finished device](/img/finished-device.jpg)
 
+## Fusion design for new version (not produced yet)
+![New Version](/img/newcase.png)
 
 # Acknowledgements
 
