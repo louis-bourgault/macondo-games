@@ -2,7 +2,7 @@
 layout: '../../layouts/DocsLayout.astro'
 title: 'Micropython SDK (new) - About'
 draft: false
-category: "ogmp"
+category: "mp"
 ---
 
 note: this docs page is a wip
