@@ -24,3 +24,4 @@ software/cmd/embed/ferret.elf
 software/cmd/embed/z_cgo_link_*.go
 software/embed
 *.o
+_restore_backup_*/

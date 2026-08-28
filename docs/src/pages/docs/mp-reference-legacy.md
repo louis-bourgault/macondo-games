@@ -1,8 +1,8 @@
 ---
 layout: '../../layouts/DocsLayout.astro'
-title: 'Micropython SDK - Quick Reference'
+title: 'Micropython SDK (legacy) - Quick Reference'
 draft: false
-category: "mp"
+category: "ogmp"
 ---
 
 The micropython sdk contains two main modules - ```modules.display``` and ```modules.input```. Import them at the top of your file with:

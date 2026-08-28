@@ -40,8 +40,8 @@
         "other_text_upright": false,
         "pads": {
           "drill": 0.0,
-          "height": 0.7,
-          "width": 1.05
+          "height": 2.0,
+          "width": 2.0
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -70,7 +70,20 @@
         }
       },
       "diff_pair_dimensions": [],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        [
+          "mirrored_text_on_front_layer|114050000|36950000|dd1c85f0-5b97-4298-ba36-13c460e364b3|00000000-0000-0000-0000-000000000000",
+          "y is symmetrical"
+        ],
+        [
+          "mirrored_text_on_front_layer|62900000|38750000|be89c0a6-b3ff-4015-aea8-5600eda12de0|00000000-0000-0000-0000-000000000000",
+          "symmetrical"
+        ],
+        [
+          "starved_thermal|93450000|79000000|f281903a-e56e-4eb9-bf16-9475c31d2488|527f380a-8d3f-4ff0-8956-69e3250baaca|F.Cu",
+          ""
+        ]
+      ],
       "meta": {
         "version": 2
       },
@@ -115,7 +128,7 @@
         "pth_inside_courtyard": "error",
         "shorting_items": "error",
         "silk_edge_clearance": "warning",
-        "silk_over_copper": "warning",
+        "silk_over_copper": "ignore",
         "silk_overlap": "ignore",
         "skew_out_of_range": "error",
         "solder_mask_bridge": "error",
@@ -666,7 +679,7 @@
         "uuid": "78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
       }
     ],
-    "used_designators": "U1,SW12,R10-11",
+    "used_designators": "",
     "variants": []
   },
   "sheets": [
