@@ -1,5 +1,8 @@
 import type { ProjectData, ImageFile } from './types';
 
+const MAX_IMAGE_WIDTH = 240;
+const MAX_IMAGE_HEIGHT = 240;
+
 export class WebSerialConnection {
 	public port: any;
 	public reader: any;
@@ -85,8 +88,53 @@ export class WebSerialConnection {
 		return (hash >>> 0).toString(16).padStart(8, '0');
 	}
 
+	private imageNameLiteral(name: string): string {
+		// JSON string escaping is also valid Python string-literal escaping for the
+		// names accepted by the firmware.
+		return JSON.stringify(name);
+	}
+
+	private validateImages(imgs: ImageFile[]) {
+		const names = new Set<string>();
+		for (const img of imgs) {
+			if (!img.name || /[\\/:,\r\n]/.test(img.name) || img.name === '.' || img.name === '..') {
+				throw new Error(`Image name "${img.name}" is invalid.`);
+			}
+			if (names.has(img.name)) {
+				throw new Error(`Image name "${img.name}" is duplicated.`);
+			}
+			names.add(img.name);
+			if (
+				!Number.isInteger(img.width) ||
+				!Number.isInteger(img.height) ||
+				img.width < 1 ||
+				img.height < 1 ||
+				img.width > MAX_IMAGE_WIDTH ||
+				img.height > MAX_IMAGE_HEIGHT
+			) {
+				throw new Error(
+					`Image "${img.name}" must have integer dimensions from 1×1 to ${MAX_IMAGE_WIDTH}×${MAX_IMAGE_HEIGHT}.`
+				);
+			}
+
+			const expectedBytes = img.width * img.height * 2;
+			const expectedBase64Length = 4 * Math.ceil(expectedBytes / 3);
+			if (typeof img.content !== 'string' || img.content.length !== expectedBase64Length) {
+				throw new Error(`Image "${img.name}" data does not match its dimensions.`);
+			}
+			try {
+				if (atob(img.content).length !== expectedBytes) {
+					throw new Error('decoded size mismatch');
+				}
+			} catch {
+				throw new Error(`Image "${img.name}" contains invalid base64 data.`);
+			}
+		}
+	}
+
 	public async syncImages(imgs: ImageFile[]) {
 		console.log('received images to sync', imgs);
+		this.validateImages(imgs);
 
 		// Stop whatever is running so the REPL is responsive, then read the
 		// image manifest that the firmware keeps on its own filesystem.
@@ -126,10 +174,6 @@ export class WebSerialConnection {
 		const chunkSize = 320;
 
 		for (const img of imgs) {
-			if (!img.name || !img.content) {
-				console.error("can't send this one", img);
-				continue;
-			}
 			const checksum = this.generateChecksum(img.content);
 			if (existingImagesMap.has(img.name)) {
 				const existing = existingImagesMap.get(img.name);
@@ -144,27 +188,37 @@ export class WebSerialConnection {
 				}
 			}
 
-			// Upload in chunks: write_image opens the upload, append_image adds
-			// base64 characters (chunks may split anywhere; the device decodes
-			// the accumulated payload once), write_image_end validates the size
-			// and persists the image plus its manifest entry.
-			for (let i = 0; i < img.content.length; i += chunkSize) {
-				const chunk = img.content.slice(i, i + chunkSize);
-				const call =
-					i === 0
-						? `ferret.write_image("${img.name}", ${img.width}, ${img.height}, "${chunk}")`
-						: `ferret.append_image("${img.name}", "${chunk}")`;
-				await this.pasteAndRun(`import ferret\n${call}\n`);
-			}
+			// Upload in chunks: write_image opens a temporary file, append_image
+			// streams more base64 into it, and write_image_end validates and publishes
+			// the finished image plus its manifest entry.
+			const nameLiteral = this.imageNameLiteral(img.name);
+			const totalChunks = Math.ceil(img.content.length / chunkSize);
+			let completedChunks = 0;
+			try {
+				for (let i = 0; i < img.content.length; i += chunkSize) {
+					const chunk = img.content.slice(i, i + chunkSize);
+					const call =
+						i === 0
+							? `ferret.write_image(${nameLiteral}, ${img.width}, ${img.height}, "${chunk}")`
+							: `ferret.append_image(${nameLiteral}, "${chunk}")`;
+					await this.pasteAndRun(`import ferret\n${call}\n`);
+					completedChunks++;
+				}
 
-			await this.pasteAndRun(`import ferret\nferret.write_image_end("${img.name}")\n`);
+				await this.pasteAndRun(`import ferret\nferret.write_image_end(${nameLiteral})\n`);
+			} catch (err) {
+				throw new Error(
+					`Failed to upload image "${img.name}" after ${completedChunks}/${totalChunks} chunks: ${err instanceof Error ? err.message : String(err)}`
+				);
+			}
 		}
 
 		for (const name of existingImagesMap.keys()) {
 			if (!imgs.find((img) => img.name === name)) {
 				//delete the image from the device if it is not in the new list
+				const nameLiteral = this.imageNameLiteral(name);
 				await this.pasteAndRun(
-					`import ferret\ntry:\n    ferret.delete_image("${name}")\nexcept OSError:\n    pass\n`
+					`import ferret\ntry:\n    ferret.delete_image(${nameLiteral})\nexcept OSError:\n    pass\n`
 				);
 			}
 		}

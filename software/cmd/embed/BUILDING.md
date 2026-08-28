@@ -310,10 +310,11 @@ calls before *every* paste/exec. Re-registration is idempotent.
     (guard `len == 0`); `Mkdir` on an existing directory reports an "already
     exists" error that must be tolerated on remount; error checks compare
     against `littlefs.Error(-2)` / `Error(-17)` (there is no `ErrNoEntry`).
-11. **Base64 uploads accumulate.** The editor splits payloads at arbitrary
-    chunk boundaries, so individual chunks are not valid base64. `flash_fs.go`
-    accumulates characters and decodes once at `write_image_end`, when the
-    full padded string is available.
+11. **Base64 uploads stream.** The editor may split payloads at arbitrary
+    chunk boundaries, so `flash_fs.go` retains up to three leftover characters,
+    decodes complete quartets into a fixed buffer, and writes them directly to
+    a temporary LittleFS file. `write_image_end` validates the final lengths and
+    atomically renames that file over the published image.
 
 ---
 

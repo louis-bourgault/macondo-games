@@ -11,14 +11,14 @@
 //     mp_lexer_new_from_file in port/repl_stubs.c)
 //   - ferret_write_file / ferret_append_file: the web editor's code files
 //   - ferret_write_image / ferret_append_image / ferret_write_image_end:
-//     base64 image uploads, chunked so a chunk always fits the MP GC heap
+//     base64 image uploads, decoded incrementally into a temporary file
 //   - ferret_image_manifest / ferret_delete_image: the image manifest
-//   - ferret_draw_image: reads the file (or the sprite cache), blits with
-//     chroma keying, using the manifest for the dimensions
+//   - ferret_draw_image: streams the file a row at a time and blits with chroma
+//     keying, using the manifest for the dimensions
 //
 // Source files are capped at maxFsFile so a file always fits the 16 KiB MP GC
-// heap once compiled; the image cache is bounded to a fixed RAM budget because
-// the display framebuffer already owns 115 KiB of the 264 KiB.
+// heap once compiled. Filesystem images are deliberately streamed because the
+// display framebuffer already owns 115 KiB of the RP2040's RAM.
 
 package main
 
@@ -29,7 +29,6 @@ import "C"
 
 import (
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"hash"
 	"hash/fnv"
@@ -39,9 +38,8 @@ import (
 	"strings"
 	"unsafe"
 
+	"tinygo.org/x/tinyfs"
 	"tinygo.org/x/tinyfs/littlefs"
-
-	"github.com/louis-bourgault/macondo-games/software/internal/helpers"
 )
 
 const (
@@ -54,16 +52,20 @@ const (
 	// maxFsFile caps source files (boot script, modules). A file this big
 	// already fills the MP GC heap once compiled, so nothing useful is lost.
 	maxFsFile = 16 * 1024
-	// maxImageFile caps a single image (raw RGB565 bytes).
-	maxImageFile = 64 * 1024
+	// Images are stored as little-endian RGB565 and may cover the whole display.
+	// Validate the dimensions before multiplying: int is 32-bit on the device.
+	maxImageWidth  = 240
+	maxImageHeight = 240
+	maxImageFile   = maxImageWidth * maxImageHeight * 2
 
-	imgDirPath      = "/img"
-	imgManifestPath = "/img/images.txt"
-	imgCacheBudget  = 0 // RAM budget for decoded sprites
-	//the cache was previously 48KiB, but we're kind of having OOM problems
-	//the whole caching system will probably have to be changed later to deal with caching backgrounds seperately, but thats quite a rework and only worth it when we upgrade
-	//to the RP2350 and have more RAM
-	//TODO: do the above
+	imgDirPath        = "/img"
+	imgManifestPath   = "/img/images.txt"
+	imgUploadTempName = ".upload.tmp"
+	imgUploadTempPath = imgDirPath + "/" + imgUploadTempName
+
+	// The editor currently sends 320 base64 characters per call, which decode to
+	// 240 bytes. Process larger manual calls in equally bounded pieces.
+	imageDecodeBlock = 320
 )
 
 var (
@@ -74,12 +76,14 @@ var (
 	// /img/images.txt so dims survive a reboot.
 	imgManifest = map[string]imgMeta{}
 
-	// sprite cache: decoded RGB565 blobs, FIFO-evicted against a byte budget.
-	imgCache = spriteCache{entries: map[string]cachedImg{}}
+	// The editor uploads one image at a time. Keeping a single open temporary
+	// file bounds both RAM and LittleFS file-cache use.
+	pendingImg *pendingImage
 
-	// editor uploads arrive as base64 chunks; accumulate until
-	// ferret_write_image_end validates and persists.
-	pendingImgs = map[string]*pendingImage{}
+	// Shared by upload decoding (first 240 bytes) and row-based drawing (all 480
+	// bytes). MicroPython invokes image functions synchronously, so they cannot
+	// use this buffer concurrently.
+	imageScratch [maxImageWidth * 2]byte
 )
 
 type imgMeta struct {
@@ -87,23 +91,17 @@ type imgMeta struct {
 	chksum string
 }
 
-type cachedImg struct {
-	data  []byte
-	w, h  uint8
-	order int
-}
-
-type spriteCache struct {
-	entries map[string]cachedImg
-	order   []string // insertion order, oldest first
-	bytes   int
-	next    int
-}
-
 type pendingImage struct {
-	w, h int
-	b64  []byte      // base64 chars accumulate here; decoded once at write_image_end
-	f    hash.Hash32 // FNV-1a over the base64 chunks, in order
+	name            string
+	w, h            int
+	expectedDecoded int
+	expectedEncoded int
+	encoded         int
+	decoded         int
+	carry           [4]byte
+	carryLen        int
+	f               hash.Hash32 // FNV-1a over the base64 chunks, in order
+	file            tinyfs.File
 }
 
 // --- volume setup -----------------------------------------------------------
@@ -126,6 +124,11 @@ func initGoFS() {
 	}
 	if err := ferretFs.Mkdir(imgDirPath, 0o777); err != nil && !isMissing(err) && !isExists(err) {
 		panic("ferret: lfs mkdir /img: " + err.Error())
+	}
+	// An upload is only published by rename at write_image_end. A reset before
+	// that point can leave an unreferenced temporary file behind.
+	if err := ferretFs.Remove(imgUploadTempPath); err != nil && !isMissing(err) {
+		fmt.Printf("ferret: remove stale image upload: %v\n", err)
 	}
 	loadManifest()
 }
@@ -331,7 +334,8 @@ func ferret_append_file(path *C.char, data *C.char, n C.int) C.int {
 // --- image service ----------------------------------------------------------
 
 func validImageName(name string) bool {
-	return name != "" && !strings.ContainsAny(name, "/\\:") && name != "." && name != ".."
+	return name != "" && name != imgUploadTempName &&
+		!strings.ContainsAny(name, "/\\:,\r\n") && name != "." && name != ".."
 }
 
 func manifestString() string {
@@ -371,82 +375,194 @@ func loadManifest() {
 		if _, err := fmt.Sscanf(fields[2], "%d", &h); err != nil {
 			continue
 		}
+		if !validImageName(fields[0]) || w <= 0 || h <= 0 || w > maxImageWidth || h > maxImageHeight {
+			continue
+		}
 		imgManifest[fields[0]] = imgMeta{w: w, h: h, chksum: fields[3]}
 	}
 }
 
-// Starts (or restarts) a base64 upload. 0 = ok, -1 = invalid args.
+// abortPendingImage closes and removes an unpublished upload. The previously
+// published image is never opened with O_TRUNC, so it remains usable.
+func abortPendingImage() {
+	if pendingImg == nil {
+		return
+	}
+	if pendingImg.file != nil {
+		_ = pendingImg.file.Close()
+	}
+	pendingImg = nil
+	if err := ferretFs.Remove(imgUploadTempPath); err != nil && !isMissing(err) {
+		fmt.Printf("ferret: remove failed image upload: %v\n", err)
+	}
+}
+
+// writeAll handles short writes without allocating. A nil error with no
+// progress is treated as an I/O failure rather than spinning forever.
+func writeAll(f tinyfs.File, data []byte) bool {
+	for len(data) > 0 {
+		n, err := f.Write(data)
+		if err != nil || n <= 0 || n > len(data) {
+			return false
+		}
+		data = data[n:]
+	}
+	return true
+}
+
+// decodeImageBlock decodes complete base64 quartets and appends the resulting
+// RGB565 bytes to the open temporary file. Returns -1 for malformed data, -3
+// for a size overrun, and -4 for an I/O failure.
+func decodeImageBlock(p *pendingImage, encoded []byte) int {
+	n, err := base64.StdEncoding.Decode(imageScratch[:], encoded)
+	if err != nil {
+		return -1
+	}
+	if p.decoded+n > p.expectedDecoded {
+		return -3
+	}
+	if !writeAll(p.file, imageScratch[:n]) {
+		return -4
+	}
+	p.decoded += n
+	return 0
+}
+
+// pendingAppend hashes and incrementally decodes one editor chunk. Only the
+// incomplete final base64 quartet is retained between calls.
+func pendingAppend(p *pendingImage, chunk []byte) int {
+	if p.encoded+len(chunk) > p.expectedEncoded {
+		return -3
+	}
+	_, _ = p.f.Write(chunk)
+	p.encoded += len(chunk)
+
+	if p.carryLen > 0 {
+		n := 4 - p.carryLen
+		if n > len(chunk) {
+			n = len(chunk)
+		}
+		copy(p.carry[p.carryLen:], chunk[:n])
+		p.carryLen += n
+		chunk = chunk[n:]
+		if p.carryLen == 4 {
+			if r := decodeImageBlock(p, p.carry[:]); r != 0 {
+				return r
+			}
+			p.carryLen = 0
+		}
+	}
+
+	for len(chunk) >= 4 {
+		n := len(chunk) &^ 3
+		if n > imageDecodeBlock {
+			n = imageDecodeBlock
+		}
+		if r := decodeImageBlock(p, chunk[:n]); r != 0 {
+			return r
+		}
+		chunk = chunk[n:]
+	}
+
+	copy(p.carry[:], chunk)
+	p.carryLen = len(chunk)
+	return 0
+}
+
+// Starts (or restarts) a base64 upload. 0 = ok, -1 = invalid args, -3 = too
+// large, -4 = I/O error.
 //
 //export ferret_write_image
 func ferret_write_image(name *C.char, w, h C.int, b64 *C.char, n C.int) C.int {
 	nm := C.GoString(name)
-	if !validImageName(nm) || int(w) <= 0 || int(h) <= 0 || int(w)*int(h)*2 > maxImageFile {
+	wv, hv := int(w), int(h)
+	if !validImageName(nm) || wv <= 0 || hv <= 0 || int(n) < 0 {
 		return -1
 	}
-	p := &pendingImage{w: int(w), h: int(h), f: fnv.New32a()}
-	if !pendingAppend(p, unsafe.Slice((*byte)(unsafe.Pointer(b64)), int(n))) {
-		return -1
+	if wv > maxImageWidth || hv > maxImageHeight {
+		return -3
 	}
-	pendingImgs[nm] = p
+	expected := wv * hv * 2
+	if expected > maxImageFile {
+		return -3
+	}
+	abortPendingImage()
+	f, err := ferretFs.OpenFile(imgUploadTempPath, os.O_CREATE|os.O_TRUNC|os.O_RDWR)
+	if err != nil {
+		return -4
+	}
+	pendingImg = &pendingImage{
+		name:            nm,
+		w:               wv,
+		h:               hv,
+		expectedDecoded: expected,
+		expectedEncoded: base64.StdEncoding.EncodedLen(expected),
+		f:               fnv.New32a(),
+		file:            f,
+	}
+	if r := pendingAppend(pendingImg, unsafe.Slice((*byte)(unsafe.Pointer(b64)), int(n))); r != 0 {
+		abortPendingImage()
+		return C.int(r)
+	}
 	return 0
 }
 
 // Appends a base64 chunk to an in-progress upload.
-// 0 = ok, -1 = invalid, -2 = no upload started, -3 = exceeds maxImageFile.
+// 0 = ok, -1 = invalid base64, -2 = no matching upload, -3 = too large, -4 =
+// I/O error.
 //
 //export ferret_append_image
 func ferret_append_image(name *C.char, b64 *C.char, n C.int) C.int {
 	nm := C.GoString(name)
-	p, ok := pendingImgs[nm]
-	if !ok {
+	if pendingImg == nil || pendingImg.name != nm {
 		return -2
 	}
-	if (len(p.b64)+int(n))*3/4 > maxImageFile {
-		delete(pendingImgs, nm)
-		return -3
-	}
-	if !pendingAppend(p, unsafe.Slice((*byte)(unsafe.Pointer(b64)), int(n))) {
-		delete(pendingImgs, nm)
+	if int(n) < 0 {
+		abortPendingImage()
 		return -1
+	}
+	if r := pendingAppend(pendingImg, unsafe.Slice((*byte)(unsafe.Pointer(b64)), int(n))); r != 0 {
+		abortPendingImage()
+		return C.int(r)
 	}
 	return 0
 }
 
-// pendingAppend accumulates base64 characters (the editor splits the payload
-// at arbitrary chunk boundaries, which are not valid base64 on their own) and
-// feeds them to the checksum hash. Decoding happens once at write_image_end,
-// when the full, padded string is available.
-func pendingAppend(p *pendingImage, chunk []byte) bool {
-	p.b64 = append(p.b64, chunk...)
-	p.f.Write(chunk)
-	return true
-}
-
-// Validates and persists a finished upload. 0 = ok, -1 = bad base64/size, -2 =
-// no upload started.
+// Validates and publishes a finished upload. 0 = ok, -1 = bad base64/size, -2
+// = no matching upload, -4 = I/O error.
 //
 //export ferret_write_image_end
 func ferret_write_image_end(name *C.char) C.int {
 	nm := C.GoString(name)
-	p, ok := pendingImgs[nm]
-	if !ok {
+	if pendingImg == nil || pendingImg.name != nm {
 		return -2
 	}
-	delete(pendingImgs, nm)
-	decoded := make([]byte, base64.StdEncoding.DecodedLen(len(p.b64)))
-	m, err := base64.StdEncoding.Decode(decoded, p.b64)
-	if err != nil || m != p.w*p.h*2 {
+	p := pendingImg
+	if p.encoded != p.expectedEncoded || p.carryLen != 0 || p.decoded != p.expectedDecoded {
+		abortPendingImage()
 		return -1
 	}
-	if err := fsWrite(imgDirPath+"/"+nm, decoded[:m]); err != nil {
-		return -1
+	if err := p.file.Close(); err != nil {
+		p.file = nil
+		abortPendingImage()
+		return -4
+	}
+	p.file = nil
+	pendingImg = nil
+	info, err := ferretFs.Stat(imgUploadTempPath)
+	if err != nil || info.Size() != int64(p.expectedDecoded) {
+		_ = ferretFs.Remove(imgUploadTempPath)
+		return -4
+	}
+	if err := ferretFs.Rename(imgUploadTempPath, absPath(imgDirPath+"/"+nm)); err != nil {
+		_ = ferretFs.Remove(imgUploadTempPath)
+		return -4
 	}
 	imgManifest[nm] = imgMeta{
 		w:      p.w,
 		h:      p.h,
 		chksum: fmt.Sprintf("%08x", p.f.Sum32()),
 	}
-	imgCache.evict(nm)
 	saveManifest()
 	return 0
 }
@@ -476,59 +592,8 @@ func ferret_delete_image(name *C.char) C.int {
 		return -1
 	}
 	delete(imgManifest, nm)
-	imgCache.evict(nm)
 	saveManifest()
 	return 0
-}
-
-// imageData returns the decoded RGB565 bytes for a manifest entry, drawing
-// from the sprite cache when it fits the budget.
-func imageData(name string, m imgMeta) ([]byte, error) {
-	if c, ok := imgCache.entries[name]; ok {
-		return c.data, nil
-	}
-	data, err := fsRead(imgDirPath + "/" + name)
-	if err != nil {
-		return nil, err
-	}
-	if len(data) != m.w*m.h*2 {
-		return nil, errors.New("image file size does not match manifest")
-	}
-	if len(data) <= imgCacheBudget {
-		imgCache.insert(name, data, uint8(m.w), uint8(m.h))
-	}
-	return data, nil
-}
-
-func (c *spriteCache) insert(name string, data []byte, w, h uint8) {
-	for c.bytes+len(data) > imgCacheBudget && len(c.order) > 0 {
-		oldest := c.order[0]
-		c.order = c.order[1:]
-		if e, ok := c.entries[oldest]; ok {
-			c.bytes -= len(e.data)
-			delete(c.entries, oldest)
-		}
-	}
-	if _, ok := c.entries[name]; ok {
-		c.bytes -= len(c.entries[name].data)
-	}
-	c.entries[name] = cachedImg{data: data, w: w, h: h, order: c.next}
-	c.order = append(c.order, name)
-	c.bytes += len(data)
-	c.next++
-}
-
-func (c *spriteCache) evict(name string) {
-	if e, ok := c.entries[name]; ok {
-		c.bytes -= len(e.data)
-		delete(c.entries, name)
-	}
-	for i, n := range c.order {
-		if n == name {
-			c.order = append(c.order[:i], c.order[i+1:]...)
-			break
-		}
-	}
 }
 
 // Blits an image by manifest name. 0 = ok, -1 = unknown image, -2 = too big,
@@ -541,17 +606,37 @@ func ferret_draw_image(name *C.char, x, y C.int) C.int {
 	if !ok {
 		return -1
 	}
-	if m.w > 255 || m.h > 255 {
+	if m.w <= 0 || m.h <= 0 || m.w > maxImageWidth || m.h > maxImageHeight {
 		return -2
 	}
-	data, err := imageData(nm, m)
+	info, err := ferretFs.Stat(absPath(imgDirPath + "/" + nm))
+	if err != nil || info.Size() != int64(m.w*m.h*2) {
+		return -3
+	}
+	f, err := ferretFs.Open(absPath(imgDirPath + "/" + nm))
 	if err != nil {
 		return -3
 	}
-	helpers.DrawImage(display, helpers.Image{
-		Data: string(data),
-		W:    uint8(m.w),
-		H:    uint8(m.h),
-	}, int16(x), int16(y))
+	defer f.Close()
+
+	rowBytes := imageScratch[:m.w*2]
+	for row := 0; row < m.h; row++ {
+		if _, err := io.ReadFull(f, rowBytes); err != nil {
+			return -3
+		}
+		dy := int(y) + row
+		if dy < 0 || dy >= maxImageHeight {
+			continue
+		}
+		for col := 0; col < m.w; col++ {
+			dx := int(x) + col
+			if dx < 0 || dx >= maxImageWidth {
+				continue
+			}
+			i := col * 2
+			color := uint16(rowBytes[i]) | uint16(rowBytes[i+1])<<8
+			display.Pixel(dx, dy, color)
+		}
+	}
 	return 0
 }
