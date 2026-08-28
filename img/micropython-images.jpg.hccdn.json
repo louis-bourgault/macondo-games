@@ -1,0 +1,17 @@
+[
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/01a047fd-d714-773d-8a16-4d080555ccab/micropython-images.jpg.webp",
+        "id": "01a047fd-d714-773d-8a16-4d080555ccab",
+        "filename": "micropython-images.jpg.webp",
+        "content_type": "image/webp",
+        "optimised": "",
+        "size": 679848,
+        "created_at": "2026-08-28T10:50:13Z",
+        "FileLoc": "/Users/louisb/Documents/hardware/macondo-games/img/micropython-images.jpg"
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/micropython-images.jpg"
+  }
+]
