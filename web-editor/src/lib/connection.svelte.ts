@@ -15,14 +15,37 @@ export class WebSerialConnection {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
-	private async waitForPrompt(timeoutMs = 5000): Promise<void> {
-		const startLen = this.output.length;
+	private async waitForOutputSince(
+		needle: string,
+		startLen: number,
+		timeoutMs = 5000
+	): Promise<void> {
 		const deadline = Date.now() + timeoutMs;
 		while (Date.now() < deadline) {
-			if (this.output.slice(startLen).includes('>>> ')) return;
+			if (this.output.slice(startLen).includes(needle)) return;
 			await this.delay(10);
 		}
-		throw new Error('timeout waiting for >>> prompt');
+		throw new Error(`timeout waiting for ${needle}`);
+	}
+
+	private async pasteAndRun(source: string): Promise<string> {
+		// Do not rely on a fixed delay here. A payload sent before Ctrl-E has
+		// actually reached the device is interpreted by the friendly REPL.
+		const pasteStart = this.output.length;
+		await this.controlE();
+		await this.waitForOutputSince('=== ', pasteStart);
+
+		// Take the checkpoint before Ctrl-D: a quick device can print the prompt
+		// before the next await gets to inspect output.
+		const responseStart = this.output.length;
+		await this.sendText(source);
+		await this.controlD();
+		await this.waitForOutputSince('>>> ', responseStart);
+		const response = this.output.slice(responseStart);
+		if (response.includes('Traceback (most recent call last):')) {
+			throw new Error(`device rejected paste:\n${response}`);
+		}
+		return response;
 	}
 
 	private async attachPort(port: any) {
@@ -52,55 +75,55 @@ export class WebSerialConnection {
 
 	// FNV-1a 32-bit checksum, simple and fast, not cryptographically secure
 	private generateChecksum(str: string): string {
-		let hash = 0x811C9DC5; 
-		
+		let hash = 0x811c9dc5;
+
 		for (let i = 0; i < str.length; i++) {
 			hash ^= str.charCodeAt(i);
 			hash = Math.imul(hash, 0x01000193);
 		}
-		
+
 		return (hash >>> 0).toString(16).padStart(8, '0');
 	}
 
 	public async syncImages(imgs: ImageFile[]) {
 		console.log('received images to sync', imgs);
 
-		let sentImagesData = '';
-
-		//request the file with all the checksums
+		// Stop whatever is running so the REPL is responsive, then read the
+		// image manifest that the firmware keeps on its own filesystem.
 		await this.controlC();
 		await this.delay(100);
 		await this.controlC();
-		await this.controlE(); //paste mode
-		await this.delay(50);
-		await this.sendText(`try:\n    with open('/img/images.txt', 'r') as f:\n        _data = f.read()\nexcept OSError:\n    _data = ''\nprint(_data)\n`);
-		await this.controlD();
-		await this.waitForPrompt();
+		await this.delay(100);
+		// Note where output ends before querying the manifest so we only parse
+		// the response to THIS query. connection.output accumulates the whole
+		// session (including the controlC prompts above), so splitting on the
+		// first '>>> ' would grab the stale bytes between the first two prompts.
+		const manifestStart = this.output.length;
+		await this.pasteAndRun(`import ferret\nprint(ferret.image_manifest())\n`);
 
-		const existingImagesData = this.output.split('>>> ')[1].trim();
+		const existingImagesData = this.output.slice(manifestStart);
 		console.log('existing images data', existingImagesData);
 
-		const existingImagesMap = new Map<string, { width: number; height: number; checksum: string }>();
-		for (const line of existingImagesData.split('\n')) {
-			const [name, widthStr, heightStr, checksum] = line.split(',');
-			if (name && widthStr && heightStr && checksum) {
+		const existingImagesMap = new Map<
+			string,
+			{ width: number; height: number; checksum: string }
+		>();
+		for (const rawLine of existingImagesData.split('\n')) {
+			// trim so a trailing \r (the device sends CRLF) doesn't corrupt the checksum
+			const [name, widthStr, heightStr, checksum] = rawLine.trim().split(',');
+			if (name && widthStr && heightStr && checksum && !isNaN(parseInt(widthStr, 10))) {
 				existingImagesMap.set(name, {
 					width: parseInt(widthStr, 10),
 					height: parseInt(heightStr, 10),
-					checksum,
+					checksum
 				});
 			}
 		}
 
-
-
-		await this.controlC();
-		await this.delay(100);
-		await this.controlC();
-		await this.waitForPrompt();
-
-		const chunkSize = 8192; //8kb seems to be a decent chunk size to balance speed and stability.
-		//if its too big,we OOM, if its too small, it takes forever to send.
+		// TinyUSB has a 512-byte receive staging buffer. Keep the complete Python
+		// paste (wrapper plus payload) comfortably below it; the previous 2 KiB
+		// writes could overrun that buffer before the RP2040 drained it.
+		const chunkSize = 320;
 
 		for (const img of imgs) {
 			if (!img.name || !img.content) {
@@ -117,56 +140,35 @@ export class WebSerialConnection {
 					existing.checksum === checksum
 				) {
 					console.log(`Skipping ${img.name}, hasn't chnaged since last checksum`);
-					sentImagesData += `\n${img.name},${img.width},${img.height},${checksum}`;
 					continue;
 				}
 			}
-			sentImagesData += `\n${img.name},${img.width},${img.height},${checksum}`;
-			
-			await this.controlE();
-			await this.delay(50);
-			await this.sendText(
-				`import os, binascii\ntry:\n    os.mkdir('/img')\nexcept OSError:\n    pass\n_f = open('/img/${img.name}', 'wb')\n`
-			);
-			await this.controlD();
-			await this.waitForPrompt();
-			
-			//seperate paste blocks so we don't OOM
+
+			// Upload in chunks: write_image opens the upload, append_image adds
+			// base64 characters (chunks may split anywhere; the device decodes
+			// the accumulated payload once), write_image_end validates the size
+			// and persists the image plus its manifest entry.
 			for (let i = 0; i < img.content.length; i += chunkSize) {
 				const chunk = img.content.slice(i, i + chunkSize);
-				await this.controlE();
-				await this.delay(50);
-				await this.sendText(`_f.write(binascii.a2b_base64('${chunk}'))\n`);
-				await this.controlD();
-				await this.waitForPrompt();
+				const call =
+					i === 0
+						? `ferret.write_image("${img.name}", ${img.width}, ${img.height}, "${chunk}")`
+						: `ferret.append_image("${img.name}", "${chunk}")`;
+				await this.pasteAndRun(`import ferret\n${call}\n`);
 			}
 
-			await this.controlE();
-			await this.delay(50);
-			await this.sendText(`_f.close()\n`);
-			await this.controlD();
-			await this.waitForPrompt();
+			await this.pasteAndRun(`import ferret\nferret.write_image_end("${img.name}")\n`);
 		}
 
-		for (const [name, { width, height, checksum }] of existingImagesMap.entries()) {
+		for (const name of existingImagesMap.keys()) {
 			if (!imgs.find((img) => img.name === name)) {
 				//delete the image from the device if it is not in the new list
-				await this.controlE();
-				await this.delay(50);
-				await this.sendText(`import os\ntry:\n    os.remove('/img/${name}')\nexcept OSError:\n    pass\n`);
-				await this.controlD();
-				await this.waitForPrompt();
+				await this.pasteAndRun(
+					`import ferret\ntry:\n    ferret.delete_image("${name}")\nexcept OSError:\n    pass\n`
+				);
 			}
 		}
-
-		await this.controlE();
-		await this.delay(50);
-		await this.sendText(`with open('/img/images.txt', 'w') as f:\n    f.write("""${sentImagesData}""")\n`);
-		await this.controlD();
-		await this.waitForPrompt();
 	}
-
-	
 
 	public init = async () => {
 		// Don't auto-open any port — the user must click Connect to get the
@@ -210,7 +212,7 @@ export class WebSerialConnection {
 
 	public controlB = async () => {
 		await this.sendText('\x02');
-	}
+	};
 
 	public sendText = async (text: string) => {
 		if (!this.writer) {
@@ -225,9 +227,7 @@ export class WebSerialConnection {
 		await this.delay(100);
 		await this.controlC();
 		await this.delay(100);
-		await this.controlE();
-		await this.delay(50);
-		await this.sendText(
+		await this.pasteAndRun(
 			'import gc\n' +
 				'for _n in list(globals()):\n' +
 				'    if not _n.startswith("_") and _n != "gc":\n' +
@@ -240,13 +240,19 @@ export class WebSerialConnection {
 				script +
 				'\n'
 		); //RUN the garbage colelctor; avoids out of memory issues.
-		await this.controlD();
 	};
 
 	public saveProjectToDevice = async (projectData: ProjectData) => {
 		for (const file of projectData.codeFiles) {
 			await this.writeFileToDevice(file.name, file.content);
 		}
+		// Boot main.py right away: a soft reset re-runs the boot script, so the
+		// game starts immediately instead of needing a power cycle.
+		await this.controlC();
+		await this.delay(100);
+		await this.controlC();
+		await this.delay(100);
+		await this.controlD();
 	};
 
 	public writeFileToDevice = async (filename: string, content: string) => {
@@ -254,25 +260,40 @@ export class WebSerialConnection {
 		await this.delay(100);
 		await this.controlC();
 		await this.delay(100);
-		await this.controlE();
-		await this.delay(50);
-		await this.sendText(`with open('${filename}', 'w') as f:\n    f.write("""${content}""")\n`);
-		await this.controlD();
-		await this.delay(500);
-		await this.controlD();
+
+		// Chunked so we don't OOM the MicroPython heap. write_file opens the
+		// file, append_file adds the rest. Backslashes and triple quotes are
+		// escaped so the paste literal round-trips the content byte-for-byte.
+		// Use the same wire-safe limit as images: the full paste must fit through
+		// TinyUSB's receive staging buffer, not merely the MP heap.
+		const chunkSize = 320;
+		for (let i = 0; i < content.length; i += chunkSize) {
+			const chunk = content
+				.slice(i, i + chunkSize)
+				.replace(/\\/g, '\\\\')
+				.replace(/"""/g, '\\"""');
+			const call =
+				i === 0
+					? `ferret.write_file("${filename}", """${chunk}""")`
+					: `ferret.append_file("${filename}", """${chunk}""")`;
+			await this.pasteAndRun(`import ferret\n${call}\n`);
+		}
 	};
 
 	public runProject = async (projectData: ProjectData) => {
-		const mainFile =
-			projectData.codeFiles.find((f) => f.name === 'main.py') ?? projectData.codeFiles[0];
-		// Write every non-main file to the device so `import` statements in the
-		// main file resolve at runtime. The main file itself is executed inline
-		// via paste mode (see runScript), so it does not need to be persisted.
+		// Persist every file (including main.py) so `import` statements resolve
+		// and the boot script has fresh content, then soft-reset: main.py runs
+		// automatically from flash with a fresh namespace.
 		for (const file of projectData.codeFiles) {
-			if (file.name === mainFile.name) continue;
 			await this.writeFileToDevice(file.name, file.content);
 		}
-		await this.runScript(mainFile.content);
+		// Stop anything currently running and land at a clean prompt.
+		await this.controlC();
+		await this.delay(100);
+		await this.controlC();
+		await this.delay(100);
+		// Reboot: the firmware boots /main.py on every soft reset.
+		await this.controlD();
 	};
 
 	public log = (msg: string) => {

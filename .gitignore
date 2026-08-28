@@ -8,7 +8,20 @@
 *-bak
 _autosave-*
 *.kicad_prl
+*.rpt
 todo
 *.log
-/micropython/*
+/micropython/
+/mini-games/mini-games-backups/
+# Go->C archive + embed build artifacts (built by software/cmd/embed/justfile)
+software/cmd/embed/libbridge.a
+software/cmd/embed/libbridge.h
+software/cmd/embed/spike
+software/cmd/embed/build/
+software/cmd/embed/ferret.uf2
+/ferret.uf2
+software/cmd/embed/ferret.elf
+software/cmd/embed/z_cgo_link_*.go
+software/embed
+*.o
 _restore_backup_*/
