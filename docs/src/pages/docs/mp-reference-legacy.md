@@ -1,6 +1,6 @@
 ---
 layout: '../../layouts/DocsLayout.astro'
-title: 'Micropython SDK (legacy) - Quick Reference'
+title: 'MicroPython SDK (legacy) - Quick Reference'
 draft: false
 category: "ogmp"
 ---
@@ -22,12 +22,20 @@ All colours are in RGB565 format.
 ### ```display.pixel```
 Arguments: x, y, colour.
 
-Draws a single pixel to the screen
+Draws a single pixel to the screen. Unlike the other drawing functions in this
+legacy implementation, this currently sends the changed buffer to the display
+immediately.
+
+### ```display.fill```
+Argument: colour.
+
+Fills the entire frame buffer with one colour. Call ```display.update()``` to
+send it to the screen.
 
 ### ```display.rect```
 Arguments: x, y (top left corner), width, height, colour.
 
-Draws a rectangle to the screen
+Draws the outline of a rectangle to the frame buffer.
 
 ### ```display.text```
 Arguments: text, x, y, colour
@@ -37,8 +45,8 @@ Draws text to the screen at top left coords of x and y. A single character is si
 ### ```display.draw_image```
 Arguments: image_name, x, y, image_width, image_height
 
-Draws an image stored in ```/img``` in the device's flash to the screen. As of now, the logic cannot infer the image width and height, so you must explicitly pass them. This my change in future.
-When you upload an image from the web editor, it is automatically placed in this directory.
+Draws an image stored in ```/img``` in the device's flash to the screen. The logic cannot infer the image width and height, so you must explicitly pass them.
+The earlier version of the web editor placed uploaded images in this directory automatically.
 
 ### ```display.update```
 No arguments.

@@ -6,8 +6,8 @@ const visibleDocs = docs.filter((doc: any) => !doc.frontmatter.draft)
 const categories = [
   { key: "general", label: "General" },
   { key: "go", label: "Go" },
-  { key: "mp", label: "Micropython" },
-  { key: "ogmp", label: "Legacy Micropython SDK"}
+  { key: "mp", label: "MicroPython" },
+  { key: "ogmp", label: "Legacy MicroPython SDK"}
 ]
 
 const docsByCategory = Object.fromEntries(
@@ -40,4 +40,3 @@ const docsByCategory = Object.fromEntries(
     </section>
   ))}
 </Layout>
-
