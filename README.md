@@ -25,6 +25,16 @@ Web editor for the micropython sdk: [editor.louisbourgault.com](https://editor.l
 ## Project Structure
 See at [ferretboard.louisbourgault.com/docs/structure](https://ferretboard.louisbourgault.com/docs/structure)
 
+# Building Firmware
+There's quite a few different firmwares at this point to build. Docs on how to do each of them:
+
+[Original Go System](https://ferretboard.louisbourgault.com/docs/go-building)
+[New micropython system (embedded into Go)](https://ferretboard.louisbourgault.com/docs/micropython-building)
+[Old micropython system](https://ferretboard.louisbourgault.com/docs/oldmp-build)
+
+To flash firmware on v2, hold down the reset button and reboot the device. On v1, manually short QSPI_SS and GND with tweezers and then reboot. The easiest access points for this are the first and last pins of the flash chip on the top side - you can just pinch the top of the flash chip, and that should do it.
+
+Then, either use picotool over command line, or just drag the uf2 file into the RPI-RP2 volume that shows up in Finder/File Explorer/Dolphin/whatever you use.
 
 # Assembly instructions
 Assembly instructions can be found at [ferretboard.louisbourgault.com/docs/assembly](https://ferretboard.louisbourgault.com/docs/assembly).
