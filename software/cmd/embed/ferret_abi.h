@@ -41,9 +41,9 @@ int ferret_stat(char *path);                      // 0 missing, 1 dir, 2 file, -
 int ferret_read_file(char *path, char *buf, int max); // len, 0 missing, -1 io, -2 too big
 int ferret_write_file(char *path, char *data, int n); // 0 ok, -1 io, -2 too big
 int ferret_append_file(char *path, char *data, int n); // 0 ok, -1 io, -2 too big
-int ferret_write_image(char *name, int w, int h, char *b64, int n); // 0 ok, -1 invalid
-int ferret_append_image(char *name, char *b64, int n); // 0 ok, -1 invalid, -2 no upload, -3 too big
-int ferret_write_image_end(char *name);           // 0 ok, -1 size mismatch, -2 no upload
+int ferret_write_image(char *name, int w, int h, char *b64, int n); // 0 ok, -1 invalid, -3 too big, -4 io
+int ferret_append_image(char *name, char *b64, int n); // 0 ok, -1 invalid, -2 no upload, -3 too big, -4 io
+int ferret_write_image_end(char *name);           // 0 ok, -1 size mismatch, -2 no upload, -4 io
 int ferret_image_manifest(char *buf, int max);    // len, -1 buffer too small
 int ferret_delete_image(char *name);              // 0 ok, -1 invalid/io
 int ferret_draw_image(char *name, int x, int y);  // 0 ok, -1 unknown, -2 too big, -3 io

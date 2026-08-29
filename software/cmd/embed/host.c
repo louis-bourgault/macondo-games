@@ -166,7 +166,7 @@ STATIC mp_obj_t t_write_image(size_t n_args, const mp_obj_t *args) {
                                (char *)mp_obj_str_get_str(args[3]),
                                (int)str_len(args[3]));
     if (r != 0) {
-        mp_raise_OSError(MP_EINVAL);
+        mp_raise_OSError(r == -3 ? MP_EFBIG : (r == -4 ? MP_EIO : MP_EINVAL));
     }
     return mp_const_none;
 }
@@ -177,7 +177,7 @@ STATIC mp_obj_t t_append_image(mp_obj_t name, mp_obj_t b64) {
                                 (char *)mp_obj_str_get_str(b64),
                                 (int)str_len(b64));
     if (r != 0) {
-        mp_raise_OSError(r == -2 ? MP_EINVAL : MP_EFBIG);
+        mp_raise_OSError(r == -3 ? MP_EFBIG : (r == -4 ? MP_EIO : MP_EINVAL));
     }
     return mp_const_none;
 }
@@ -186,7 +186,7 @@ STATIC MP_DEFINE_CONST_FUN_OBJ_2(t_append_image_obj, t_append_image);
 STATIC mp_obj_t t_write_image_end(mp_obj_t name) {
     int r = ferret_write_image_end((char *)mp_obj_str_get_str(name));
     if (r != 0) {
-        mp_raise_OSError(MP_EINVAL);
+        mp_raise_OSError(r == -4 ? MP_EIO : MP_EINVAL);
     }
     return mp_const_none;
 }

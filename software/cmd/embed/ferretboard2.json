@@ -4,12 +4,7 @@
     "serial-port": ["2e8a:000A"],
     "default-stack-size": 8192,
     "ldflags": [
-        "--defsym=__flash_size=16M",
-        "--defsym=__num_stacks=2"
-    ],
-    "extra-files": [
-        "src/device/rp/rp2350.s",
-        "targets/rp2350_embedded_block.s"
+        "--defsym=__flash_size=16M"
     ],
     "linkerscript": "targets/rp2350.ld"
 }

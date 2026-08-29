@@ -69,6 +69,9 @@
 	function imageNameExists(name: string, excludeIndex: number | null = null) {
 		return projectData.images.some((img, i) => i !== excludeIndex && img.name === name);
 	}
+	function imageNameIsValid(name: string) {
+		return name !== '' && name !== '.' && name !== '..' && !/[\\/:,\r\n]/.test(name);
+	}
 	function fileNameExists(name: string, excludeIndex: number | null = null) {
 		return projectData.codeFiles.some((f, i) => i !== excludeIndex && f.name === name);
 	}
@@ -130,7 +133,13 @@
 	function createNewImage(event: Event) {
 		event.preventDefault();
 		const { name, width, height } = newImageData;
-		if (!name.trim() || width <= 0 || height <= 0) {
+		if (
+			!imageNameIsValid(name.trim()) ||
+			!Number.isInteger(width) ||
+			!Number.isInteger(height) ||
+			width <= 0 ||
+			height <= 0
+		) {
 			newImageError = 'Please fill in all fields with valid values.';
 			return;
 		}
@@ -197,6 +206,10 @@
 			}
 			projectData.codeFiles[renameTarget.index].name = name;
 		} else {
+			if (!imageNameIsValid(name)) {
+				renameError = 'Image names cannot contain /, \\, :, commas, or new lines.';
+				return;
+			}
 			if (imageNameExists(name, renameTarget.index)) {
 				renameError = 'An image with this name already exists.';
 				return;
