@@ -23,22 +23,16 @@ Docs site and main site: [ferretboard.louisbourgault.com](https://ferretboard.lo
 Web editor for the micropython sdk: [editor.louisbourgault.com](https://editor.louisbourgault.com)
 
 ## Project Structure
-- /software - all software to run both on the machine and for development
-- /mini-games - The kicad project and files for the v1 hardware
-- /hardware-v2 - The kicad project and files for the v2 hardware
-- /case - files for the making of the case. This includes f3d and stl files.
-- /img - the images used in this readme
-- /mp-sdk - the legacy micropython sdk, and setup to build to a custom uf2. More information on this system can be found in the readme in this folder.
-- /web-editor - a fully featured web based editor for programs written in the micropython sdk, communicating over webserial.
+See at [ferretboard.louisbourgault.com/docs/structure](https://ferretboard.louisbourgault.com/docs/structure)
 
-Production files: production files can be found at /jlcpcb/production-files in both the mini-games and hardware-v2 directories, for the v1 and v2 design respectively. These are automatically generated with the jlcpcb tools plugin in kicad, and use LCSC numbers for BOM and CPL. 
 
 # Assembly instructions
 Assembly instructions can be found at [ferretboard.louisbourgault.com/docs/assembly](https://ferretboard.louisbourgault.com/docs/assembly).
 
 # Gallery
 
-The full gallery can be found at [ferretboard.louisbourgault.com/gallery](https://ferretboard.louisbourgault.com/gallery).
+The full gallery can be found at [ferretboard.louisbourgault.com/gallery](https://ferretboard.louisbourgault.com/gallery). Here is just a few sample images: 
+
 ## The micropython online editor working!
 ![micropython image system](/img/micropython-images.jpg)
 
