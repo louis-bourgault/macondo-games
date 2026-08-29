@@ -5,6 +5,9 @@
 *.DS_Store
 /mini-games/.history/*
 *.bak
+build/
+*.img
+*.uf2
 *-bak
 _autosave-*
 *.kicad_prl
