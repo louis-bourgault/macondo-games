@@ -51,8 +51,9 @@ Arguments: image_name, x, y.
 
 Draws an image stored on the device at (x, y). The size is read from the image
 manifest, so sync your images from the web editor first. Transparent pixels use
-the RGB565 chroma key colour ```0xF81F``` and are skipped. The current firmware
-limits each raw RGB565 image to 64KiB, or 32,768 pixels.
+the RGB565 chroma key colour ```0xF81F``` and are skipped (if you are using the 
+web editor, this is done automatically for transparent pixels). No image can be
+over 240x240 pixels.
 
 ### ```ferret.present```
 No arguments.
@@ -100,7 +101,7 @@ while True:
         ferret.present()
 ```
 
-## Files and editor functions
+## Files and editor functions (not user facing, you should not need these)
 
 The editor also uses ```ferret.write_file```, ```ferret.append_file```,
 ```ferret.write_image```, ```ferret.append_image```,
