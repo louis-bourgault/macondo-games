@@ -1,0 +1,392 @@
+[
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-9b30-74da-8f56-f76c7ce09cf9/JLC-Cart.png.webp",
+        "id": "019f53dc-9b30-74da-8f56-f76c7ce09cf9",
+        "filename": "JLC-Cart.png.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 88928,
+        "created_at": "2026-07-12T01:06:34Z",
+        "source_sha256": "11f4dc38e8f7301a21323cfe60b1887c2df8d658983afb7c07a2a3e7ba742b5b",
+        "payload_sha256": "5cc331e9839ab107cabdadde86ae474e5f18ebead1541334c17b862553661c13",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd3-2615-7a5c-bf0e-8b0968492a64/JLC-Cart.png",
+        "id": "01a04cd3-2615-7a5c-bf0e-8b0968492a64",
+        "filename": "JLC-Cart.png",
+        "content_type": "image/png",
+        "optimised": "none",
+        "size": 314951,
+        "created_at": "2026-08-29T09:21:41Z",
+        "source_sha256": "11f4dc38e8f7301a21323cfe60b1887c2df8d658983afb7c07a2a3e7ba742b5b",
+        "payload_sha256": "11f4dc38e8f7301a21323cfe60b1887c2df8d658983afb7c07a2a3e7ba742b5b",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/JLC-Cart.png",
+    "relative_path": "JLC-Cart.png"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-9fdc-7884-9006-552a4ae9d8c8/JLC-Topside.png.webp",
+        "id": "019f53dc-9fdc-7884-9006-552a4ae9d8c8",
+        "filename": "JLC-Topside.png.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 84870,
+        "created_at": "2026-07-12T01:06:35Z",
+        "source_sha256": "e5f549128aa6af089f3eaa6a01807b8b939543a019c6e7216ec70aaf30f6cc9c",
+        "payload_sha256": "5197794df9b39196e27fef16781dc99c5204bdc3f4839d59ef656cb744146635",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd3-2ab1-7207-9b3d-17fe25e7240b/JLC-Topside.png",
+        "id": "01a04cd3-2ab1-7207-9b3d-17fe25e7240b",
+        "filename": "JLC-Topside.png",
+        "content_type": "image/png",
+        "optimised": "none",
+        "size": 347322,
+        "created_at": "2026-08-29T09:21:43Z",
+        "source_sha256": "e5f549128aa6af089f3eaa6a01807b8b939543a019c6e7216ec70aaf30f6cc9c",
+        "payload_sha256": "e5f549128aa6af089f3eaa6a01807b8b939543a019c6e7216ec70aaf30f6cc9c",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/JLC-Topside.png",
+    "relative_path": "JLC-Topside.png"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-a4c2-7e41-a0db-bc0efc0bca6f/Schematic.png.webp",
+        "id": "019f53dc-a4c2-7e41-a0db-bc0efc0bca6f",
+        "filename": "Schematic.png.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 195928,
+        "created_at": "2026-07-12T01:06:37Z",
+        "source_sha256": "428aaf43d28c38eb0ddaf3854fdbe603bf330f6cb6fc8d33202889c7df97959c",
+        "payload_sha256": "b785ba6f977a05b550624b2d8fde46ec84a11c3d0a33ff99f5059eaa79c0d3f3",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd3-2e6e-7b1b-b211-6258ecbf6ee5/Schematic.png",
+        "id": "01a04cd3-2e6e-7b1b-b211-6258ecbf6ee5",
+        "filename": "Schematic.png",
+        "content_type": "image/png",
+        "optimised": "none",
+        "size": 248286,
+        "created_at": "2026-08-29T09:21:44Z",
+        "source_sha256": "428aaf43d28c38eb0ddaf3854fdbe603bf330f6cb6fc8d33202889c7df97959c",
+        "payload_sha256": "428aaf43d28c38eb0ddaf3854fdbe603bf330f6cb6fc8d33202889c7df97959c",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/Schematic.png",
+    "relative_path": "Schematic.png"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-a7de-79b7-87e3-a020ec02ad73/banner.png.webp",
+        "id": "019f53dc-a7de-79b7-87e3-a020ec02ad73",
+        "filename": "banner.png.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 46486,
+        "created_at": "2026-07-12T01:06:37Z",
+        "source_sha256": "be8b2cdf650bb054726bc52af2fee8b544534e18e367cea952143a3e5cefb4c2",
+        "payload_sha256": "7f89a7ae9bf174c5fc3396ed9a4eda93317b85524ea303ac4b421a4dfd796823",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd3-3299-7160-b839-ea1b53f3e54e/banner.png",
+        "id": "01a04cd3-3299-7160-b839-ea1b53f3e54e",
+        "filename": "banner.png",
+        "content_type": "image/png",
+        "optimised": "none",
+        "size": 211004,
+        "created_at": "2026-08-29T09:21:45Z",
+        "source_sha256": "be8b2cdf650bb054726bc52af2fee8b544534e18e367cea952143a3e5cefb4c2",
+        "payload_sha256": "be8b2cdf650bb054726bc52af2fee8b544534e18e367cea952143a3e5cefb4c2",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/banner.png",
+    "relative_path": "banner.png"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-ae7a-751a-a267-8c135b5bcef2/finished-device.jpg.webp",
+        "id": "019f53dc-ae7a-751a-a267-8c135b5bcef2",
+        "filename": "finished-device.jpg.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 650614,
+        "created_at": "2026-07-12T01:06:39Z",
+        "source_sha256": "c18f5a65a16601c7e6ecdc0309027617b49820ab06f64c6eb9ec77bf26f8d093",
+        "payload_sha256": "8110dbdc83bc1431620ec44da143c23bc0c07c10e7fa46b16a8623728532bf1f",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd3-38fd-79bd-8430-464280292b8d/finished-device.jpg",
+        "id": "01a04cd3-38fd-79bd-8430-464280292b8d",
+        "filename": "finished-device.jpg",
+        "content_type": "image/jpeg",
+        "optimised": "none",
+        "size": 2053286,
+        "created_at": "2026-08-29T09:21:46Z",
+        "source_sha256": "c18f5a65a16601c7e6ecdc0309027617b49820ab06f64c6eb9ec77bf26f8d093",
+        "payload_sha256": "c18f5a65a16601c7e6ecdc0309027617b49820ab06f64c6eb9ec77bf26f8d093",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/finished-device.jpg",
+    "relative_path": "finished-device.jpg"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-b2ba-7e8c-9140-ff8a59552aaa/fusion-case.png.webp",
+        "id": "019f53dc-b2ba-7e8c-9140-ff8a59552aaa",
+        "filename": "fusion-case.png.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 105420,
+        "created_at": "2026-07-12T01:06:40Z",
+        "source_sha256": "09b0441922ede3fa201df5bb255cc4ff6faa68c30bee2fe3923d515ab73dc712",
+        "payload_sha256": "dd26052a067b3b82b2da4b5692f0dd36bebf912f16d8ceb717c113e3634427ac",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd3-3cef-72f0-9841-b1f3f0f9e4e9/fusion-case.png",
+        "id": "01a04cd3-3cef-72f0-9841-b1f3f0f9e4e9",
+        "filename": "fusion-case.png",
+        "content_type": "image/png",
+        "optimised": "none",
+        "size": 618542,
+        "created_at": "2026-08-29T09:21:47Z",
+        "source_sha256": "09b0441922ede3fa201df5bb255cc4ff6faa68c30bee2fe3923d515ab73dc712",
+        "payload_sha256": "09b0441922ede3fa201df5bb255cc4ff6faa68c30bee2fe3923d515ab73dc712",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/fusion-case.png",
+    "relative_path": "fusion-case.png"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-b8a6-7aff-8275-2adb2f399a82/fusion-with-parts.png.webp",
+        "id": "019f53dc-b8a6-7aff-8275-2adb2f399a82",
+        "filename": "fusion-with-parts.png.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 368552,
+        "created_at": "2026-07-12T01:06:42Z",
+        "source_sha256": "f093b027149f8a056b4501abce1e5a53113db21130971aa093c5aa55e60fa16e",
+        "payload_sha256": "05ecd1a1b60291604a3440677e7c22e10e920ce7155c7262e24cd733c2e0cced",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd3-443b-74db-806a-fba74b3b2bfb/fusion-with-parts.png",
+        "id": "01a04cd3-443b-74db-806a-fba74b3b2bfb",
+        "filename": "fusion-with-parts.png",
+        "content_type": "image/png",
+        "optimised": "none",
+        "size": 1455406,
+        "created_at": "2026-08-29T09:21:49Z",
+        "source_sha256": "f093b027149f8a056b4501abce1e5a53113db21130971aa093c5aa55e60fa16e",
+        "payload_sha256": "f093b027149f8a056b4501abce1e5a53113db21130971aa093c5aa55e60fa16e",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/fusion-with-parts.png",
+    "relative_path": "fusion-with-parts.png"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-c312-7b13-8c0a-8aa6cdc4ade4/instructions.jpg.webp",
+        "id": "019f53dc-c312-7b13-8c0a-8aa6cdc4ade4",
+        "filename": "instructions.jpg.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 493090,
+        "created_at": "2026-07-12T01:06:44Z",
+        "source_sha256": "f246680c9e519bb53dedbb303830d7c46d7088db2623a9646caa0efdc8034333",
+        "payload_sha256": "bf1d6d8a311222c626a3cfcf2ef322f2cc98e5c19a72de3bfeabc95952a4e45d",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/019f53db-b005-7304-9dc6-a049a55da74d/instructions.jpg",
+        "id": "019f53db-b005-7304-9dc6-a049a55da74d",
+        "filename": "instructions.jpg",
+        "content_type": "image/jpeg",
+        "optimised": "none",
+        "size": 1114019,
+        "created_at": "2026-07-12T01:05:34Z",
+        "source_sha256": "f246680c9e519bb53dedbb303830d7c46d7088db2623a9646caa0efdc8034333",
+        "payload_sha256": "f246680c9e519bb53dedbb303830d7c46d7088db2623a9646caa0efdc8034333",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/instructions.jpg",
+    "relative_path": "instructions.jpg"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/01a047fd-d714-773d-8a16-4d080555ccab/micropython-images.jpg.webp",
+        "id": "01a047fd-d714-773d-8a16-4d080555ccab",
+        "filename": "micropython-images.jpg.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 679848,
+        "created_at": "2026-08-28T10:50:13Z",
+        "source_sha256": "3c44969d6e8238064eae8545e94bacf37cc0cd9c4a9811dfd9795e18b1598095",
+        "payload_sha256": "56fffc90dcf4b39e95b5a261eee680f61ceb9067a77202edab818315e2d14dca",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd5-3f4e-72de-a6c1-4d84292346ec/micropython-images.jpg",
+        "id": "01a04cd5-3f4e-72de-a6c1-4d84292346ec",
+        "filename": "micropython-images.jpg",
+        "content_type": "image/jpeg",
+        "optimised": "none",
+        "size": 2172182,
+        "created_at": "2026-08-29T09:23:59Z",
+        "source_sha256": "3c44969d6e8238064eae8545e94bacf37cc0cd9c4a9811dfd9795e18b1598095",
+        "payload_sha256": "3c44969d6e8238064eae8545e94bacf37cc0cd9c4a9811dfd9795e18b1598095",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/micropython-images.jpg",
+    "relative_path": "micropython-images.jpg"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/01a04cda-027f-7b6a-a05c-ae5869f50dd7/newcase.png.webp",
+        "id": "01a04cda-027f-7b6a-a05c-ae5869f50dd7",
+        "filename": "newcase.png.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 347774,
+        "created_at": "2026-08-29T09:29:11Z",
+        "source_sha256": "7ee05b13f2f8cebd220e970e2f59d1f6d2f5a9382712d9abb868b5d33616c197",
+        "payload_sha256": "8ddd5bb233984a2a52ef20d6415895b5ed21b1eeba76efb8773a30d7f0377859",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd5-4855-7d5a-92e1-2fdf75a357ef/newcase.png",
+        "id": "01a04cd5-4855-7d5a-92e1-2fdf75a357ef",
+        "filename": "newcase.png",
+        "content_type": "image/png",
+        "optimised": "none",
+        "size": 907171,
+        "created_at": "2026-08-29T09:24:01Z",
+        "source_sha256": "7ee05b13f2f8cebd220e970e2f59d1f6d2f5a9382712d9abb868b5d33616c197",
+        "payload_sha256": "7ee05b13f2f8cebd220e970e2f59d1f6d2f5a9382712d9abb868b5d33616c197",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/newcase.png",
+    "relative_path": "newcase.png"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-cdfa-7ea5-9303-2d4c1be6da54/screensolder.jpg.webp",
+        "id": "019f53dc-cdfa-7ea5-9303-2d4c1be6da54",
+        "filename": "screensolder.jpg.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 388616,
+        "created_at": "2026-07-12T01:06:47Z",
+        "source_sha256": "57fdc8c626979abb54423b614087a166b36691564ad2cbaff486e917c08afad1",
+        "payload_sha256": "88759a3dea979b398e5c1db8bc385f78e6108663a352a6ac42fd41beb0e51e22",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/019f53db-b5e6-7012-865a-ca2c5fea23a4/screensolder.jpg",
+        "id": "019f53db-b5e6-7012-865a-ca2c5fea23a4",
+        "filename": "screensolder.jpg",
+        "content_type": "image/jpeg",
+        "optimised": "none",
+        "size": 1583276,
+        "created_at": "2026-07-12T01:05:36Z",
+        "source_sha256": "57fdc8c626979abb54423b614087a166b36691564ad2cbaff486e917c08afad1",
+        "payload_sha256": "57fdc8c626979abb54423b614087a166b36691564ad2cbaff486e917c08afad1",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/screensolder.jpg",
+    "relative_path": "screensolder.jpg"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-d22f-71aa-9a31-41a018a5a36d/web-version.png.webp",
+        "id": "019f53dc-d22f-71aa-9a31-41a018a5a36d",
+        "filename": "web-version.png.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 58906,
+        "created_at": "2026-07-12T01:06:48Z",
+        "source_sha256": "62ff00eade083b1ee1e91ea3c5c8775b2e234129b2d8605a643dbf89b321a3cc",
+        "payload_sha256": "2469225a1e816039b26ccfbf7cce6c0d1847d93dc03486a62a8db2e603793686",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd5-45f6-7979-9cdf-4286d4b70564/web-version.png",
+        "id": "01a04cd5-45f6-7979-9cdf-4286d4b70564",
+        "filename": "web-version.png",
+        "content_type": "image/png",
+        "optimised": "none",
+        "size": 170313,
+        "created_at": "2026-08-29T09:24:01Z",
+        "source_sha256": "62ff00eade083b1ee1e91ea3c5c8775b2e234129b2d8605a643dbf89b321a3cc",
+        "payload_sha256": "62ff00eade083b1ee1e91ea3c5c8775b2e234129b2d8605a643dbf89b321a3cc",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/web-version.png",
+    "relative_path": "web-version.png"
+  },
+  {
+    "optimised": [
+      {
+        "url": "https://cdn.hackclub.com/019f53dc-d891-75ac-8839-15e7a4a7df70/whitecase.jpg.webp",
+        "id": "019f53dc-d891-75ac-8839-15e7a4a7df70",
+        "filename": "whitecase.jpg.webp",
+        "content_type": "image/webp",
+        "optimised": "full",
+        "size": 128066,
+        "created_at": "2026-07-12T01:06:50Z",
+        "source_sha256": "f60a04b224c4b3c8126d8edc08106ef6af58c45542c3b4528acea91234031566",
+        "payload_sha256": "e63cd332c7276419f645d9a6bfdbaab7cf1831e0495ef140821ee56fa49913d9",
+        "reused": true
+      },
+      {
+        "url": "https://cdn.hackclub.com/01a04cd5-44f5-7f21-afc5-6f70d6ba0f39/whitecase.jpg",
+        "id": "01a04cd5-44f5-7f21-afc5-6f70d6ba0f39",
+        "filename": "whitecase.jpg",
+        "content_type": "image/jpeg",
+        "optimised": "none",
+        "size": 1171202,
+        "created_at": "2026-08-29T09:24:00Z",
+        "source_sha256": "f60a04b224c4b3c8126d8edc08106ef6af58c45542c3b4528acea91234031566",
+        "payload_sha256": "f60a04b224c4b3c8126d8edc08106ef6af58c45542c3b4528acea91234031566",
+        "reused": true
+      }
+    ],
+    "path": "/Users/louisb/Documents/hardware/macondo-games/img/whitecase.jpg",
+    "relative_path": "whitecase.jpg"
+  }
+]

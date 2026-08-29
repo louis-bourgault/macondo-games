@@ -17,3 +17,11 @@ draft: false
 ![case, but in white](https://cdn.hackclub.com/019f53dc-d891-75ac-8839-15e7a4a7df70/whitecase.jpg.webp)
 
 ![jlc design](https://cdn.hackclub.com/019f53dc-9fdc-7884-9006-552a4ae9d8c8/JLC-Topside.png.webp)
+
+# SDK on web
+
+![images in the sdk, working on the device](https://cdn.hackclub.com/01a047fd-d714-773d-8a16-4d080555ccab/micropython-images.jpg.webp)
+
+# Version Two
+
+![new case](https://cdn.hackclub.com/01a04cda-027f-7b6a-a05c-ae5869f50dd7/newcase.png.webp)
