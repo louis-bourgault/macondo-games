@@ -3,23 +3,38 @@ import adapter from '@sveltejs/adapter-auto';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
+const isolationHeaders = {
+	'Cross-Origin-Opener-Policy': 'same-origin',
+	'Cross-Origin-Embedder-Policy': 'require-corp',
+	'Cross-Origin-Resource-Policy': 'same-origin'
+};
+
+function crossOriginIsolation() {
+	const install = (middlewares: { use: (handler: (request: unknown, response: { setHeader: (name: string, value: string) => void }, next: () => void) => void) => void }) => {
+		middlewares.use((_request, response, next) => {
+			for (const [name, value] of Object.entries(isolationHeaders)) response.setHeader(name, value);
+			next();
+		});
+	};
+	return {
+		name: 'ferret-cross-origin-isolation',
+		configureServer: (server: { middlewares: Parameters<typeof install>[0] }) => install(server.middlewares),
+		configurePreviewServer: (server: { middlewares: Parameters<typeof install>[0] }) => install(server.middlewares)
+	};
+}
+
 export default defineConfig({
 	worker: {
 		format: 'es'
 	},
 	server: {
-		headers: {
-			'Cross-Origin-Opener-Policy': 'same-origin',
-			'Cross-Origin-Embedder-Policy': 'require-corp'
-		}
+		headers: isolationHeaders
 	},
 	preview: {
-		headers: {
-			'Cross-Origin-Opener-Policy': 'same-origin',
-			'Cross-Origin-Embedder-Policy': 'require-corp'
-		}
+		headers: isolationHeaders
 	},
 	plugins: [
+		crossOriginIsolation(),
 		tailwindcss(),
 		sveltekit({
 			compilerOptions: {

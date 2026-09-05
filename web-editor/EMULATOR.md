@@ -36,7 +36,9 @@ Cross-Origin-Embedder-Policy: require-corp
 ```
 
 The SvelteKit server hook and Vite development/preview servers set these
-headers. A static production host must be configured to send them too.
+headers. `vercel.json` applies them to every Vercel response, including the
+generated worker and WASM asset; setting them only on the HTML response is not
+enough because Chromium will block the worker under COEP.
 
 ## Controls
 

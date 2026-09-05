@@ -237,4 +237,7 @@ ctx.onmessage = async (event: MessageEvent<EmulatorCommand>) => {
 	}
 };
 
-void initialize().catch((error) => emit({ type: 'error', message: String(error) }));
+void initialize().catch((error) => {
+	const message = error instanceof Error ? `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ''}` : String(error);
+	emit({ type: 'error', message: `MicroPython initialization failed: ${message}` });
+});

@@ -8,6 +8,7 @@ export class EmulatorRuntime {
 	public frame = $state<Uint16Array | null>(null);
 	private worker: Worker | null = null;
 	private buttons: SharedArrayBuffer | null = null;
+	private loadingTimer: ReturnType<typeof setTimeout> | null = null;
 
 	constructor() {
 		this.createWorker();
@@ -15,10 +16,22 @@ export class EmulatorRuntime {
 
 	private createWorker() {
 		this.ready = false;
+		if (!crossOriginIsolated) {
+			this.output = 'Emulator unavailable: this deployment is missing the required COOP/COEP headers.\n';
+		}
 		this.worker = new Worker(new URL('./emulator.worker.ts', import.meta.url), { type: 'module' });
+		this.loadingTimer = setTimeout(() => {
+			if (!this.ready) {
+				this.output += 'MicroPython did not load. Check that the worker and .wasm asset are served successfully.\n';
+			}
+		}, 15000);
 		this.worker.onmessage = (event: MessageEvent<EmulatorEvent>) => {
 			const message = event.data;
-			if (message.type === 'ready') this.ready = true;
+			if (message.type === 'ready') {
+				this.ready = true;
+				if (this.loadingTimer) clearTimeout(this.loadingTimer);
+				this.loadingTimer = null;
+			}
 			else if (message.type === 'stdout') this.output += message.text;
 			else if (message.type === 'frame') this.frame = new Uint16Array(message.pixels);
 			else if (message.type === 'finished') this.running = false;
@@ -28,8 +41,11 @@ export class EmulatorRuntime {
 			}
 		};
 		this.worker.onerror = (event) => {
-			this.output += `Emulator worker error: ${event.message}\n`;
+			const location = event.filename ? ` (${event.filename}:${event.lineno}:${event.colno})` : '';
+			this.output += `Emulator worker failed to load: ${event.message || 'unknown module/WASM loading error'}${location}\n`;
 			this.running = false;
+			this.ready = false;
+			event.preventDefault();
 		};
 	}
 
@@ -69,6 +85,7 @@ export class EmulatorRuntime {
 	}
 
 	public destroy() {
+		if (this.loadingTimer) clearTimeout(this.loadingTimer);
 		this.worker?.terminate();
 		this.worker = null;
 	}
