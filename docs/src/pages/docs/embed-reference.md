@@ -63,8 +63,9 @@ Flushes the frame buffer to the display.
 ## Input
 
 Call ```ferret.input_update()``` once per frame **before** checking buttons.
-Key names are strings: "A", "B", "UP", "DOWN", "LEFT", "RIGHT", "START",
-"EXIT".
+Key names are strings. Both boards provide "A", "B", "UP", "DOWN", "LEFT"
+and "RIGHT". Version one additionally provides "START" and "EXIT"; version
+two provides "X", "Y" and "MENU" instead.
 
 ### ```ferret.input_is_pressed```
 Argument: key name. Returns a bool.
@@ -103,7 +104,8 @@ while True:
 
 ## Files and editor functions (not user facing, you should not need these)
 
-The editor also uses ```ferret.write_file```, ```ferret.append_file```,
+The editor also uses ```ferret.write_file_b64```, ```ferret.append_file_b64```,
+```ferret.file_manifest```, ```ferret.delete_file```,
 ```ferret.write_image```, ```ferret.append_image```,
 ```ferret.write_image_end```, ```ferret.image_manifest``` and
 ```ferret.delete_image``` to save code and sync images. Games do not normally

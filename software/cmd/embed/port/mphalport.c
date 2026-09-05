@@ -96,14 +96,21 @@ void mp_hal_stdout_tx_strn_cooked(const char *str, size_t len) {
     cdc_write_text(str, len);
 }
 
+// The timer peripheral moved between the two supported chips.
+#if defined(FERRETBOARD_RP2350)
+#define FERRET_TIMER_BASE 0x400b0000u
+#else
+#define FERRET_TIMER_BASE 0x40054000u
+#endif
+
 // Monotonic milliseconds, used by pyexec.c to time pastes/execs. On the device
-// this reads the RP2040 hardware timer's raw low word (TIMERAWL, +0x28) in
+// this reads the hardware timer's raw low word (TIMERAWL, +0x28) in
 // microseconds.  Do not use TIMELR/TIMEHR here: those are the latched read
 // registers, and TIMEHR (+0x08) does not change until the low 32 bits wrap.
 // The TinyGo runtime has already initialised this peripheral.
 mp_uint_t mp_hal_ticks_ms(void) {
 #if defined(__arm__)
-    volatile uint32_t *timerawl = (uint32_t *)0x40054028;
+    volatile uint32_t *timerawl = (uint32_t *)(FERRET_TIMER_BASE + 0x28u);
     return *timerawl / 1000;
 #else
     struct timespec ts;
@@ -113,11 +120,11 @@ mp_uint_t mp_hal_ticks_ms(void) {
 }
 
 // 64-bit microsecond counter (TIMERAWH at +0x24, TIMERAWL at +0x28) on the
-// RP2040. Read high before low and re-check high so a rollover between the two
-// reads doesn't produce a wrapped 64-bit value.
+// RP2040/RP2350. Read high before low and re-check high so a rollover between
+// the two reads doesn't produce a wrapped 64-bit value.
 #if defined(__arm__)
 static uint64_t ferret_time_us_64(void) {
-    volatile uint32_t *t = (uint32_t *)0x40054024;
+    volatile uint32_t *t = (uint32_t *)(FERRET_TIMER_BASE + 0x24u);
     uint32_t hi = t[0];
     uint32_t lo = t[1];
     if (hi != t[0]) {

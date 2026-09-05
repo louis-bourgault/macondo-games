@@ -40,13 +40,19 @@ func (d *HardwareDisplay) Fill(c uint16) {
 
 func (d *HardwareDisplay) FillRect(x, y, w, h int, c uint16) {
 	for sy := y; sy < y+h; sy++ {
-		dy := 239 - sy
+		dy := sy
+		if softwareRotateDisplay {
+			dy = 239 - sy
+		}
 		if dy < 0 || dy >= 240 {
 			continue
 		}
 		row := dy * 240
 		for sx := x; sx < x+w; sx++ {
-			dx := 239 - sx
+			dx := sx
+			if softwareRotateDisplay {
+				dx = 239 - sx
+			}
 			if dx < 0 || dx >= 240 {
 				continue
 			}
@@ -62,7 +68,11 @@ func (d *HardwareDisplay) Pixel(x, y int, c uint16) {
 	if x < 0 || x >= 240 || y < 0 || y >= 240 {
 		return
 	}
-	d.buf[(239-y)*240+(239-x)] = c
+	if softwareRotateDisplay {
+		x = 239 - x
+		y = 239 - y
+	}
+	d.buf[y*240+x] = c
 }
 
 func (d *HardwareDisplay) Present() error {

@@ -58,7 +58,7 @@ func ferret_input_update() {
 
 // buttonFromString maps the MicroPython SDK key names onto the platform.Button
 // enum, matching the standalone SDK's string API ("A", "B", "UP", "DOWN",
-// "LEFT", "RIGHT", plus the device-only "START" and "EXIT"). Unknown names
+// "LEFT", "RIGHT", plus the board-specific auxiliary keys). Unknown names
 // read as platform.None, i.e. always unpressed.
 func buttonFromString(name string) platform.Button {
 	switch name {
@@ -78,6 +78,12 @@ func buttonFromString(name string) platform.Button {
 		return platform.Start
 	case "EXIT":
 		return platform.Exit
+	case "X":
+		return platform.X
+	case "Y":
+		return platform.Y
+	case "MENU":
+		return platform.Menu
 	default:
 		return platform.None
 	}

@@ -82,13 +82,14 @@ MP_CFLAGS := "-I" + ROOT + " -I" + EMBED_DIR + " -I" + EMBED_DIR + "/port -I" + 
 # would make the region math go negative and panic at boot.
 TARGET := "ferretboard.json"
 ARM_MCPU := if TARGET == "ferretboard2.json" { "cortex-m33" } else { "cortex-m0plus" }
+ARM_BOARD_DEFINE := if TARGET == "ferretboard2.json" { "-DFERRETBOARD_RP2350=1" } else { "-DFERRETBOARD_RP2040=1" }
 
 mp-arm: embed
     mkdir -p {{ROOT}}/build/arm
     rm -f {{ROOT}}/build/arm/*.o
     find {{EMBED_DIR}} -name '*.c' | sort | while read src; do \
         obj={{ROOT}}/build/arm/$(basename "$src" .c).o; \
-        arm-none-eabi-gcc {{MP_CFLAGS}} -mcpu={{ARM_MCPU}} -mthumb -Wall -O2 -fno-common -c "$src" -o "$obj"; \
+        arm-none-eabi-gcc {{MP_CFLAGS}} {{ARM_BOARD_DEFINE}} -mcpu={{ARM_MCPU}} -mthumb -Wall -O2 -fno-common -c "$src" -o "$obj"; \
     done
     arm-none-eabi-ar rcs {{ROOT}}/build/libmp_embed.a {{ROOT}}/build/arm/*.o
     # re-fingerprint with the fresh archive (embed already ran gen_cgo.sh

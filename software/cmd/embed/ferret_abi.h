@@ -24,7 +24,8 @@ void ferret_draw_text(char *text, int x, int y, uint16_t color);
 int ferret_random_int(int min, int max);
 
 // Input (platform/device/input.go). Keys are SDK strings ("A", "B", "UP",
-// "DOWN", "LEFT", "RIGHT", "START", "EXIT"); unknown names read as None.
+// "DOWN", "LEFT", "RIGHT", "START", "EXIT", "X", "Y", "MENU"); unknown
+// names read as None.
 void ferret_input_update(void);
 int ferret_input_is_pressed(char *key);
 int ferret_input_was_just_pressed(char *key);
@@ -41,6 +42,10 @@ int ferret_stat(char *path);                      // 0 missing, 1 dir, 2 file, -
 int ferret_read_file(char *path, char *buf, int max); // len, 0 missing, -1 io, -2 too big
 int ferret_write_file(char *path, char *data, int n); // 0 ok, -1 io, -2 too big
 int ferret_append_file(char *path, char *data, int n); // 0 ok, -1 io, -2 too big
+int ferret_write_file_b64(char *path, char *data, int n); // editor-safe base64 chunk
+int ferret_append_file_b64(char *path, char *data, int n);
+int ferret_file_manifest(char *buf, int max);       // root .py files, one per line
+int ferret_delete_file(char *path);                 // root .py file only
 int ferret_write_image(char *name, int w, int h, char *b64, int n); // 0 ok, -1 invalid, -3 too big, -4 io
 int ferret_append_image(char *name, char *b64, int n); // 0 ok, -1 invalid, -2 no upload, -3 too big, -4 io
 int ferret_write_image_end(char *name);           // 0 ok, -1 size mismatch, -2 no upload, -4 io

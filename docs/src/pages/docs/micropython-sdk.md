@@ -15,13 +15,13 @@ This is different to the [legacy MicroPython SDK](/docs/micropython-sdk-legacy).
 
 The editor uses Web Serial, so you need a recent Chromium-based browser such as Chrome or Edge, and the page must be loaded over HTTPS or localhost. Safari and Firefox do not currently support Web Serial.
 
-Every project has a ```main.py``` file, which is run automatically when the device starts or soft resets. Other ```.py``` files can be imported from ```main.py```. Start programs by importing the SDK:
+Every project has a ```main.py``` file, which is run automatically when the device starts or soft resets. Other ```.py``` files can be imported from ```main.py```. Their names must be valid Python identifiers followed by ```.py``` (for example, ```player.py```). Start programs by importing the SDK:
 
 ```python
 import ferret
 ```
 
-The editor can create multiple code files, draw and import images, show the serial terminal, save a project in browser storage, and download or load the complete project as a JSON file. Connect the device, then use **Run Script** to write the project's code files to flash and soft reset into the new ```main.py```. Images are sent separately with **Sync Images**.
+The editor can create multiple code files, draw and import images, show the serial terminal, save a project in browser storage, and download or load the complete project as a JSON file. Connect the device, then use **Run Script** to synchronize the project's code files to flash (including removing files deleted or renamed in the editor) and soft reset into the new ```main.py```. Images are sent separately with **Sync Images**.
 
 See the [embedded reference](/docs/embed-reference) for the functions available to games, and the [building guide](/docs/micropython-building) for making the firmware itself.
 
