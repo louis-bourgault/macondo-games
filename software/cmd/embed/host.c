@@ -160,6 +160,39 @@ STATIC mp_obj_t t_append_file(mp_obj_t path, mp_obj_t content) {
 }
 STATIC MP_DEFINE_CONST_FUN_OBJ_2(t_append_file_obj, t_append_file);
 
+STATIC mp_obj_t t_write_file_b64(mp_obj_t path, mp_obj_t content) {
+    fs_result(ferret_write_file_b64((char *)mp_obj_str_get_str(path),
+                                    (char *)mp_obj_str_get_str(content),
+                                    (int)str_len(content)));
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(t_write_file_b64_obj, t_write_file_b64);
+
+STATIC mp_obj_t t_append_file_b64(mp_obj_t path, mp_obj_t content) {
+    fs_result(ferret_append_file_b64((char *)mp_obj_str_get_str(path),
+                                     (char *)mp_obj_str_get_str(content),
+                                     (int)str_len(content)));
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_2(t_append_file_b64_obj, t_append_file_b64);
+
+STATIC mp_obj_t t_file_manifest(void) {
+    int n = ferret_file_manifest(ferret_fs_buf, FERRET_FS_BUF_MAX);
+    if (n < 0) {
+        mp_raise_OSError(MP_EIO);
+    }
+    return mp_obj_new_str(ferret_fs_buf, (size_t)n);
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_0(t_file_manifest_obj, t_file_manifest);
+
+STATIC mp_obj_t t_delete_file(mp_obj_t path) {
+    if (ferret_delete_file((char *)mp_obj_str_get_str(path)) != 0) {
+        mp_raise_OSError(MP_EIO);
+    }
+    return mp_const_none;
+}
+STATIC MP_DEFINE_CONST_FUN_OBJ_1(t_delete_file_obj, t_delete_file);
+
 STATIC mp_obj_t t_write_image(size_t n_args, const mp_obj_t *args) {
     int r = ferret_write_image((char *)mp_obj_str_get_str(args[0]),
                                mp_obj_get_int(args[1]), mp_obj_get_int(args[2]),
@@ -252,6 +285,14 @@ void register_ferret_module(void) {
                       MP_OBJ_FROM_PTR(&t_write_file_obj));
     mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("append_file")),
                       MP_OBJ_FROM_PTR(&t_append_file_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("write_file_b64")),
+                      MP_OBJ_FROM_PTR(&t_write_file_b64_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("append_file_b64")),
+                      MP_OBJ_FROM_PTR(&t_append_file_b64_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("file_manifest")),
+                      MP_OBJ_FROM_PTR(&t_file_manifest_obj));
+    mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("delete_file")),
+                      MP_OBJ_FROM_PTR(&t_delete_file_obj));
     mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("write_image")),
                       MP_OBJ_FROM_PTR(&t_write_image_obj));
     mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str("append_image")),

@@ -30,4 +30,7 @@ const (
 	B
 	Start
 	Exit
+	X
+	Y
+	Menu
 )

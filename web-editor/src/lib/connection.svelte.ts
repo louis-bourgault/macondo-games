@@ -2,6 +2,12 @@ import type { ProjectData, ImageFile } from './types';
 
 const MAX_IMAGE_WIDTH = 240;
 const MAX_IMAGE_HEIGHT = 240;
+const MAX_CODE_FILE_BYTES = 16 * 1024;
+const CODE_FILE_NAME = /^[A-Za-z_][A-Za-z0-9_]*\.py$/;
+
+export function isValidCodeFileName(name: string): boolean {
+	return CODE_FILE_NAME.test(name);
+}
 
 export class WebSerialConnection {
 	public port: any;
@@ -128,6 +134,75 @@ export class WebSerialConnection {
 				}
 			} catch {
 				throw new Error(`Image "${img.name}" contains invalid base64 data.`);
+			}
+		}
+	}
+
+	private validateCodeFiles(projectData: ProjectData) {
+		const names = new Set<string>();
+		for (const file of projectData.codeFiles) {
+			if (!isValidCodeFileName(file.name)) {
+				throw new Error(
+					`Code file name "${file.name}" is invalid. Use a Python identifier ending in .py.`
+				);
+			}
+			if (names.has(file.name)) {
+				throw new Error(`Code file name "${file.name}" is duplicated.`);
+			}
+			names.add(file.name);
+			if (new TextEncoder().encode(file.content).length > MAX_CODE_FILE_BYTES) {
+				throw new Error(`Code file "${file.name}" exceeds the 16 KiB device limit.`);
+			}
+		}
+		if (!names.has('main.py')) {
+			throw new Error('The project must contain main.py.');
+		}
+	}
+
+	private bytesToBase64(bytes: Uint8Array): string {
+		let binary = '';
+		for (const byte of bytes) binary += String.fromCharCode(byte);
+		return btoa(binary);
+	}
+
+	private async getDeviceCodeFiles(): Promise<Set<string>> {
+		const begin = '__FERRET_CODE_FILES_BEGIN__';
+		const end = '__FERRET_CODE_FILES_END__';
+		const response = await this.pasteAndRun(
+			`import ferret\nprint("${begin}")\nprint(ferret.file_manifest(), end="")\nprint("${end}")\n`
+		);
+		// Paste mode echoes the source, so use the final marker pair emitted by
+		// the executed program rather than the same text in the echoed source.
+		const start = response.lastIndexOf(begin);
+		const finish = response.lastIndexOf(end);
+		if (start < 0 || finish < start) {
+			throw new Error('device returned an unreadable code-file manifest');
+		}
+		return new Set(
+			response
+				.slice(start + begin.length, finish)
+				.split(/\r?\n/)
+				.map((name) => name.trim())
+				.filter(Boolean)
+		);
+	}
+
+	private async syncCodeFiles(projectData: ProjectData) {
+		this.validateCodeFiles(projectData);
+		await this.controlC();
+		await this.delay(100);
+		await this.controlC();
+		await this.delay(100);
+		const existingFiles = await this.getDeviceCodeFiles();
+
+		for (const file of projectData.codeFiles) {
+			await this.writeFileToDevice(file.name, file.content);
+		}
+
+		const wantedFiles = new Set(projectData.codeFiles.map((file) => file.name));
+		for (const filename of existingFiles) {
+			if (!wantedFiles.has(filename)) {
+				await this.pasteAndRun(`import ferret\nferret.delete_file(${JSON.stringify(filename)})\n`);
 			}
 		}
 	}
@@ -297,9 +372,7 @@ export class WebSerialConnection {
 	};
 
 	public saveProjectToDevice = async (projectData: ProjectData) => {
-		for (const file of projectData.codeFiles) {
-			await this.writeFileToDevice(file.name, file.content);
-		}
+		await this.syncCodeFiles(projectData);
 		// Boot main.py right away: a soft reset re-runs the boot script, so the
 		// game starts immediately instead of needing a power cycle.
 		await this.controlC();
@@ -310,26 +383,30 @@ export class WebSerialConnection {
 	};
 
 	public writeFileToDevice = async (filename: string, content: string) => {
+		if (!isValidCodeFileName(filename)) {
+			throw new Error(`Code file name "${filename}" is invalid.`);
+		}
 		await this.controlC();
 		await this.delay(100);
 		await this.controlC();
 		await this.delay(100);
 
-		// Chunked so we don't OOM the MicroPython heap. write_file opens the
-		// file, append_file adds the rest. Backslashes and triple quotes are
-		// escaped so the paste literal round-trips the content byte-for-byte.
-		// Use the same wire-safe limit as images: the full paste must fit through
-		// TinyUSB's receive staging buffer, not merely the MP heap.
-		const chunkSize = 320;
-		for (let i = 0; i < content.length; i += chunkSize) {
-			const chunk = content
-				.slice(i, i + chunkSize)
-				.replace(/\\/g, '\\\\')
-				.replace(/"""/g, '\\"""');
+		// Encode UTF-8 bytes rather than interpolating source into a Python
+		// literal. This preserves arbitrary quotes, backslashes and Unicode.
+		// A zero-byte file still sends one write call, which truncates old data.
+		const bytes = new TextEncoder().encode(content);
+		if (bytes.length > MAX_CODE_FILE_BYTES) {
+			throw new Error(`Code file "${filename}" exceeds the 16 KiB device limit.`);
+		}
+		const rawChunkSize = 240;
+		const chunks = Math.max(1, Math.ceil(bytes.length / rawChunkSize));
+		for (let chunkIndex = 0; chunkIndex < chunks; chunkIndex++) {
+			const start = chunkIndex * rawChunkSize;
+			const chunk = this.bytesToBase64(bytes.slice(start, start + rawChunkSize));
 			const call =
-				i === 0
-					? `ferret.write_file("${filename}", """${chunk}""")`
-					: `ferret.append_file("${filename}", """${chunk}""")`;
+				chunkIndex === 0
+					? `ferret.write_file_b64(${JSON.stringify(filename)}, "${chunk}")`
+					: `ferret.append_file_b64(${JSON.stringify(filename)}, "${chunk}")`;
 			await this.pasteAndRun(`import ferret\n${call}\n`);
 		}
 	};
@@ -338,9 +415,7 @@ export class WebSerialConnection {
 		// Persist every file (including main.py) so `import` statements resolve
 		// and the boot script has fresh content, then soft-reset: main.py runs
 		// automatically from flash with a fresh namespace.
-		for (const file of projectData.codeFiles) {
-			await this.writeFileToDevice(file.name, file.content);
-		}
+		await this.syncCodeFiles(projectData);
 		// Stop anything currently running and land at a clean prompt.
 		await this.controlC();
 		await this.delay(100);

@@ -66,6 +66,7 @@ const (
 	// The editor currently sends 320 base64 characters per call, which decode to
 	// 240 bytes. Process larger manual calls in equally bounded pieces.
 	imageDecodeBlock = 320
+	codeDecodeBlock  = 320
 )
 
 var (
@@ -301,8 +302,11 @@ func ferret_read_file(path *C.char, buf *C.char, max C.int) C.int {
 //export ferret_write_file
 func ferret_write_file(path *C.char, data *C.char, n C.int) C.int {
 	p := cleanPath(C.GoString(path))
-	if p == "" || n > maxFsFile {
+	if p == "" || n < 0 {
 		return -1
+	}
+	if n > maxFsFile {
+		return -2
 	}
 	if err := fsWrite(p, unsafe.Slice((*byte)(unsafe.Pointer(data)), int(n))); err != nil {
 		return -1
@@ -315,7 +319,7 @@ func ferret_write_file(path *C.char, data *C.char, n C.int) C.int {
 //export ferret_append_file
 func ferret_append_file(path *C.char, data *C.char, n C.int) C.int {
 	p := cleanPath(C.GoString(path))
-	if p == "" {
+	if p == "" || n < 0 {
 		return -1
 	}
 	if info, err := ferretFs.Stat(absPath(p)); err == nil {
@@ -326,6 +330,108 @@ func ferret_append_file(path *C.char, data *C.char, n C.int) C.int {
 		return -1
 	}
 	if err := fsAppend(p, unsafe.Slice((*byte)(unsafe.Pointer(data)), int(n))); err != nil {
+		return -1
+	}
+	return 0
+}
+
+// decodeCodePayload decodes one independently padded editor chunk. Keeping
+// chunks independent means a failed paste cannot corrupt the boundaries of
+// subsequent data, and avoids embedding source code in Python string literals.
+func decodeCodePayload(data *C.char, n C.int) ([]byte, int) {
+	if n < 0 || n > codeDecodeBlock {
+		return nil, -1
+	}
+	encoded := unsafe.Slice((*byte)(unsafe.Pointer(data)), int(n))
+	decoded, err := base64.StdEncoding.DecodeString(string(encoded))
+	if err != nil || len(decoded) > codeDecodeBlock*3/4 {
+		return nil, -1
+	}
+	return decoded, 0
+}
+
+//export ferret_write_file_b64
+func ferret_write_file_b64(path *C.char, data *C.char, n C.int) C.int {
+	decoded, result := decodeCodePayload(data, n)
+	if result != 0 {
+		return C.int(result)
+	}
+	p := cleanPath(C.GoString(path))
+	if p == "" {
+		return -1
+	}
+	if err := fsWrite(p, decoded); err != nil {
+		return -1
+	}
+	return 0
+}
+
+//export ferret_append_file_b64
+func ferret_append_file_b64(path *C.char, data *C.char, n C.int) C.int {
+	decoded, result := decodeCodePayload(data, n)
+	if result != 0 {
+		return C.int(result)
+	}
+	p := cleanPath(C.GoString(path))
+	if p == "" {
+		return -1
+	}
+	if info, err := ferretFs.Stat(absPath(p)); err == nil {
+		if info.Size()+int64(len(decoded)) > maxFsFile {
+			return -2
+		}
+	} else if !isMissing(err) {
+		return -1
+	}
+	if err := fsAppend(p, decoded); err != nil {
+		return -1
+	}
+	return 0
+}
+
+// validRootCodeFile limits editor deletion to a source file in the filesystem
+// root. In particular, it cannot remove the image directory or its manifest.
+func validRootCodeFile(name string) bool {
+	return name != "" && strings.HasSuffix(name, ".py") &&
+		!strings.ContainsAny(name, "/\\:\r\n") && name != "." && name != ".."
+}
+
+//export ferret_file_manifest
+func ferret_file_manifest(buf *C.char, max C.int) C.int {
+	dir, err := ferretFs.Open("/")
+	if err != nil {
+		return -1
+	}
+	defer dir.Close()
+	infos, err := dir.Readdir(0)
+	if err != nil {
+		return -1
+	}
+	names := make([]string, 0, len(infos))
+	for _, info := range infos {
+		if !info.IsDir() && validRootCodeFile(info.Name()) {
+			names = append(names, info.Name())
+		}
+	}
+	sort.Strings(names)
+	manifest := strings.Join(names, "\n")
+	if manifest != "" {
+		manifest += "\n"
+	}
+	if max < 0 || len(manifest) > int(max) {
+		return -1
+	}
+	copy(unsafe.Slice((*byte)(unsafe.Pointer(buf)), int(max)), manifest)
+	return C.int(len(manifest))
+}
+
+//export ferret_delete_file
+func ferret_delete_file(path *C.char) C.int {
+	name := C.GoString(path)
+	if !validRootCodeFile(name) {
+		return -1
+	}
+	if err := ferretFs.Remove(absPath(name)); err != nil && !isMissing(err) {
 		return -1
 	}
 	return 0

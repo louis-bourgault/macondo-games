@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { getWebSerialConnection, type WebSerialConnection } from '$lib/connection.svelte';
+	import {
+		getWebSerialConnection,
+		isValidCodeFileName,
+		type WebSerialConnection
+	} from '$lib/connection.svelte';
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Resizable from '$lib/components/ui/resizable';
@@ -74,6 +78,11 @@
 	}
 	function fileNameExists(name: string, excludeIndex: number | null = null) {
 		return projectData.codeFiles.some((f, i) => i !== excludeIndex && f.name === name);
+	}
+	function fileNameError(name: string) {
+		return isValidCodeFileName(name)
+			? ''
+			: 'Use a Python identifier ending in .py, for example player.py.';
 	}
 
 	// dialogs
@@ -171,6 +180,10 @@
 			newFileError = 'Please enter a file name.';
 			return;
 		}
+		if (fileNameError(name)) {
+			newFileError = fileNameError(name);
+			return;
+		}
 		if (name === MAIN_FILE) {
 			newFileError = `${MAIN_FILE} is reserved.`;
 			return;
@@ -196,6 +209,10 @@
 			return;
 		}
 		if (renameTarget.kind === 'file') {
+			if (fileNameError(name)) {
+				renameError = fileNameError(name);
+				return;
+			}
 			if (name === MAIN_FILE) {
 				renameError = `${MAIN_FILE} is reserved and cannot be used.`;
 				return;
@@ -279,7 +296,12 @@
 			alert('connect before sending.');
 			return;
 		}
-		await connection.saveProjectToDevice(projectData);
+		try {
+			await connection.saveProjectToDevice(projectData);
+		} catch (err) {
+			console.error('device save failed', err);
+			alert(`Device save failed: ${err instanceof Error ? err.message : String(err)}`);
+		}
 	}
 
 	function loadProject() {
@@ -327,7 +349,12 @@
 			alert('Not connected to the device.');
 			return;
 		}
-		await connection.runProject(projectData);
+		try {
+			await connection.runProject(projectData);
+		} catch (err) {
+			console.error('project upload failed', err);
+			alert(`Project upload failed: ${err instanceof Error ? err.message : String(err)}`);
+		}
 	}
 </script>
 
