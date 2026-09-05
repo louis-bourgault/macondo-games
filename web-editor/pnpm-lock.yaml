@@ -35,6 +35,9 @@ importers:
       '@lezer/highlight':
         specifier: ^1.2.3
         version: 1.2.3
+      '@micropython/micropython-webassembly-pyscript':
+        specifier: ^1.29.0-6
+        version: 1.29.0-6
       codemirror:
         specifier: ^6.0.2
         version: 6.0.2
@@ -194,6 +197,9 @@ packages:
 
   '@marijn/find-cluster-break@1.0.3':
     resolution: {integrity: sha512-FY+MKLBoTsLNJF/eLWaOsXGdz6uh3Iu1axjPf6TUq92IYumcTcXWHoS747JARLkcdlJ/Waiaxc5wQfFO8jC6NA==}
+
+  '@micropython/micropython-webassembly-pyscript@1.29.0-6':
+    resolution: {integrity: sha512-kLwGPJFsLY/2aUPmzZxpvauFSmKc0SlJWVvvEttULR0poVQ6W9HV//1fUJyxrGWAxCVDw9aYqJ0LAog0ZLjYVA==}
 
   '@napi-rs/wasm-runtime@1.1.6':
     resolution: {integrity: sha512-ZLv/JdUfkvOy9eCnnBaGfiO+XimbjebAeO+MRQqD/B+FR1tnRN0tpKSJHRbE8sFfS6aqsXZ67TQjfwfsxULVbg==}
@@ -1067,6 +1073,8 @@ snapshots:
       svelte: 5.56.4
 
   '@marijn/find-cluster-break@1.0.3': {}
+
+  '@micropython/micropython-webassembly-pyscript@1.29.0-6': {}
 
   '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
     dependencies:

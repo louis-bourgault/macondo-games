@@ -18,6 +18,7 @@
 	let editor: Editor | null = $state(null);
 	import { type ProjectData } from '$lib/types';
 	import ImageEditor from '$lib/components/ImageEditor.svelte';
+	import Emulator from '$lib/components/Emulator.svelte';
 	import {
 		FilePlus,
 		FileCode,
@@ -443,9 +444,15 @@
 			<Resizable.Pane defaultSize={30} minSize={10}>
 				<Accordion.Root
 					type="multiple"
-					value={['files', 'images']}
+					value={['emulator']}
 					class="flex h-full w-full flex-col"
 				>
+					<Accordion.Item value="emulator" class="flex min-h-0 flex-col">
+						<Accordion.Trigger class="px-4">RP2350 Emulator</Accordion.Trigger>
+						<Accordion.Content class="min-h-0 flex-1 overflow-y-auto">
+							<Emulator project={projectData} />
+						</Accordion.Content>
+					</Accordion.Item>
 					<Accordion.Item value="files" class="flex flex-col">
 						<Accordion.Trigger class="px-4">Files</Accordion.Trigger>
 						<Accordion.Content class="flex-1 overflow-y-auto">

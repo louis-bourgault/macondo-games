@@ -1,6 +1,11 @@
 # Web Editor
 This repository is a feature complete web editor for the python sdk of the board, which includes a multifile code editor (based on the excellent codemirror library), image sprite editor with transparency, and terminal. The system connects to the device over USB using the browser WebSerial API.
 
+It also includes an RP2350 browser emulator which runs MicroPython in a Web
+Worker and implements the same `ferret` API against a canvas and ABXY controls.
+See [EMULATOR.md](./EMULATOR.md) for its architecture, parity rules and hosting
+headers.
+
 ## Stack
 
 This web app uses a simple typescript setup comprising of:
@@ -30,6 +35,5 @@ The web serial api is not supported by Safari or Firefox. Use a recent version o
 
 ## Licence
 As with all other code components in this repository, this module is licenced under the [GNU AGPL](../LICENSE.txt)
-
 
 
