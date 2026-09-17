@@ -359,7 +359,7 @@
 </script>
 
 {#if connection}
-	<div class="flex h-full w-full flex-col overscroll-none">
+	<div class="flex h-full w-full flex-col overflow-hidden overscroll-none">
 		<div class="flex w-full flex-row">
 			<Button onclick={connection.connect} class="h-full">Connect</Button>
 			{#if connection.connected}
