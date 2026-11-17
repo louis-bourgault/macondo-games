@@ -70,20 +70,7 @@
         }
       },
       "diff_pair_dimensions": [],
-      "drc_exclusions": [
-        [
-          "mirrored_text_on_front_layer|114050000|36950000|dd1c85f0-5b97-4298-ba36-13c460e364b3|00000000-0000-0000-0000-000000000000",
-          "y is symmetrical"
-        ],
-        [
-          "mirrored_text_on_front_layer|62900000|38750000|be89c0a6-b3ff-4015-aea8-5600eda12de0|00000000-0000-0000-0000-000000000000",
-          "symmetrical"
-        ],
-        [
-          "starved_thermal|93450000|79000000|f281903a-e56e-4eb9-bf16-9475c31d2488|527f380a-8d3f-4ff0-8956-69e3250baaca|F.Cu",
-          ""
-        ]
-      ],
+      "drc_exclusions": [],
       "meta": {
         "version": 2
       },
@@ -679,7 +666,7 @@
         "uuid": "78b1fad7-1fbc-4b07-9d10-5e63d0dd0122"
       }
     ],
-    "used_designators": "R6,R9,R13-14,Q1-2,U2,#PWR46-49,J7",
+    "used_designators": "R6,R9,R13-14,Q1-2,U2,#PWR46-49,J7-8",
     "variants": []
   },
   "sheets": [
