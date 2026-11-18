@@ -14,6 +14,15 @@ type InputSystem interface {
 	Update()
 }
 
+type GPIOSystem interface {
+	Enabled() bool
+	Enable()
+	Disable()
+	AnalogRead(pin int) int
+	DigitalRead(pin int) bool
+	DigitalWrite(pin int, value bool)
+}
+
 type LogSystem interface {
 	Log(log string)
 }

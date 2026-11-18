@@ -17,5 +17,6 @@
             "priority": 4
         }
     ],
-    "C_Cpp.default.compilerPath": "/usr/bin/clang"
+    "C_Cpp.default.compilerPath": "/usr/bin/clang",
+    "cmake.sourceDirectory": "/Users/louisb/Documents/hardware/macondo-games/software-v2"
 }

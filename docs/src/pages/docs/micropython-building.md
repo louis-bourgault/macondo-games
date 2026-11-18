@@ -5,11 +5,13 @@ draft: false
 category: "mp"
 ---
 
+Disclosure for Hack Club purposes: this piece of documentation is partially AI written. There are ongoing revision attempts to make this more understandable and human written. Anything after commit `a9fa7ea` is completely human written
+
 The current MicroPython firmware is built from ```/software/cmd/embed```. This is the version used by the web editor, not the older firmware under ```/mp-sdk```.
 
 ## Setup
 
-You will need:
+You will need quite a bit of software installed on your computer/build machine:
 
 - Go
 - TinyGo
@@ -17,9 +19,9 @@ You will need:
 - make
 - gcc and binutils for a host build
 - the Arm GNU toolchain (```arm-none-eabi-gcc``` and ```arm-none-eabi-ar```) for a device build
-- a full clone of MicroPython
+- a full micropython git clone on your machine
 
-On macOS, most of these can be installed with Homebrew. The package names may be different on Linux.
+On macOS, it's probably easiest to use homebrew. Linux may be different.
 
 ```sh
 xcode-select --install

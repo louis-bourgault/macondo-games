@@ -1,5 +1,7 @@
 # How the Ferretboard build system works
 
+Disclosure: originally AI written. Is being revised to be more human readable and simple.
+
 This document explains how MicroPython is embedded inside the Ferretboard Go
 firmware and how the `cmd/embed` build turns that into two artefacts:
 
@@ -208,8 +210,7 @@ with `bridge.go` and `cdc_*.go`.
   Go engine, links the same archive, and packages a UF2. `display_device.go`
   and `cdc_tinygo.go` (build tag `tinygo`) provide the real display and USB.
 
-`tinygo` must be on `PATH` (e.g. `/tmp/opencode/tinygo/bin`); the justfile does
-not bundle it.
+`tinygo` must be on `PATH`. The justfile does not bundle it.
 
 ---
 

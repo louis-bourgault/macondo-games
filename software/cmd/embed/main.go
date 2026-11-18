@@ -46,7 +46,8 @@ var input platform.InputSystem
 func init() {
 	display = newDisplay() // defined per-build: device or stub
 	input = newInput()     // defined per-build: device or stub
-	_ = helpers.RandomInt  // ensure helpers is linked (used by games)
+
+	_ = helpers.RandomInt // ensure helpers is linked (used by games)
 }
 
 // mpHeap is the MicroPython GC heap. Enough for typical student programs;

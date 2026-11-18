@@ -8,8 +8,7 @@ import (
 	"github.com/louis-bourgault/macondo-games/software/internal/platform"
 )
 
-// Version two button wiring from hardware-v2. V2 replaces Start/Exit with a
-// single Menu button and adds X/Y alongside A/B.
+// button wiring on v2
 var hardwareButtonPins = [...]buttonPin{
 	{platform.A, machine.Pin(4)},
 	{platform.B, machine.Pin(5)},
