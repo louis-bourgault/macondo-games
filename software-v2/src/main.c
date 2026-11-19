@@ -4,26 +4,27 @@
 
 int main(void) {
     stdio_init_all();
-    sleep_ms(1000);
+    sleep_ms(500);
     display_init();
     
 
    
-
+    input_init();
     display_fill(0xF800); // red
 
-    // for (int i = 0; i < 240; i++) {
-    //     display_pixel(i, i, 0xFFFF); // white diagonal
-    // }
-
-    display_present();
-
-    sleep_ms(1000);
-
-    display_fill(0x07E0); // green
-    display_present();
+    
 
     while (true) {
-        sleep_ms(1000);
+        input_update();
+        if (button_just_pressed(BTN_A)) {
+            display_fill(0x001F);// blue
+            display_present();
+        }
+        else if (buttton_just_pressed(BTN_DOWN))
+        {
+            display_fill(0xF800);
+            display_present();
+        }
+        delay_ms(100);
     }
 }

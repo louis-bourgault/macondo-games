@@ -25,17 +25,32 @@ void input_init(void) {
 }
 
 //pins for the v2
-static const uint8_t BUTTON_PINS[BTN_COUNT] = {
-    [BTN_A]     = 4,
-    [BTN_B]     = 5,
-    [BTN_X]     = 13,
-    [BTN_Y]     = 14,
-    [BTN_UP]    = 9,
-    [BTN_DOWN]  = 11,
-    [BTN_LEFT]  = 10,
-    [BTN_RIGHT] = 12,
-    [BTN_MENU]  = 6
-};
+// static const uint8_t BUTTON_PINS[BTN_COUNT] = {
+//     [BTN_A]     = 4,
+//     [BTN_B]     = 5,
+//     [BTN_X]     = 13,
+//     [BTN_Y]     = 14,
+//     [BTN_UP]    = 9,
+//     [BTN_DOWN]  = 11,
+//     [BTN_LEFT]  = 10,
+//     [BTN_RIGHT] = 12,
+//     [BTN_MENU]  = 6
+// };
+
+//pins for the v1
+static const uint_8_t BUTTON_PINS[BTN_COUNT] = {
+    [BTN_A] = 4,
+    [BTN_B] = 5,
+    [BTN_UP] = 9,
+    [BTN_DOWN] = 12,
+    [BTN_LEFT] = 10,
+    [BTN_RIGHT] = 11,
+    [BTN_MENU] = 6
+    //there are no x and y buttons, but we just define them here because we need to fill the array
+    [BTN_X] = 0,
+    [BTN_Y] = 0
+    //nothing is connected to these gpios
+}
 
 
 void input_update(void) {
