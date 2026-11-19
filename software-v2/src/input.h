@@ -1,7 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-
+#include <stdbool.h>
 typedef enum {
     BTN_A = 0,
     BTN_B,
@@ -21,3 +21,5 @@ void input_update(void);
 bool button_pressed(Button button);
 bool button_just_pressed(Button button);
 bool button_just_released(Button button);
+
+#endif

@@ -7,8 +7,6 @@ int main(void) {
     sleep_ms(500);
     display_init();
     
-
-   
     input_init();
     display_fill(0xF800); // red
 

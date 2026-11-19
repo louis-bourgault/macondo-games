@@ -11,6 +11,7 @@ add_compile_definitions(PICO_XOSC_STARTUP_DELAY_MULTIPLIER=64)
 add_executable(ferret
     src/main.c
     src/display.c
+    src/input.c
 )
 
 
