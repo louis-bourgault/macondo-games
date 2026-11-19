@@ -20,11 +20,11 @@ int main(void) {
             display_fill(0x001F);// blue
             display_present();
         }
-        else if (buttton_just_pressed(BTN_DOWN))
+        else if (button_just_pressed(BTN_DOWN))
         {
             display_fill(0xF800);
             display_present();
         }
-        delay_ms(100);
+        sleep_ms(100);
     }
 }
