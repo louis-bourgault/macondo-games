@@ -1,5 +1,6 @@
 #include "pico/stdlib.h"
 #include "display.h"
+#include "input.h"
 
 int main(void) {
     stdio_init_all();
