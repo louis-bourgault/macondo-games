@@ -1,6 +1,7 @@
 #include "mp.h"
 #include "port/micropython_embed.h"
 #include "display.h"
+#include "input.h"
 #include "py/runtime.h"
 // #include "py/mprint.h"
 #include "py/nlr.h"
@@ -10,12 +11,28 @@
 static char heap[8 * 1024];
 
 static const char user_script[] =
-    "def init():\n"
-    "    fill_display(0xF800)\n"
-    "    \n"
-    "def update():\n"
-    "    print('micropython is alive weewoo')\n";
+"def init():\n"
+"    fill_display(0xF800)\n"
+"    \n"
+"def update():\n"
+"    print('micropython is alive weewoo')\n";
 
+//define the constants for all the micropython buttons
+static const mp_rom_map_elem_t button_module_globals_table[] = {
+    {MP_ROM_QSTR(MP_QSTR_BTN_A), MP_ROM_INT(0)},
+    {MP_ROM_QSTR(MP_QSTR_BTN_B), MP_ROM_INT(1)},
+    {MP_ROM_QSTR(MP_QSTR_BTN_X), MP_ROM_INT(2)},
+    {MP_ROM_QSTR(MP_QSTR_BTN_Y), MP_ROM_INT(3)},
+    {MP_ROM_QSTR(MP_QSTR_BTN_UP), MP_ROM_INT(4)},
+    {MP_ROM_QSTR(MP_QSTR_BTN_DOWN), MP_ROM_INT(5)},
+    {MP_ROM_QSTR(MP_QSTR_BTN_LEFT), MP_ROM_INT(6)},
+    {MP_ROM_QSTR(MP_QSTR_BTN_RIGHT), MP_ROM_INT(7)},
+    {MP_ROM_QSTR(MP_QSTR_BTN_MENU), MP_ROM_INT(8)},
+};
+static MP_DEFINE_CONST_DICT(button_module_globals, button_module_globals_table);
+//can access these buttons from micropython with button.BTN_A, button.BTN_B, etc
+
+//FUNCTIONS FOR MICROPYTHON TO CALL
 static mp_obj_t fill_display(mp_obj_t colour)
 {
     uint16_t c = (uint16_t)mp_obj_get_int(colour);
@@ -23,6 +40,59 @@ static mp_obj_t fill_display(mp_obj_t colour)
     return mp_const_none;
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(fill_display_obj, fill_display);
+static mp_obj_t draw_pixel(mp_obj_t x, mp_obj_t y, mp_obj_t colour)
+{
+    int16_t x_val = (int16_t)mp_obj_get_int(x);
+    int16_t y_val = (int16_t)mp_obj_get_int(y);
+    uint16_t c = (uint16_t)mp_obj_get_int(colour);
+    draw_pixel(x_val, y_val, c);
+    return mp_const_none;
+}
+static MP_DEFINE_CONST_FUN_OBJ_3(draw_pixel_obj, draw_pixel);
+static mp_obj_t draw_rect(mp_obj_t x0, mp_obj_t y0, mp_obj_t x1, mp_obj_t y1, mp_obj_t colour)
+{
+    int16_t x0_val = (int16_t)mp_obj_get_int(x0);
+    int16_t y0_val = (int16_t)mp_obj_get_int(y0);
+    int16_t x1_val = (int16_t)mp_obj_get_int(x1);
+    int16_t y1_val = (int16_t)mp_obj_get_int(y1);
+    uint16_t c = (uint16_t)mp_obj_get_int(colour);
+    draw_rect(x0_val, y0_val, x1_val, y1_val, c);
+    return mp_const_none;
+}
+static MP_DEFINE_CONST_FUN_OBJ_5(draw_rect_obj, draw_rect);
+
+static mp_obj_t button_pressed(mp_obj_t button)
+{
+    int btn = mp_obj_get_int(button);
+    if (btn < 0 || btn >= BTN_COUNT)
+    {
+        mp_raise_ValueError("that button does not exist");
+    }
+    return mp_obj_new_bool(button_pressed((Button)btn));
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(button_pressed_obj, button_pressed);
+static mp_obj_t button_just_pressed(mp_obj_t button)
+{
+    int btn = mp_obj_get_int(button);
+    if (btn < 0 || btn >= BTN_COUNT)
+    {
+        mp_raise_ValueError("that button does not exist");
+    }
+    return mp_obj_new_bool(button_just_pressed((Button)btn));
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(button_just_pressed_obj, button_just_pressed);
+static mp_obj_t button_just_released(mp_obj_t button)
+{
+    int btn = mp_obj_get_int(button);
+    if (btn < 0 || btn >= BTN_COUNT)
+    {
+        mp_raise_ValueError("that button does not exist");
+    }
+    return mp_obj_new_bool(button_just_released((Button)btn));
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(button_just_released_obj, button_just_released);
+
+
 
 static void setup_api(void)
 {
