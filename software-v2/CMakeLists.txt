@@ -22,6 +22,7 @@ add_executable(ferret
     src/main.c
     src/display.c
     src/input.c
+    src/mp.c
 )
 
 

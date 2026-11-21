@@ -3,7 +3,6 @@
 #include "input.h"
 #include "mp.h"
 #include "pico/stdio_usb.h"
-#include "pico/stdio.h"
 #include <stdio.h>
 
 
@@ -23,7 +22,7 @@ int main(void) {
     display_present();
     sleep_ms(500);
    
-    mp_init(&stack_top);
+    script_init(&stack_top);
     display_present();
     
     // while (true) {
@@ -40,5 +39,7 @@ int main(void) {
     //     sleep_ms(10);
     // }
     // mp_deinit();
+    while (true) { sleep_ms(100); script_update();}
+    script_deinit();
     return 0;
 }

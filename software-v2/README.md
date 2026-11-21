@@ -22,3 +22,12 @@ secnd pass - what is the most optimal dirty rect to add it to at this point
     if we're already above the quota of dirty rectangles, we go back to the one which would be the most optimal (even if above threshold) and add it to that
     
 if we make a rectangle larger - chain reaction, see if some other 
+
+# Monitoring serial
+the thing shows up as a serial port that you can connect to. it gives you 3 seconds to connect on boot, and then runs the program
+
+can use normal terminal utils for this. i use tio in a secondary split screen terminal, which auto reconnects when the device comes back. on mac:
+
+`tio /dev/cu.usbmodem*`
+
+you will need to install tio with either your linux PM or homebrew

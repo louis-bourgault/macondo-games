@@ -2,14 +2,19 @@
 #include "port/micropython_embed.h"
 #include "display.h"
 #include "py/runtime.h"
-#include "py/mprint.h"
+// #include "py/mprint.h"
 #include "py/nlr.h"
+#include <stdio.h>
+#include "py/qstr.h"
 
 static char heap[8 * 1024];
 
 static const char user_script[] =
     "def init():\n"
-    "    fill_display(0xF800)\n";
+    "    fill_display(0xF800)\n"
+    "    \n"
+    "def update():\n"
+    "    print('micropython is alive weewoo')\n";
 
 static mp_obj_t fill_display(mp_obj_t colour)
 {
@@ -21,7 +26,7 @@ static MP_DEFINE_CONST_FUN_OBJ_1(fill_display_obj, fill_display);
 
 static void setup_api(void)
 {
-    mp_store_global(MP_QSTR_fill_display, MP_OBJ_FROM_PTR(&fill_display_obj));
+    mp_store_global(qstr_from_str("fill_display"), MP_OBJ_FROM_PTR(&fill_display_obj));
 }
 
 void call_py(qstr name)
@@ -39,19 +44,24 @@ void call_py(qstr name)
     }
 }
 
-void mp_init(void *stack_top)
+void script_init(void *stack_top)
 {
     mp_embed_init(&heap[0], sizeof(heap), &stack_top);
     setup_api();
-    mp_embed_exec_string(micropython_string);
-    call_py(MP_QSTR_init);
+    mp_embed_exec_str(user_script);
+    call_py(qstr_from_str("init"));
 }
 
 void script_update(void) {
-    call_py(MP_QSTR_update);
+    call_py(qstr_from_str("update"));
 }
 
-void mp_deinit()
+void script_deinit()
 {
     mp_embed_deinit();
+}
+
+void mp_hal_stdout_tx_strn(const char *str, size_t len) {
+    fwrite(str, 1, len, stdout);
+    fflush(stdout);
 }
