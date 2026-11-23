@@ -35,9 +35,9 @@ build_target() {
     cmake --build "$build_dir"
 }
 
-build_target rp2040 pico rp2040
+build_target rp2040 ferretboard rp2040
 # build_target rp2350 pico2 rp2350
 
 cd "$ROOT/build-rp2040"
 
-picotool load -x ferret.uf2
+picotool load -f -x ferret.uf2

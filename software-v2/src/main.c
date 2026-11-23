@@ -51,6 +51,7 @@ printf("raw erase done\n");
     int err;
     printf("writing test script to filesystem...\n");
     err = lfs_file_open(&lfs, &file, "/test.py", LFS_O_WRONLY | LFS_O_CREAT);
+    
     if (err != 0)
     {
         printf("prob with file: %d\n", err);
@@ -62,6 +63,7 @@ printf("raw erase done\n");
         printf("prob writing to file: %d\n", written);
         return 1;
     }
+    printf("wrote %d bytes to /test.py\n", (int)written);
 
     lfs_file_close(&lfs, &file);
     script_init(&stack_top);

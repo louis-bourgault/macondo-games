@@ -14,12 +14,23 @@
 #define MICROPY_ENABLE_COMPILER                 (1)
 #define MICROPY_ENABLE_GC                       (1)
 #define MICROPY_PY_GC                           (1)
-#define MICROPY_PY_SYS                          (0)
+// #define MICROPY_PY_SYS                          (0)
 //we doing filesystem ourselves
 #define MICROPY_VFS                 (0)
 #define MICROPY_READER_VFS          (0)
 #define MICROPY_READER_POSIX        (0)
+#define MICROPY_ERROR_REPORTING       (MICROPY_ERROR_REPORTING_NORMAL)
 
+#define MICROPY_ENABLE_EXTERNAL_IMPORT (1)
+#define MICROPY_PY_SYS                 (1) 
 //our change
 #define MICROPY_GCREGS_SETJMP (1)
     
+#define MICROPY_PY_SYS_PLATFORM "ferret"
+#define MICROPY_PY_SYS                 (1)
+#define MICROPY_PY_SYS_PLATFORM        "ferret"
+#define MICROPY_PY_SYS_PATH            (1)
+#define MICROPY_PY_SYS_ARGV            (0)
+#define MICROPY_PY_SYS_EXIT            (0)
+#define MICROPY_PY_SYS_MAXSIZE         (0)
+#define MICROPY_PY_SYS_STDFILES        (0)

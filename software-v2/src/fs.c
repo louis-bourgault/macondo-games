@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 
-#define FS_OFFSET (2 * 1024 * 1024)
+#define FS_OFFSET (1 * 1024 * 1024)
 #define FS_SIZE (14 * 1024 * 1024) //14MB for images and scripts, 2mb for C firmware.
 
 typedef struct {

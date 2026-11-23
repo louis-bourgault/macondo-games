@@ -27,7 +27,7 @@ static char heap[32 * 1024];
 
 static const char user_script[] =
 "from ferret import *\n"
-"from test import *"
+"from test import *\n"
 "def init():\n"
 "    fill()\n"
 "    \n"
@@ -148,6 +148,7 @@ void script_init(void *stack_top)
 {
     mp_embed_init(&heap[0], sizeof(heap), stack_top); //pass the pointer, not the value
     setup_api();
+    printf("script (%u bytes):\n%s\n---\n", (unsigned)strlen(user_script), user_script);
     mp_embed_exec_str(user_script);
     call_py(qstr_from_str("init"));
 }
@@ -204,6 +205,7 @@ static void lfs_reader_close(void *data) {
 
 
 mp_import_stat_t mp_import_stat(const char *path) {
+    printf("mp_import_stat: checking path '%s'\n", path);
     struct lfs_info info;
     if (lfs_stat(&lfs, path, &info) < 0) return MP_IMPORT_STAT_NO_EXIST;
     return info.type == LFS_TYPE_DIR ? MP_IMPORT_STAT_DIR : MP_IMPORT_STAT_FILE;
@@ -212,6 +214,7 @@ mp_import_stat_t mp_import_stat(const char *path) {
 
 
 mp_lexer_t *mp_lexer_new_from_file(qstr filename) {
+    printf("mp_lexer_new_from_file: opening file '%s'\n", qstr_str(filename));
     const char *path = qstr_str(filename);
 
     // put it on the heap
