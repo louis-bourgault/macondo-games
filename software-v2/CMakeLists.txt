@@ -7,10 +7,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 pico_sdk_init()
 add_compile_definitions(PICO_XOSC_STARTUP_DELAY_MULTIPLIER=64)
-
 set(MP_EMBED_DIR "$ENV{HOME}/src/micropython/examples/embedding/micropython_embed")
 file(GLOB_RECURSE MICROPYTHON_SOURCES "${MP_EMBED_DIR}/*.c")
-
+# add_compile_options(-fmacro-prefix-map=${CMAKE_SOURCE_DIR}/=) #removes the paths from my computer (previously, my Mac path was in the binary, which uses too much space and is privacy concern)
 add_library(micropython STATIC ${MICROPYTHON_SOURCES})
 target_include_directories(micropython PUBLIC
     "${MP_EMBED_DIR}"
@@ -25,13 +24,19 @@ add_executable(ferret
     src/display.c
     src/input.c
     src/mp.c
+    src/fs.c
+    
     lib/littlefs/lfs.c
     lib/littlefs/lfs_util.c
+
 )
+pico_define_boot_stage2(generic_boot2 ${PICO_SDK_PATH}/src/rp2040/boot_stage2/boot2_generic_03h.S)
+pico_set_boot_stage2(ferret generic_boot2)
 
 
 target_link_libraries(ferret
     pico_stdlib
+    pico_flash
     hardware_spi
     hardware_dma
     hardware_flash

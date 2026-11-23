@@ -15,6 +15,11 @@
 #define MICROPY_ENABLE_GC                       (1)
 #define MICROPY_PY_GC                           (1)
 #define MICROPY_PY_SYS                          (0)
+//we doing filesystem ourselves
+#define MICROPY_VFS                 (0)
+#define MICROPY_READER_VFS          (0)
+#define MICROPY_READER_POSIX        (0)
 
 //our change
 #define MICROPY_GCREGS_SETJMP (1)
+    

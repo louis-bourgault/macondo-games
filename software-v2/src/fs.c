@@ -1,9 +1,33 @@
 #include "lfs.h"
+#include "fs.h"
 #include "hardware/flash.h"
 #include "hardware/sync.h"
+#include <string.h>
+#include "pico/stdlib.h"
+#include "pico/stdio_usb.h"
+#include "pico/flash.h"
+
+#include <stdio.h>
 
 #define FS_OFFSET (2 * 1024 * 1024)
 #define FS_SIZE (14 * 1024 * 1024) //14MB for images and scripts, 2mb for C firmware.
+
+typedef struct {
+    uint32_t offset;
+    const uint8_t *data;
+    size_t size;
+} flash_op_t;
+
+static void do_erase(void *p) {
+    flash_op_t *op = p;
+    flash_range_erase(op->offset, op->size);
+}
+
+static void do_prog(void *p) {
+    flash_op_t *op = p;
+    flash_range_program(op->offset, op->data, op->size);
+}
+
 
 int pico_lfs_read(const struct lfs_config *c, lfs_block_t block,
     lfs_off_t off, void *buffer, lfs_size_t size) {
@@ -14,19 +38,16 @@ return 0;
 
 int pico_lfs_prog(const struct lfs_config *c, lfs_block_t block,
     lfs_off_t off, const void *buffer, lfs_size_t size) {
-uint32_t offset = FS_OFFSET + (block * c->block_size) + off;
-uint32_t ints = save_and_disable_interrupts();
-flash_range_program(offset, (const uint8_t *)buffer, size);
-restore_interrupts(ints);
-return 0;
+flash_op_t op = { FS_OFFSET + block * c->block_size + off, buffer, size };
+return flash_safe_execute(do_prog, &op, UINT32_MAX) == PICO_OK ? 0 : LFS_ERR_IO;
 }
 
 int pico_lfs_erase(const struct lfs_config *c, lfs_block_t block) {
-uint32_t offset = FS_OFFSET + (block * c->block_size);
-uint32_t ints = save_and_disable_interrupts();
-flash_range_erase(offset, c->block_size);
-restore_interrupts(ints);
-return 0;
+    printf("pico_lfs_erase: erasing block %u\n", block);
+flash_op_t op = { FS_OFFSET + block * c->block_size, NULL, c->block_size };
+int fserr =  flash_safe_execute(do_erase, &op, 1000) == PICO_OK ? 0 : LFS_ERR_IO;
+printf("pico_lfs_erase: flash_safe_execute returned %d\n", fserr);
+return fserr;
 }
 
 int pico_lfs_sync(const struct lfs_config *c) {
@@ -63,3 +84,26 @@ const struct lfs_config cfg = {
     .cache_size = 256,
     .name_max = 255,
 };
+
+int fs_init() {
+    printf("fs_init: initializing filesystem...\n");
+
+    int err = lfs_mount(&lfs, &cfg);
+    printf("fs_init: lfs_mount returned %d\n", err);
+    if (err < 0) {
+        //first boot, we format it. maybe later we should put a warning before doing it so the user can decide to format or not
+        err = lfs_format(&lfs, &cfg);
+        printf("fs_init: lfs_format returned %d\n", err);
+        if (err < 0) {
+            // prob shoudl handle this, format failed
+            //TODO: handle error
+        }
+        err = lfs_mount(&lfs, &cfg);
+        printf("fs_init: lfs_mount returned %d\n", err);
+        if (err < 0) {
+            // mount error
+            //TODO: handle error
+        } 
+    }
+    return err;
+}
