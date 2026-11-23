@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "py/qstr.h"
 
-static char heap[8 * 1024];
+static char heap[32 * 1024];
 
 static const char user_script[] =
 "def init():\n"
@@ -17,30 +17,17 @@ static const char user_script[] =
 "def update():\n"
 "    print('micropython is alive weewoo')\n";
 
-//define the constants for all the micropython buttons
-static const mp_rom_map_elem_t button_module_globals_table[] = {
-    {MP_ROM_QSTR(MP_QSTR_BTN_A), MP_ROM_INT(0)},
-    {MP_ROM_QSTR(MP_QSTR_BTN_B), MP_ROM_INT(1)},
-    {MP_ROM_QSTR(MP_QSTR_BTN_X), MP_ROM_INT(2)},
-    {MP_ROM_QSTR(MP_QSTR_BTN_Y), MP_ROM_INT(3)},
-    {MP_ROM_QSTR(MP_QSTR_BTN_UP), MP_ROM_INT(4)},
-    {MP_ROM_QSTR(MP_QSTR_BTN_DOWN), MP_ROM_INT(5)},
-    {MP_ROM_QSTR(MP_QSTR_BTN_LEFT), MP_ROM_INT(6)},
-    {MP_ROM_QSTR(MP_QSTR_BTN_RIGHT), MP_ROM_INT(7)},
-    {MP_ROM_QSTR(MP_QSTR_BTN_MENU), MP_ROM_INT(8)},
-};
-static MP_DEFINE_CONST_DICT(button_module_globals, button_module_globals_table);
-//can access these buttons from micropython with button.BTN_A, button.BTN_B, etc
+
 
 //FUNCTIONS FOR MICROPYTHON TO CALL
-static mp_obj_t fill_display(mp_obj_t colour)
+static mp_obj_t py_fill_display(mp_obj_t colour)
 {
     uint16_t c = (uint16_t)mp_obj_get_int(colour);
     display_fill(c);
     return mp_const_none;
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(fill_display_obj, fill_display);
-static mp_obj_t draw_pixel(mp_obj_t x, mp_obj_t y, mp_obj_t colour)
+static mp_obj_t py_draw_pixel(mp_obj_t x, mp_obj_t y, mp_obj_t colour)
 {
     int16_t x_val = (int16_t)mp_obj_get_int(x);
     int16_t y_val = (int16_t)mp_obj_get_int(y);
@@ -49,7 +36,7 @@ static mp_obj_t draw_pixel(mp_obj_t x, mp_obj_t y, mp_obj_t colour)
     return mp_const_none;
 }
 static MP_DEFINE_CONST_FUN_OBJ_3(draw_pixel_obj, draw_pixel);
-static mp_obj_t draw_rect(mp_obj_t x0, mp_obj_t y0, mp_obj_t x1, mp_obj_t y1, mp_obj_t colour)
+static mp_obj_t py_draw_rect(mp_obj_t x0, mp_obj_t y0, mp_obj_t x1, mp_obj_t y1, mp_obj_t colour)
 {
     int16_t x0_val = (int16_t)mp_obj_get_int(x0);
     int16_t y0_val = (int16_t)mp_obj_get_int(y0);
@@ -61,7 +48,7 @@ static mp_obj_t draw_rect(mp_obj_t x0, mp_obj_t y0, mp_obj_t x1, mp_obj_t y1, mp
 }
 static MP_DEFINE_CONST_FUN_OBJ_5(draw_rect_obj, draw_rect);
 
-static mp_obj_t button_pressed(mp_obj_t button)
+static mp_obj_t py_button_pressed(mp_obj_t button)
 {
     int btn = mp_obj_get_int(button);
     if (btn < 0 || btn >= BTN_COUNT)
@@ -71,7 +58,7 @@ static mp_obj_t button_pressed(mp_obj_t button)
     return mp_obj_new_bool(button_pressed((Button)btn));
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(button_pressed_obj, button_pressed);
-static mp_obj_t button_just_pressed(mp_obj_t button)
+static mp_obj_t py_button_just_pressed(mp_obj_t button)
 {
     int btn = mp_obj_get_int(button);
     if (btn < 0 || btn >= BTN_COUNT)
@@ -81,7 +68,7 @@ static mp_obj_t button_just_pressed(mp_obj_t button)
     return mp_obj_new_bool(button_just_pressed((Button)btn));
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(button_just_pressed_obj, button_just_pressed);
-static mp_obj_t button_just_released(mp_obj_t button)
+static mp_obj_t py_button_just_released(mp_obj_t button)
 {
     int btn = mp_obj_get_int(button);
     if (btn < 0 || btn >= BTN_COUNT)
@@ -93,10 +80,38 @@ static mp_obj_t button_just_released(mp_obj_t button)
 static MP_DEFINE_CONST_FUN_OBJ_1(button_just_released_obj, button_just_released);
 
 
+typedef struct { const char *name; const mp_obj_fun_builtin_var_t *fn; } api_fn_t;
+typedef struct { const char *name; int value; } api_const_t;
 
-static void setup_api(void)
-{
-    mp_store_global(qstr_from_str("fill_display"), MP_OBJ_FROM_PTR(&fill_display_obj));
+static const api_fn_t api_fns[] = {
+    { "fill_display",         &py_fill_display_obj },
+    { "draw_pixel",           (const void *)&py_draw_pixel_obj },
+    { "draw_rect",            (const void *)&py_draw_rect_obj },
+    { "button_pressed",       (const void *)&py_button_pressed_obj },
+    { "button_just_pressed",  (const void *)&py_button_just_pressed_obj },
+    { "button_just_released", (const void *)&py_button_just_released_obj },
+};
+
+static const api_const_t api_consts[] = {
+    { "BTN_A", 0 }, { "BTN_B", 1 }, { "BTN_X", 2 }, { "BTN_Y", 3 },
+    { "BTN_UP", 4 }, { "BTN_DOWN", 5 }, { "BTN_LEFT", 6 }, { "BTN_RIGHT", 7 },
+    { "BTN_MENU", 8 },
+};
+
+
+
+static void setup_api(void) {
+    mp_obj_t mod = mp_obj_new_module(qstr_from_str("ferret"));
+    mp_obj_t g = MP_OBJ_FROM_PTR(mp_obj_module_get_globals(mod));
+
+    for (size_t i = 0; i < MP_ARRAY_SIZE(api_fns); i++) {
+        mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str(api_fns[i].name)),
+                          MP_OBJ_FROM_PTR(api_fns[i].fn));
+    }
+    for (size_t i = 0; i < MP_ARRAY_SIZE(api_consts); i++) {
+        mp_obj_dict_store(g, MP_OBJ_NEW_QSTR(qstr_from_str(api_consts[i].name)),
+                          MP_OBJ_NEW_SMALL_INT(api_consts[i].value));
+    }
 }
 
 void call_py(qstr name)
@@ -116,7 +131,7 @@ void call_py(qstr name)
 
 void script_init(void *stack_top)
 {
-    mp_embed_init(&heap[0], sizeof(heap), &stack_top);
+    mp_embed_init(&heap[0], sizeof(heap), stack_top); //pass the pointer, not the value
     setup_api();
     mp_embed_exec_str(user_script);
     call_py(qstr_from_str("init"));

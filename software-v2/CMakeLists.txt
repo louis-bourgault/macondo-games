@@ -16,6 +16,8 @@ target_include_directories(micropython PUBLIC
     "${MP_EMBED_DIR}"
     "${MP_EMBED_DIR}/port"
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    src
+    lib/littlefs
 )
 
 add_executable(ferret
@@ -23,6 +25,8 @@ add_executable(ferret
     src/display.c
     src/input.c
     src/mp.c
+    lib/littlefs/lfs.c
+    lib/littlefs/lfs_util.c
 )
 
 
@@ -31,6 +35,7 @@ target_link_libraries(ferret
     hardware_spi
     hardware_dma
     hardware_flash
+    hardware_sync
     micropython
 )
 

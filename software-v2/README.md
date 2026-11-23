@@ -7,7 +7,7 @@ to build: run `./build.sh`. It autoflashes with picotool. make sure everything i
 this new version is made for v2. there are a few minor references to v1 in the code so parts of it may work, but these are for my own testing only and the system is designed with v2 in mind
 
 # todo
-[] integration with micropython and game loop system with update and init functions
+[X] integration with micropython and game loop system with update and init functions
 [] file system
 [] sprite drawing
 [] gpio
