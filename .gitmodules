@@ -1,0 +1,3 @@
+[submodule "software-v2/lib/littlefs"]
+	path = software-v2/lib/littlefs
+	url = https://github.com/littlefs-project/littlefs
